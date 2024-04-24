@@ -1,0 +1,195 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Apr 21, 2024, 7:41:20 PM
+    Author     : user
+*/
+
+product-body{
+    padding: 65px 0;
+    
+}
+
+.product-top{
+    padding: 22px 0;
+    gap:50px;
+}
+
+.product-left, .sub-image{
+    gap: 25px;
+}
+
+
+.desc-container{
+    width: 60%;
+    padding: 43px 0;
+}
+
+.second-nav{
+    align-content:flex-start;
+    padding: 26px 0;
+    gap: 14px;  
+}
+
+.sec-nav-item{
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.product-bot{
+    padding: 65px 0;
+    justify-content: space-between;
+    gap:55px;
+}
+
+.image-container{
+    justify-content: center;
+    border-radius: 20px;
+    border: 1px solid #b8b8b8;
+    padding: 20px;
+}
+
+.button-wrapper{
+    align-content: start;
+    gap:30px;
+    flex-grow: 1;
+}
+
+.num-field{
+    width: 60px;
+    height: 30px;
+    text-align: center;
+    background: #f2f2f2;
+    border-width: 1px;
+    border-style: solid;
+    border-left: none;
+    border-right:none;
+
+}
+
+.minus-btn, .plus-btn{
+    border-width: 1px;
+    border-style: solid;
+    text-align: center;
+    background: #f2f2f2;
+    width: 35px;
+    height: 34px;
+    cursor: pointer;
+}
+
+
+
+.num-field::-webkit-outer-spin-button,
+.num-field::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.product-right{
+    width: 100%;
+}
+
+.prod-right-top{
+    gap: 20px;
+}
+
+.other-prod-wrapper{
+    justify-content: space-between;
+}
+
+/*Product Display Conatiner*/
+
+.popProdContainer{
+    border-style: solid;
+    border-color: lightgray;
+    border-width: 2px;
+    height: 300px;
+    width: 300px;
+    display: inline-block;
+    border-radius: 20px 20px 20px 20px;
+    transform: scale(1.0);
+    transition-duration: 0.3s;
+    transition-property: transform;
+    overflow: hidden;
+    
+}
+
+
+.prodDisplayImg{
+    padding: 10px;
+    width: 280px;
+    height: 280px;
+}
+
+
+
+.buttonContainer{
+    width: 100%;
+    height: 100%;
+    top: 0;
+    right:0;
+    position: absolute;
+    content: '\A';
+    background:rgba(0,0,0,0.6);
+    border-radius: 15px 15px 15px 15px;
+    transition: all 0.5s;
+    -webkit-transition: all 0.5s;
+    opacity: 0;
+  
+}
+
+
+.popProdContainer:hover .buttonContainer{
+    opacity:1;
+}
+
+
+.button{
+    font-family: samsungBold;
+    font-size:15px;
+    text-align: center;
+    
+    display: inline-block;
+    cursor: pointer;
+
+    height: 60px;
+    width: 120px;
+    border-radius: 20px 20px 20px 20px;
+    transform: scale(1.0);
+    transition-duration: 0.3s;
+    transition-property: transform;
+    
+}
+
+.buyButton{
+    border: none;
+    background-color: #EDA315;
+    color: white;
+}
+
+.viewButton{
+    border-color: #306887;
+    border-style: solid;
+    background-color: white;
+    color: #306887;
+}
+
+.prodBuyButton, .prodViewButton{
+    position:absolute;
+}
+
+.prodBuyButton{
+    right: 20px;
+}
+
+.prodViewButton{
+    left: 20px; 
+}
+
+.button:hover{
+    transform: scale(1.05);
+    transition-duration: 0.3s;
+    transition-property: transform;
+}
