@@ -1,0 +1,165 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Apr 19, 2024, 7:30:18 AM
+    Author     : user
+*/
+
+.cart-container{
+    gap:18px;
+    padding: 31px 65px 100px
+}
+
+.second-nav{
+    align-content:flex-start;
+    padding: 26px 65px;
+    gap: 14px;  
+}
+
+.sec-nav-item{
+    justify-content: space-between;
+    gap: 16px;
+}
+
+
+/* left cart */
+.item-container{
+    gap: 30px;
+    padding: 25px;
+}
+
+.item-desc{
+    justify-content: space-between;
+    gap: 11px;
+}
+
+.btn-container{
+    justify-content: space-between;
+
+}
+
+.cart-table{
+    border-collapse:  collapse;
+    align-content: center;
+    align-items: center;
+}
+
+.table-header{
+    background: #e2f4ff;
+    border-left: 0px;
+    border-right: 0px;
+
+}
+.subtotal{
+    display: flex;
+    justify-content: end;
+    text-align: left;
+    padding-right: 35px;
+}
+
+.header-item{
+    padding: 15px 35px;
+}
+
+.cart-left{
+    gap: 25px;
+    flex-grow: 1;
+}
+
+.del-btn{
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.num-field{
+    width: 60px;
+    height: 30px;
+    text-align: center;
+    background: #f2f2f2;
+    border-width: 1px;
+    border-style: solid;
+    border-left: none;
+    border-right:none;
+
+}
+
+.minus-btn, .plus-btn{
+    border-width: 1px;
+    border-style: solid;
+    text-align: center;
+    background: #f2f2f2;
+    width: 35px;
+    height: 34px;
+    cursor: pointer;
+}
+
+
+
+.num-field::-webkit-outer-spin-button,
+.num-field::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* button*/
+
+
+.update-btn{
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 33px;
+    border-color: #A9A9A9;
+    background:transparent;
+    color: #797979;
+    padding: 19.5px 42.5px;
+    cursor: pointer;
+}
+
+.clear-btn{
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 33px;
+    border-color: #C33131;
+    background:transparent;
+    color: #C33131;
+    padding: 19.5px 42.5px;
+    cursor: pointer;
+}
+
+
+/*right cart*/
+
+.cart-right{
+   border: 1px solid #c3c3c3;
+}
+.cart-right-header{
+    font-size: 20px;
+    font-weight: 500;
+    width: max-content;
+    padding: 12.5px 162px;
+    background: #e2f4ff;
+}
+
+.cart-right-content{
+    gap: 25px;
+    padding: 64.5px 43.5px;
+    
+}
+
+.coupon-container{
+    padding: 14.5px 23px;
+    border-radius: 20px;
+    border: 1px solid #dfdfdf;
+}
+
+.coupon-field{
+    border:none;
+}
+
+.price-container{
+    font-size: 18px;
+    font-weight: 500;
+    justify-content: space-between;
+}
