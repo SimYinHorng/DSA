@@ -9,5 +9,8 @@ package adt;
  * @author user
  */
 public class adt {
+    public static void main(String[] args){
+        System.out.println("hello");
+    }
     
 }
