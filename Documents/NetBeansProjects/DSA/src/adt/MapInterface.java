@@ -12,7 +12,7 @@ package adt;
  */
 public interface MapInterface<K,V> {
     
-    public void put(K key,V value);
+    public boolean put(K key,V value);
     
     public V get(K key);
     

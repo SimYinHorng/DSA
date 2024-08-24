@@ -5,6 +5,7 @@
 package adt;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 /**
  *
@@ -17,6 +18,12 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
     private Node<K, V>[] buckets;
     private int size;
     private int capacity;
+    private static final int DEFAULT_CAPACITY = 10;
+    private static final float DEFAULT_LOAD_FACTOR = 0.75f;
+
+    public HashMap() {
+        this(DEFAULT_CAPACITY);
+    }
 
     public HashMap(int capacity) {
         this.capacity = capacity;
@@ -29,7 +36,7 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
     }
 
     @Override
-    public void put(K key, V value) {
+    public boolean put(K key, V value) {
         int index = hash(key);
         Node<K, V> node = buckets[index];
 
@@ -39,8 +46,7 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
         } else {
             while (node != null) {
                 if (node.key.equals(key)) {
-                    node.value = value; // Update the value if key already exists
-                    return;
+                    return false; //already got the same key
                 }
                 if (node.next == null) {
                     break;
@@ -50,6 +56,12 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
             node.next = new Node<>(key, value); // Add new node if key not found
             size++;
         }
+
+        if (size > capacity * DEFAULT_LOAD_FACTOR) {
+            resize();
+        }
+
+        return true;
     }
 
     @Override
@@ -150,6 +162,28 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
 
     }
 
+    public void resize() {
+        int newCapacity = capacity * 2;
+        Node<K, V>[] newBuckets = new Node[newCapacity];
+
+        for (int i = 0; i < capacity; i++) {
+            Node<K, V> node = buckets[i];
+            while (node != null) {
+                int newIndex = Math.abs(node.key.hashCode()) % newCapacity;
+                Node<K, V> nextNode = node.next;
+
+                // Rehashing and placing nodes in the new bucket array
+                node.next = newBuckets[newIndex];
+                newBuckets[newIndex] = node;
+
+                node = nextNode;
+            }
+        }
+
+        buckets = newBuckets;
+        capacity = newCapacity;
+    }
+
     private class Node<K, V> {
 
         K key;
@@ -163,4 +197,5 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
         }
 
     }
+
 }
