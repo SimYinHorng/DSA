@@ -8,6 +8,8 @@ import adt.HashMap;
 import boundary.DonorManagementUI;
 import dao.DonorDAO;
 import entity.Donor;
+import utility.DonorCategory;
+import utility.DonorType;
 import static utility.MessageUI.displayInvalidChoiceMessage;
 
 /**
@@ -34,11 +36,11 @@ public class DonorManagement {
                     break;
                 case 1:
                     addNewDonor();
-
                     break;
                 case 2:
                     displayDonors();
                     break;
+
                 default:
                     displayInvalidChoiceMessage();
             }
@@ -47,27 +49,52 @@ public class DonorManagement {
 
     public void addNewDonor() {
         boolean exit = false;
+        Donor newDonor = donorUI.inputDonorDetails();
         do {
-            Donor newDonor = donorUI.inputDonorDetails();
             donorUI.displayDonorDetails(newDonor);
             System.out.println("Are the donor details correct?");
-            char input = donorUI.confirmationMessage();
+            int input = donorUI.confirmationMessage();
             switch (input) {
-                case 'Y':
+                case 1:
                     donorMap.put(newDonor.getDonorId(), newDonor);
                     donorDAO.saveToFile(donorMap);
+                    exit = true;
                     break;
-                case'N':
-                    //here need put edit wan
-                    
+                case 2:
+                    int choice = donorUI.getEditMenu();
+                    switch (choice) {
+                        case 1:
+                            String name = donorUI.inputDonorName();
+                            newDonor.setName(name);
+                            break;
+                        case 2:
+                            String email = donorUI.inputDonorEmail();
+                            newDonor.setEmail(email);
+                            break;
+                        case 3:
+                            String phoneNo = donorUI.inputDonorPhoneNo();
+                            newDonor.setPhoneNo(phoneNo);
+                            break;
+                        case 4:
+                            String address = donorUI.inputDonorAddress();
+                            newDonor.setAddress(address);
+                            break;
+                        case 5:
+                            DonorType type = donorUI.inputDonorType();
+                            newDonor.setType(type);
+                            break;
+                        case 6:
+                            DonorCategory cat = donorUI.inputDonorCat();
+                            newDonor.setCategory(cat);
+                            break;
+                    }
                     break;
-                case 'X':
+                case 0:
+                    exit = true;
                     break;
-                
             }
 
         } while (!exit);
-
     }
 
     public void displayDonors() {

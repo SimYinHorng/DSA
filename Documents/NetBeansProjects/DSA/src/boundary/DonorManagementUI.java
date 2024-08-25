@@ -15,6 +15,9 @@ import dao.DonorDAO;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import utility.DonorCategory;
+import utility.MessageUI;
+import static utility.MessageUI.displayInvalidChoiceMessage;
+import static utility.MessageUI.enterToContinue;
 
 /**
  *
@@ -42,6 +45,33 @@ public class DonorManagementUI {
         return choice;
     }
 
+    public int getEditMenu() {
+        boolean correctInput = false;
+        int choice;
+        do {
+            System.out.println("Which Part Need to Edit");
+            System.out.println("1. Donor Name");
+            System.out.println("2. Donor Email");
+            System.out.println("3. Donor Phone No");
+            System.out.println("4. Donor Address");
+            System.out.println("5. Donor Type ");
+            System.out.println("6. Donor Category");
+            System.out.println("0. Quit");
+            System.out.print("Enter choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+            System.out.println();
+
+            if (choice >= 0 && choice <= 6) {
+                correctInput = true;
+            } else {
+                displayInvalidChoiceMessage();
+            }
+
+        } while (!correctInput);
+        return choice;
+    }
+
     public void listAllDonors(HashMap<Integer, Donor> donorMap) {
         Iterator keyIt = donorMap.keySet().getIterator();
 
@@ -60,30 +90,56 @@ public class DonorManagementUI {
         System.out.println("Donor Phone No      : " + donor.getPhoneNo());
         System.out.println("Donor Address       : " + donor.getAddress());
         System.out.println("Donor Type          : " + donor.getType());
+        System.out.println("Donor Category      : " + donor.getCategory());
         System.out.println("Number of Donations : " + donor.getDonationList().getNumberOfEntries());
     }
 
     public String inputDonorName() {
-        System.out.print("Enter Donor name: ");
-        String name = scanner.nextLine();
+        boolean validName = false;
+        String regex = "^[a-zA-Z\\s]+$|^[a-zA-Z0-9\\s&.,'-]+$";
+
+        String name;
+        do {
+            System.out.print("Enter Donor name: ");
+            name = scanner.nextLine();
+            if (name.matches(regex)) {
+                validName = true;
+            } else {
+                System.out.println("Invalid Name or Company Name!!!");
+                enterToContinue();
+            }
+        } while (!validName);
+
         return name;
     }
 
     public String inputDonorEmail() {
-        System.out.print("Enter Donor Email: ");
-        String email = scanner.nextLine();
+        String email;
         String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
-        Pattern pattern = Pattern.compile(regex);
+        do {
+            System.out.print("Enter Donor Email: ");
+            email = scanner.nextLine();
 
-        Matcher matcher = pattern.matcher(email);
-        System.out.println(email + " : " + matcher.matches() + "\n");
+            if (!email.matches(regex)) {
+                System.out.println("Invalid Email!!!");
+                enterToContinue();
+            }
+        } while (!email.matches(regex));
+
         return email;
     }
 
     public String inputDonorPhoneNo() {
-        System.out.print("Enter Donor Phone No: ");
-        String phoneNo = scanner.nextLine();
-        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        String phoneNo;
+        String regex = "^(0\\d-\\d{8}|01\\d-\\d{8})$";
+        do {
+            System.out.print("Enter Donor Phone No: ");
+            phoneNo = scanner.nextLine();
+            if (!phoneNo.matches(regex)) {
+                System.out.println("Invalid Phone Number!!!");
+                enterToContinue();
+            }
+        } while (!phoneNo.matches(regex));
 
         return phoneNo;
     }
@@ -95,42 +151,63 @@ public class DonorManagementUI {
     }
 
     public DonorType inputDonorType() {
-        System.out.println("1. Public");
-        System.out.println("2. Private ");
-        System.out.println("3. Government ");
-        System.out.print("Enter Donor Type: ");
-        int input = scanner.nextInt();
+        boolean validInput = false;
+        int input;
         DonorType type = null;
-        switch (input) {
-            case 1:
-                type = DonorType.PUBLIC;
-                break;
-            case 2:
-                type = DonorType.PRIVATE;
-                break;
-            case 3:
-                type = DonorType.GOVERNMENT;
-                break;
-        }
+        do {
+            System.out.println("1. Public");
+            System.out.println("2. Private ");
+            System.out.println("3. Government ");
+            System.out.print("Enter Donor Type: ");
+            input = scanner.nextInt();
+
+            switch (input) {
+                case 1:
+                    type = DonorType.PUBLIC;
+                    validInput = true;
+                    break;
+                case 2:
+                    type = DonorType.PRIVATE;
+                    validInput = true;
+                    break;
+                case 3:
+                    type = DonorType.GOVERNMENT;
+                    validInput = true;
+                    break;
+                default:
+                    displayInvalidChoiceMessage();
+                    break;
+            }
+
+        } while (!validInput);
 
         return type;
     }
 
     public DonorCategory inputDonorCat() {
-        System.out.println("1. Individual");
-        System.out.println("2. Organization ");
-        System.out.print("Enter Donor Category: ");
-        int input = scanner.nextInt();
+        boolean validInput = false;
+        int input;
         DonorCategory category = null;
-        switch (input) {
-            case 1:
-                category = DonorCategory.INDIVIDUAL;
-                break;
-            case 2:
-                category = DonorCategory.ORGANIZATION;
-                break;
-        }
+        do {
+            System.out.println("1. Individual");
+            System.out.println("2. Organization ");
+            System.out.print("Enter Donor Category: ");
+            input = scanner.nextInt();
 
+            switch (input) {
+                case 1:
+                    category = DonorCategory.INDIVIDUAL;
+                    validInput = true;
+                    break;
+                case 2:
+                    category = DonorCategory.ORGANIZATION;
+                    validInput = true;
+                    break;
+                default:
+                    displayInvalidChoiceMessage();
+                    break;
+            }
+        } while (!validInput);
         return category;
     }
 
@@ -150,15 +227,23 @@ public class DonorManagementUI {
         return new Donor();
     }
 
-    public void displayExitMessage() {
+    public static void displayExitMessage() {
         System.out.println("Exit From Donor Management System");
     }
 
-    public char confirmationMessage() {
-
-        System.out.println("Y-Yes N-No X-Exit");
-        char input = scanner.next().charAt(0);
-
+    public int confirmationMessage() {
+        boolean correctInput = false;
+        int input;
+        do {
+            System.out.println("1-Yes 2-No 0-Exit");
+            System.out.print("Enter No:");
+            input = scanner.nextInt();
+            if (input >= 0 && input <= 2) {
+                correctInput = true;
+            } else {
+                displayInvalidChoiceMessage();
+            }
+        } while (!correctInput);
         return input;
     }
 }

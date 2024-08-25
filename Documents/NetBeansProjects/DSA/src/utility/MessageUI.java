@@ -4,14 +4,26 @@
  */
 package utility;
 
+import java.util.Scanner;
+
 /**
  *
  * @author user
  */
 public class MessageUI {
 
+    static Scanner scanner = new Scanner(System.in);
+
     public static void displayInvalidChoiceMessage() {
-        System.out.println("\nInvalid choice");
+        System.out.println("Invalid choice");
+        System.out.println("Press Enter to continue ... ");
+        scanner.nextLine();
+        clearScreen();
+    }
+
+    public static void enterToContinue() {
+        System.out.println("Press Enter to continue ... ");
+        scanner.nextLine();
     }
 
     public static void displayExitMessage() {
@@ -32,6 +44,7 @@ public class MessageUI {
     }
 
     public static void clearScreen() {
+        //this not working
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
