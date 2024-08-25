@@ -5,48 +5,50 @@
 package entity;
 
 import adt.ArrayList;
+import java.io.Serializable;
 import java.util.Objects;
+import utility.DonorCategory;
 import utility.DonorType;
 
 /**
  *
  * @author user
  */
-public class Donor {
+public class Donor implements Serializable {
 
-    private static int nextDonorId = 1000;
+    private static int nextDonorId = 100;
     private int donorId;
     private String name;
     private String email;
     private String phoneNo;
     private String address;
-    private String dateOfBirth;
-    private DonorType type;
+    private DonorType type; // public, private, government
+    private DonorCategory category; // individual, organization
     private ArrayList<Donation> donationList;
 
     public Donor() {
         this.donorId = nextDonorId++;
     }
 
-    public Donor(String name, String email, String phoneNo, String address, String dateOfBirth, DonorType type) {
+    public Donor(String name, String email, String phoneNo, String address, String dateOfBirth, DonorType type,DonorCategory category) {
         this.donorId = nextDonorId++;
         this.name = name;
         this.email = email;
         this.phoneNo = phoneNo;
         this.address = address;
-        this.dateOfBirth = dateOfBirth;
         this.type = type;
-        this.donationList = new ArrayList<Donation>();
+        this.category = category;
+        this.donationList = new ArrayList<>();
     }
 
-    public Donor(String name, String email, String phoneNo, String address, String dateOfBirth, DonorType type, ArrayList<Donation> donationList) {
+    public Donor(String name, String email, String phoneNo, String address, String dateOfBirth, DonorType type, DonorCategory category,ArrayList<Donation> donationList) {
         this.donorId = nextDonorId++;
         this.name = name;
         this.email = email;
         this.phoneNo = phoneNo;
         this.address = address;
-        this.dateOfBirth = dateOfBirth;
         this.type = type;
+        this.category = category;
         this.donationList = donationList;
     }
 
@@ -98,20 +100,20 @@ public class Donor {
         this.address = address;
     }
 
-    public String getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
     public DonorType getType() {
         return type;
     }
 
     public void setType(DonorType type) {
         this.type = type;
+    }
+
+    public DonorCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(DonorCategory category) {
+        this.category = category;
     }
 
     public ArrayList<Donation> getDonationList() {
@@ -121,15 +123,10 @@ public class Donor {
     public void setDonationList(ArrayList<Donation> donationList) {
         this.donationList = donationList;
     }
-    
-    
-    
 
     @Override
     public String toString() {
-
-        return String.format("|%-8d|%-25s|%-30s|%-15s|%-80s|%-13s|%-12s|%15d|", donorId, name, email, phoneNo, address, dateOfBirth, type, (!donationList.isEmpty() ? donationList.getNumberOfEntries() : 0));
-
+        return String.format("|%-8d|%-25s|%-30s|%-15s|%-80s|%-11s|%-12s|%15d|", donorId, name, email, phoneNo, address, type,category, (!donationList.isEmpty() ? donationList.getNumberOfEntries() : 0));
     }
 
     @Override
@@ -146,7 +143,6 @@ public class Donor {
                 && Objects.equals(email, donor.email)
                 && Objects.equals(phoneNo, donor.phoneNo)
                 && Objects.equals(address, donor.address)
-                && Objects.equals(dateOfBirth, donor.dateOfBirth)
                 && Objects.equals(type, donor.type);
     }
 

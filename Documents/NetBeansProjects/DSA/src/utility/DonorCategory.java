@@ -8,10 +8,7 @@ package utility;
  *
  * @author user
  */
-public enum DonorType {
-    PUBLIC,
-    PRIVATE,
-    GOVERNMENT
+public enum DonorCategory {
+    INDIVIDUAL,
+    ORGANIZATION
 }
-
-

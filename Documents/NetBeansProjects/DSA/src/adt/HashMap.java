@@ -184,7 +184,7 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
         capacity = newCapacity;
     }
 
-    private class Node<K, V> {
+    private class Node<K, V> implements Serializable {
 
         K key;
         V value;
