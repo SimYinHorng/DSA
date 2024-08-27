@@ -15,7 +15,7 @@ public class MessageUI {
     static Scanner scanner = new Scanner(System.in);
 
     public static void displayInvalidChoiceMessage() {
-        System.out.println("Invalid choice");
+        System.out.println("\nInvalid choice");
         System.out.println("Press Enter to continue ... ");
         scanner.nextLine();
         clearScreen();
