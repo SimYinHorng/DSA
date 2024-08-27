@@ -1,13 +1,24 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package control;
 
-/**
- *
- * @author user
- */
+import adt.HashMap;
+import boundary.DoneeManagementUI;
+import dao.DoneeDAO;
+import dao.DonorDAO;
+import entity.Donee;
+import utility.DoneeCategory;
+import static utility.MessageUI.displayInvalidChoiceMessage;
+
 public class DoneeManagement {
+    
+    private HashMap<Integer, Donee> doneeMap = new HashMap<>();
+    private DoneeDAO doneeDAO = new DoneeDAO();
+    private DoneeManagementUI doneeUI = new DoneeManagementUI();
+    
+    public DoneeManagement() {
+        doneeMap = doneeDAO.retrieveFromFile();
+    }
+    
+    
+    
     
 }
