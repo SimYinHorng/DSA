@@ -1,6 +1,7 @@
 package entity;
 
 import adt.ArrayList;
+import java.io.Serializable;
 import java.util.Objects;
 import utility.EventType;
 
@@ -9,7 +10,7 @@ import utility.EventType;
  * 
  * Author: Terence
  */
-public class Event {
+public class Event implements Serializable{
 
     private static int nextEventId = 1000;
     private int eventId;
@@ -153,7 +154,7 @@ public class Event {
 
     @Override
     public String toString() {
-        return String.format("|%-8d|%-25s|%-30s|%-30s|%-20s|%-20s|%-25s|%-30s|%-15s|%-13s|%-12s|%15d|", 
+        return String.format("%-10s %-20s %-30s %-15s %-15s %-10s %-10s %-20s%n", 
             eventId, eventName, eventAddress, eventStartDate, eventEndDate, eventStartTime, 
             eventEndTime, eventOrganizerName, eventOrganizerEmail, eventOrganizerPhoneNo, eventType, 
             (!participantList.isEmpty() ? participantList.getNumberOfEntries() : 0));
