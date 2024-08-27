@@ -9,7 +9,7 @@ public class EventDAO {
     private static final String FILE_NAME = "src/data/event.dat";
     private static final String ID_FILE_NAME = "src/data/eventId.dat";
 
-    public void saveToFile(HashMap<Integer, Event> eventMap) {
+    public void saveToFile(HashMap<String, Event> eventMap) {
         try (ObjectOutputStream eventStream = new ObjectOutputStream(new FileOutputStream(FILE_NAME));
              ObjectOutputStream idStream = new ObjectOutputStream(new FileOutputStream(ID_FILE_NAME))) {
             
@@ -23,8 +23,8 @@ public class EventDAO {
         }
     }
 
-    public HashMap<Integer, Event> retrieveFromFile() {
-        HashMap<Integer, Event> eventMap = new HashMap<>();
+    public HashMap<String, Event> retrieveFromFile() {
+        HashMap<String, Event> eventMap = new HashMap<>();
 
         try {
             File eventFile = new File(FILE_NAME);
@@ -32,7 +32,7 @@ public class EventDAO {
             
             if (eventFile.exists()) {
                 try (ObjectInputStream eventStream = new ObjectInputStream(new FileInputStream(eventFile))) {
-                    eventMap = (HashMap<Integer, Event>) eventStream.readObject();
+                    eventMap = (HashMap<String, Event>) eventStream.readObject();
                 }
             } else {
                 System.out.println("\nEvent file does not exist. Creating a new one.");
