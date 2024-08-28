@@ -2,8 +2,10 @@ package entity;
 
 import adt.ArrayList;
 import java.io.Serializable;
+import java.time.LocalDate; // Import LocalDate for handling date-related fields
 import java.util.Objects;
-import utility.DoneeCategory; 
+import utility.DoneeCategory;
+import utility.DoneeStatus;
 
 public class Donee implements Serializable {
 
@@ -13,14 +15,19 @@ public class Donee implements Serializable {
     private String email;
     private String phoneNo;
     private String address;
-    private DoneeCategory category; 
+    private DoneeCategory category;
     private ArrayList<Donation> donationList;
+    private LocalDate dateOfBirth;           
+    private String needsDescription;       
+    private LocalDate registrationDate;      
+    private LocalDate lastAssistanceDate;    
+    private DoneeStatus status;                   
 
     public Donee() {
         this.doneeId = nextDoneeId++;
     }
 
-    public Donee(String name, String email, String phoneNo, String address, DoneeCategory category) {
+    public Donee(String name, String email, String phoneNo, String address, DoneeCategory category, LocalDate dateOfBirth, String needsDescription, LocalDate registrationDate, DoneeStatus status) {
         this.doneeId = nextDoneeId++;
         this.name = name;
         this.email = email;
@@ -28,9 +35,14 @@ public class Donee implements Serializable {
         this.address = address;
         this.category = category;
         this.donationList = new ArrayList<>();
+        this.dateOfBirth = dateOfBirth;
+        this.needsDescription = needsDescription;
+        this.registrationDate = registrationDate;
+        this.lastAssistanceDate = null;
+        this.status = status;
     }
 
-    public Donee(String name, String email, String phoneNo, String address, DoneeCategory category, ArrayList<Donation> donationList) {
+    public Donee(String name, String email, String phoneNo, String address, DoneeCategory category, ArrayList<Donation> donationList, LocalDate dateOfBirth, String needsDescription, LocalDate registrationDate, LocalDate lastAssistanceDate, DoneeStatus status) {
         this.doneeId = nextDoneeId++;
         this.name = name;
         this.email = email;
@@ -38,6 +50,51 @@ public class Donee implements Serializable {
         this.address = address;
         this.category = category;
         this.donationList = donationList;
+        this.dateOfBirth = dateOfBirth;
+        this.needsDescription = needsDescription;
+        this.registrationDate = registrationDate;
+        this.lastAssistanceDate = lastAssistanceDate;
+        this.status = status;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getNeedsDescription() {
+        return needsDescription;
+    }
+
+    public void setNeedsDescription(String needsDescription) {
+        this.needsDescription = needsDescription;
+    }
+
+    public LocalDate getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(LocalDate registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
+    public LocalDate getLastAssistanceDate() {
+        return lastAssistanceDate;
+    }
+
+    public void setLastAssistanceDate(LocalDate lastAssistanceDate) {
+        this.lastAssistanceDate = lastAssistanceDate;
+    }
+
+    public DoneeStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(DoneeStatus status) {
+        this.status = status;
     }
 
     public static int getNextDoneeId() {
@@ -104,10 +161,12 @@ public class Donee implements Serializable {
         this.donationList = donationList;
     }
 
+    
+    
     @Override
     public String toString() {
-        return String.format("|%-8d|%-25s|%-30s|%-15s|%-80s|%-12s|%15d|", 
-                             doneeId, name, email, phoneNo, address, category, 
+        return String.format("|%-8d|%-25s|%-30s|%-15s|%-80s|%-12s|%-15s|%-80s|%-15s|%-15s|%-15s|%15d|", 
+                             doneeId, name, email, phoneNo, address, category, dateOfBirth, needsDescription, registrationDate, lastAssistanceDate, status,
                              (!donationList.isEmpty() ? donationList.getNumberOfEntries() : 0));
     }
 
@@ -120,11 +179,16 @@ public class Donee implements Serializable {
             return false;
         }
         Donee donee = (Donee) o;
-        return Objects.equals(doneeId, donee.doneeId)
+        return doneeId == donee.doneeId
                 && Objects.equals(name, donee.name)
                 && Objects.equals(email, donee.email)
                 && Objects.equals(phoneNo, donee.phoneNo)
                 && Objects.equals(address, donee.address)
-                && Objects.equals(category, donee.category); 
+                && Objects.equals(category, donee.category)
+                && Objects.equals(dateOfBirth, donee.dateOfBirth)
+                && Objects.equals(needsDescription, donee.needsDescription)
+                && Objects.equals(registrationDate, donee.registrationDate)
+                && Objects.equals(lastAssistanceDate, donee.lastAssistanceDate)
+                && Objects.equals(status, donee.status);
     }
 }
