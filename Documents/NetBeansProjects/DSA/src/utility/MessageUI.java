@@ -45,6 +45,13 @@ public static void displayDonorHeader() {
         );
     line(305);
     }
+     
+    public static void displayVolunteerHeader() {
+    line(250); 
+    System.out.printf("%-14s %-25s | %-30s | %-15s | %-50s | %-10s | %-10s |\n",
+                      "Volunteer Id", "Volunteer Name", "Volunteer Email", "Phone No.", "Address", "TYPE", "CATEGORY");
+    line(205);
+}
 
     public static void line(int n) {
         for (int i = 0; i < n; i++) {

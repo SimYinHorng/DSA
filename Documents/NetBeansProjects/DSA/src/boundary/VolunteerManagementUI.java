@@ -107,7 +107,7 @@ public class VolunteerManagementUI {
             if (name.matches(regex)) {
                 validName = true;
             } else {
-                System.out.println("Invalid Name or Company Name!!!");
+                System.out.println("Invalid Name or Company Name !!!");
                 enterToContinue();
             }
         } while (!validName);
@@ -123,7 +123,7 @@ public class VolunteerManagementUI {
             email = scanner.nextLine();
 
             if (!email.matches(regex)) {
-                System.out.println("Invalid Email!!!");
+                System.out.println("Invalid Email !!!");
                 enterToContinue();
             }
         } while (!email.matches(regex));
@@ -138,7 +138,7 @@ public class VolunteerManagementUI {
             System.out.print("Enter Volunteer Phone No: ");
             phoneNo = scanner.nextLine();
             if (!phoneNo.matches(regex)) {
-                System.out.println("Invalid Phone Number!!!");
+                System.out.println("Invalid Phone Number with - !!!");
                 enterToContinue();
             }
         } while (!phoneNo.matches(regex));
