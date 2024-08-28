@@ -11,6 +11,7 @@ import entity.Donor;
 import utility.DonorCategory;
 import utility.DonorType;
 import static utility.MessageUI.displayInvalidChoiceMessage;
+import static utility.MessageUI.enterToContinue;
 
 /**
  *
@@ -32,15 +33,17 @@ public class DonorManagement {
             choice = donorUI.getMenuChoice();
             switch (choice) {
                 case 0:
-                    donorUI.displayExitMessage();
+                    DonorManagementUI.displayExitMessage();
                     break;
                 case 1:
                     addNewDonor();
                     break;
                 case 2:
-                    displayDonors();
+                    removeDonor();
                     break;
-
+                case 3:
+                    updateDonorDetails();
+                    break;
                 default:
                     displayInvalidChoiceMessage();
             }
@@ -99,10 +102,87 @@ public class DonorManagement {
 
     public void displayDonors() {
         donorUI.listAllDonors(donorMap);
+        enterToContinue();
     }
 
     public static void main(String[] args) {
         DonorManagement productMaintenance = new DonorManagement();
         productMaintenance.runDonorManagement();
+    }
+
+    private void removeDonor() {
+        boolean exit = false;
+        do {
+            donorUI.listAllDonors(donorMap);
+            System.out.println("Select Donor To Delete (0 to exit)");
+            int removeId = donorUI.inputDonorID();
+            if (removeId == 0) {
+                exit = true;
+            } else {
+                //need validation for valid donor
+                Donor deleteDonor = donorMap.get(removeId);
+                donorUI.displayDonorDetails(deleteDonor);
+                System.out.println("Confirm Delete this Donor? ");
+                int confirm = donorUI.confirmationMessage();
+                switch (confirm) {
+                    case 1:
+                        donorMap.remove(removeId);
+                        donorDAO.saveToFile(donorMap);
+                        break;
+                    case 2:
+                        break;
+                    case 0:
+                        exit = true;
+                        break;
+                }
+            }
+
+        } while (!exit);
+
+    }
+
+    private void updateDonorDetails() {
+        boolean exit = false;
+        do {
+            donorUI.listAllDonors(donorMap);
+            System.out.println("Select Donor To Edit (0 to exit)");
+            int editId = donorUI.inputDonorID();
+            if (editId == 0) {
+                exit = true;
+            } else {
+                Donor editDonor = donorMap.get(editId);
+                donorUI.displayDonorDetails(editDonor);
+                int edit = donorUI.getEditMenu();
+                switch (edit) {
+                    case 1:
+                        String name = donorUI.inputDonorName();
+                        editDonor.setName(name);
+                        break;
+                    case 2:
+                        String email = donorUI.inputDonorEmail();
+                        editDonor.setEmail(email);
+                        break;
+                    case 3:
+                        String phoneNo = donorUI.inputDonorPhoneNo();
+                        editDonor.setPhoneNo(phoneNo);
+                        break;
+                    case 4:
+                        String address = donorUI.inputDonorAddress();
+                        editDonor.setAddress(address);
+                        break;
+                    case 5:
+                        DonorType type = donorUI.inputDonorType();
+                        editDonor.setType(type);
+                        break;
+                    case 6:
+                        DonorCategory cat = donorUI.inputDonorCat();
+                        editDonor.setCategory(cat);
+                        break;
+                    case 0:
+                        exit = true;
+                        break;
+                }
+            }
+        } while (!exit);
     }
 }
