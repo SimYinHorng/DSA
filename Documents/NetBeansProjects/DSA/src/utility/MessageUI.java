@@ -30,20 +30,19 @@ public class MessageUI {
         System.out.println("\nExiting system");
     }
 
-public static void displayDonorHeader() {
-    line(205); // Assuming this method prints a line of 205 dashes or similar
-    System.out.printf("%-10s %-25s | %-30s | %-15s | %-50s | %-10s | %-10s | %-20s |\n",
-                      "Donor Id", "Donor Name", "Donor Email", "Phone No.", "Address", "TYPE", "CATEGORY", "No. of Donations");
-    line(205);
-}
-    
-     public static void displayEventHeader() {
+    public static void displayDonorHeader() {
+        line(205);
+        System.out.printf("|%8s|%-25s|%-30s|%-15s|%-80s|%-11s|%-12s|%-15s|\n", "Donor Id", "Donor Name", "Donor Email", "Phone No.", "Address", "TYPE", "CATEGORY", "No. of Donation");
+        line(205);
+    }
+
+    public static void displayEventHeader() {
         line(305);
-    System.out.printf(
-            "%-10s %-20s %-30s %-15s %-15s %-10s %-10s %-20s%n",
-            "Event Id", "Event Name", "Event Address", "Start Date", "End Date", "Start Time", "End Time", "Organizer"
+        System.out.printf(
+                "%-10s %-20s %-30s %-15s %-15s %-10s %-10s %-20s%n",
+                "Event Id", "Event Name", "Event Address", "Start Date", "End Date", "Start Time", "End Time", "Organizer"
         );
-    line(305);
+        line(305);
     }
 
     public static void line(int n) {
