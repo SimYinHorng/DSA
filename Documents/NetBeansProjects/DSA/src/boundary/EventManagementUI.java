@@ -255,14 +255,13 @@ public class EventManagementUI {
 
     public void listAllEvents(HashMap<String, Event> eventMap) {
         // Get an iterator over the key set of the HashMap
-        Iterator<String> keyIt = eventMap.keySet().getIterator();
+        Iterator keyIt = eventMap.keySet().getIterator();
 
         displayEventHeader();
         while (keyIt.hasNext()) {
-            String key = keyIt.next();
-            Event event = eventMap.get(key); // Retrieve event using String key
-            System.out.println(event.toString());
-        }
+           System.out.println(eventMap.get((String) keyIt.next()).toString());
+         }
+        line(305);
     }
 
     public void displayEventDetails(Event event) {
