@@ -1,5 +1,7 @@
 package adt;
 
+import java.util.Iterator;
+
 public class LinkedList<T> implements ListInterface<T> {
 
     private Node firstNode;
@@ -159,4 +161,26 @@ public class LinkedList<T> implements ListInterface<T> {
             this.next = next;
         }
     }
+
+    public Iterator<T> iterator() {
+        return new LinkedListIterator();
+    }
+
+    private class LinkedListIterator implements Iterator<T> {
+
+        private Node currentNode = firstNode;
+
+        @Override
+        public boolean hasNext() {
+            return currentNode != null;
+        }
+
+        @Override
+        public T next() {
+            T data = currentNode.data;
+            currentNode = currentNode.next;
+            return data;
+        }
+    }
+    
 }
