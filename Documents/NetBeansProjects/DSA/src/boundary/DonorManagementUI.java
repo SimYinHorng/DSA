@@ -96,7 +96,9 @@ public class DonorManagementUI {
     }
 
     public void displayDonorDetails(Donor donor) {
+        MessageUI.line(15);
         System.out.println("Donor Details");
+        MessageUI.line(15);
         System.out.println("Donor ID            : " + donor.getDonorId());
         System.out.println("Donor Name          : " + donor.getName());
         System.out.println("Donor Email         : " + donor.getEmail());
@@ -146,7 +148,8 @@ public class DonorManagementUI {
         String phoneNo;
         String regex = "^(0\\d-\\d{8}|01\\d-\\d{8})$";
         do {
-            System.out.print("Enter Donor Phone No: ");
+            System.out.println("Example: (01x-xxxxxxxx)/ (0x-xxxxxxxx)");
+            System.out.print("Enter Donor Phone No : ");
             phoneNo = scanner.nextLine();
             if (!phoneNo.matches(regex)) {
                 System.out.println("Invalid Phone Number!!!");

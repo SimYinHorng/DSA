@@ -151,37 +151,55 @@ public class DonorManagement {
                 exit = true;
             } else {
                 Donor editDonor = donorMap.get(editId);
-                donorUI.displayDonorDetails(editDonor);
-                int edit = donorUI.getEditMenu();
-                switch (edit) {
-                    case 1:
-                        String name = donorUI.inputDonorName();
-                        editDonor.setName(name);
-                        break;
-                    case 2:
-                        String email = donorUI.inputDonorEmail();
-                        editDonor.setEmail(email);
-                        break;
-                    case 3:
-                        String phoneNo = donorUI.inputDonorPhoneNo();
-                        editDonor.setPhoneNo(phoneNo);
-                        break;
-                    case 4:
-                        String address = donorUI.inputDonorAddress();
-                        editDonor.setAddress(address);
-                        break;
-                    case 5:
-                        DonorType type = donorUI.inputDonorType();
-                        editDonor.setType(type);
-                        break;
-                    case 6:
-                        DonorCategory cat = donorUI.inputDonorCat();
-                        editDonor.setCategory(cat);
-                        break;
-                    case 0:
-                        exit = true;
-                        break;
+                boolean stopEdit = false;
+                while (!stopEdit) {
+                    donorUI.displayDonorDetails(editDonor);
+                    int edit = donorUI.getEditMenu();
+                    switch (edit) {
+                        case 1:
+                            String name = donorUI.inputDonorName();
+                            editDonor.setName(name);
+                            break;
+                        case 2:
+                            String email = donorUI.inputDonorEmail();
+                            editDonor.setEmail(email);
+                            break;
+                        case 3:
+                            String phoneNo = donorUI.inputDonorPhoneNo();
+                            editDonor.setPhoneNo(phoneNo);
+                            break;
+                        case 4:
+                            String address = donorUI.inputDonorAddress();
+                            editDonor.setAddress(address);
+                            break;
+                        case 5:
+                            DonorType type = donorUI.inputDonorType();
+                            editDonor.setType(type);
+                            break;
+                        case 6:
+                            DonorCategory cat = donorUI.inputDonorCat();
+                            editDonor.setCategory(cat);
+                            break;
+                        case 0:
+                            stopEdit = true;
+                            break;
+                    }
+                    donorUI.displayDonorDetails(editDonor);
+                    System.out.println("Are the details correct?");
+                    int confirm = donorUI.confirmationMessage();
+                    switch (confirm) {
+                        case 1:
+                            donorMap.put(editDonor.getDonorId(), editDonor);
+                            donorDAO.saveToFile(donorMap);
+                            break;
+                        case 2:
+                            break;
+                        case 0:
+                            exit = true;
+                            break;
+                    }
                 }
+
             }
         } while (!exit);
     }
