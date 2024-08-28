@@ -10,7 +10,6 @@ import boundary.EventManagementUI;
 import dao.EventDAO;
 import entity.Event;
 import utility.EventType;
-import java.io.IOException;
 import java.util.Scanner;
 import static utility.MessageUI.displayInvalidChoiceMessage;
 
@@ -168,75 +167,105 @@ public class EventManagement {
         }
     }
 
-  // Method to search events based on criteria
-    public void searchEvent(int searchCriteria, EventManagementUI eventUI) {
-        switch (searchCriteria) {
-            case 1:
-                // Search by Event ID
-                String eventId = eventUI.getSearchKeyword("Enter Event ID: ");
-                Event event = eventMap.get(eventId.toUpperCase()); // Convert to uppercase to match stored IDs
-                if (event != null) {
-                    eventUI.displayEventDetails(event);
-                } else {
-                    System.out.println("Event not found.");
-                }
-                break;
-            case 2:
-                // Search by Event Name
-                String eventName = eventUI.getSearchKeyword("Enter Event Name: ");
-                searchAndDisplayEventsByField("Event Name", eventName);
-                break;
-            case 3:
-                // Search by Event Address
-                String eventAddress = eventUI.getSearchKeyword("Enter Event Address: ");
-                searchAndDisplayEventsByField("Event Address", eventAddress);
-                break;
-            case 4:
-                // Search by Event Organizer Name
-                String organizerName = eventUI.getSearchKeyword("Enter Event Organizer Name: ");
-                searchAndDisplayEventsByField("Event Organizer Name", organizerName);
-                break;
-            case 5:
-                // Search by Event Type
-                String eventType = eventUI.getSearchKeyword("Enter Event Type: ");
-                searchAndDisplayEventsByField("Event Type", eventType);
-                break;
-            default:
-                System.out.println("Invalid choice.");
-                break;
-        }
-    }
 
-    // Helper method to search and display events based on a specific field
- private void searchAndDisplayEventsByField(String field, String keyword) {
-    boolean found = false; // Flag to check if any events are found
-    for (Event event : eventMap.values()) {
-        boolean match = false;
-        switch (field) {
-            case "Event Name":
-                match = event.getEventName().toLowerCase().contains(keyword.toLowerCase());
-                break;
-            case "Event Address":
-                match = event.getEventAddress().toLowerCase().contains(keyword.toLowerCase());
-                break;
-            case "Event Organizer Name":
-                match = event.getEventOrganizerName().toLowerCase().contains(keyword.toLowerCase());
-                break;
-            case "Event Type":
-                match = event.getEventType().toString().toLowerCase().contains(keyword.toLowerCase());
-                break;
+public void searchEvent() {
+        String eventId = eventUI.inputEventId();
+        if (eventMap.containsKey(eventId)) {
+            eventUI.displayEventDetails(eventMap.get(eventId));
+        } else {
+            System.out.println("Event not found.");
         }
-        if (match) {
-            displayEventDetails(event);
-            found = true;
-        }
-    }
 
-    if (!found) {
-        System.out.println("No events found matching the criteria.");
-    }
+//    Scanner scanner = new Scanner(System.in);
+//
+//    // Display the search criteria options to the user
+//    System.out.println("Select search field:");
+//    System.out.println("1. Event ID");
+//    System.out.println("2. Event Name");
+//    System.out.println("3. Event Address");
+//    System.out.println("4. Event Organizer Name");
+//    System.out.println("5. Event Type");
+//    
+//    // Get the search criteria as an integer
+//    int searchCriteria = scanner.nextInt();
+//    scanner.nextLine(); // Consume newline character
+
+    // Call the method to search based on the criteria
+//    searchEventType(searchCriteria, eventUI); // Pass `this` to represent the current instance of `EventManagementUI`
 }
-   
+
+// Method to search events based on criteria
+//public void searchEventType(int searchCriteria, EventManagementUI eventUI) {
+//    switch (searchCriteria) {
+//        case 1:
+//            // Search by Event ID
+//            String eventId = eventUI.getSearchKeyword("Enter Event ID: ");
+//            Event event = eventMap.get(eventId.toUpperCase()); // Convert to uppercase to match stored IDs
+//            if (event != null) {
+//                eventUI.displayEventDetails(event);
+//            } else {
+//                System.out.println("Event not found.");
+//            }
+//            break;
+//        case 2:
+//            // Search by Event Name
+//            String eventName = eventUI.getSearchKeyword("Enter Event Name: ");
+//            searchAndDisplayEventsByField("Event Name", eventName);
+//            break;
+//        case 3:
+//            // Search by Event Address
+//            String eventAddress = eventUI.getSearchKeyword("Enter Event Address: ");
+//            searchAndDisplayEventsByField("Event Address", eventAddress);
+//            break;
+//        case 4:
+//            // Search by Event Organizer Name
+//            String organizerName = eventUI.getSearchKeyword("Enter Event Organizer Name: ");
+//            searchAndDisplayEventsByField("Event Organizer Name", organizerName);
+//            break;
+//        case 5:
+//            // Search by Event Type
+//            String eventType = eventUI.getSearchKeyword("Enter Event Type: ");
+//            searchAndDisplayEventsByField("Event Type", eventType);
+//            break;
+//        default:
+//            System.out.println("Invalid choice.");
+//            break;
+//    }
+//}
+
+  
+//     private void searchAndDisplayEventsByField(String field, String keyword) {
+//    boolean found = false; // Flag to check if any events are found
+//  ArrayList<Event> eventList = new ArrayList<>();
+//        // Using enhanced for-each loop
+//        for (Event event : eventList) {
+//              boolean match = false;
+//        switch (field) {
+//            case "Event Name":
+//                match = event.getEventName().toLowerCase().contains(keyword.toLowerCase());
+//                break;
+//            case "Event Address":
+//                match = event.getEventAddress().toLowerCase().contains(keyword.toLowerCase());
+//                break;
+//            case "Event Organizer Name":
+//                match = event.getEventOrganizerName().toLowerCase().contains(keyword.toLowerCase());
+//                break;
+//            case "Event Type":
+//                match = event.getEventType().toString().toLowerCase().contains(keyword.toLowerCase());
+//                break;
+//        }
+//        if (match) {
+//            displayEventDetails(event);
+//            found = true;
+//        }
+//    }
+//
+//    if (!found) {
+//        System.out.println("No events found matching the criteria.");
+//    }
+//}
+//     
+    // Method to display event details
 // Method to get the event type from the user
     public EventType getEventType() {
         System.out.println("Select Event Type to search:");
