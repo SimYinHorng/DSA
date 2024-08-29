@@ -91,7 +91,9 @@ public class VolunteerManagementUI {
     }
     
     public void displayVolunteerDetails(Volunteer volunteer) {
+        System.out.println("--------------------------------------------------------------");
         System.out.println("Volunteer Details");
+        System.out.println("--------------------------------------------------------------");
         System.out.println("Volunteer ID            : " + volunteer.getVolunteerId());
         System.out.println("Volunteer Name          : " + volunteer.getName());
         System.out.println("Volunteer Email         : " + volunteer.getEmail());
@@ -100,6 +102,7 @@ public class VolunteerManagementUI {
         System.out.println("Volunteer Date Of Birth : " + volunteer.getDateOfBirth());
         System.out.println("Volunteer Gender        : " + volunteer.getGender());
         System.out.println("Volunteer Category      : " + volunteer.getCategory());
+        System.out.println("--------------------------------------------------------------\n");
     }
     
     public String enterVolunteerName() {
