@@ -1,17 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
- * Represents a Donation entity
+ * Represents a Donation entity.
  */
-public class Donation implements Serializable {
+public class Donation implements Serializable, Comparable<Donation> {
 
     private static int nextDonationId = 1;
     private int donationId;
@@ -114,5 +111,9 @@ public class Donation implements Serializable {
     public int hashCode() {
         return Objects.hash(donationId, donorId, doneeId, amount, description, donationDate);
     }
+
+    @Override
+    public int compareTo(Donation other) {
+        return Integer.compare(this.donationId, other.donationId);
+    }
 }
- 
