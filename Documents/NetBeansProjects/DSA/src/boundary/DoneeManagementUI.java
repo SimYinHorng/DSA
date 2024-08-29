@@ -3,7 +3,6 @@ package boundary;
 import adt.ArrayList;
 import adt.HashMap;
 import entity.Donee;
-import entity.Donor;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -13,7 +12,6 @@ import java.util.Scanner;
 import utility.DoneeCategory;
 import utility.DoneeStatus;
 import utility.MessageUI;
-import static utility.MessageUI.displayDonorHeader;
 import static utility.MessageUI.displayInvalidChoiceMessage;
 import static utility.MessageUI.enterToContinue;
 import static utility.MessageUI.line;
@@ -356,21 +354,23 @@ public class DoneeManagementUI {
         line(205);
     }
 
-    public void showDoneeSearchMenu(HashMap<Integer, Donee> doneeMap) {
+    public ArrayList<Donee> showDoneeSearchMenu(HashMap<Integer, Donee> doneeMap) {
         this.doneeMap = doneeMap;
+        ArrayList<Donee> resultList = null;
 
         boolean flag = false;
 
         do {
             System.out.println("How would you like to search");
-            System.out.println("1. Name");
-            System.out.println("2. Email");
-            System.out.println("3. Phone Number");
-            System.out.println("4. Address");
-            System.out.println("5. Category");
-            System.out.println("6. Status");
-            System.out.println("7. Age");
-            System.out.println("8. Description");
+            System.out.println("1. ID");
+            System.out.println("2. Name");
+            System.out.println("3. Email");
+            System.out.println("4. Phone Number");
+            System.out.println("5. Address");
+            System.out.println("6. Category");
+            System.out.println("7. Status");
+            System.out.println("8. Age");
+            System.out.println("9. Description");
 
             if (scanner.hasNextInt()) {
                 int searchInput = scanner.nextInt();
@@ -378,38 +378,47 @@ public class DoneeManagementUI {
 
                 switch (searchInput) {
                     case 1:
-                        System.out.print("Enter Name: ");
-                        String name = scanner.nextLine();
+                        System.out.print("Enter ID: ");
+                        int id = scanner.nextInt();
+                        scanner.nextLine();
                         MessageUI.displayDoneeHeader();
-                        searchByName(name);
+                        resultList = searchById(id);
                         flag = true;
                         break;
 
                     case 2:
-                        System.out.print("Enter Email: ");
-                        String email = scanner.nextLine();
+                        System.out.print("Enter Name: ");
+                        String name = scanner.nextLine();
                         MessageUI.displayDoneeHeader();
-                        searchByEmail(email);
+                        resultList = searchByName(name);
                         flag = true;
                         break;
 
                     case 3:
-                        System.out.print("Enter Phone Number: ");
-                        String phoneNo = scanner.nextLine();
+                        System.out.print("Enter Email: ");
+                        String email = scanner.nextLine();
                         MessageUI.displayDoneeHeader();
-                        searchByPhoneNo(phoneNo);
+                        resultList = searchByEmail(email);
                         flag = true;
                         break;
 
                     case 4:
-                        System.out.print("Enter Address: ");
-                        String address = scanner.nextLine();
+                        System.out.print("Enter Phone Number: ");
+                        String phoneNo = scanner.nextLine();
                         MessageUI.displayDoneeHeader();
-                        searchByAddress(address);
+                        resultList = searchByPhoneNo(phoneNo);
                         flag = true;
                         break;
 
                     case 5:
+                        System.out.print("Enter Address: ");
+                        String address = scanner.nextLine();
+                        MessageUI.displayDoneeHeader();
+                        resultList = searchByAddress(address);
+                        flag = true;
+                        break;
+
+                    case 6:
                         System.out.println("Select Category: ");
                         System.out.println("1. Individual ");
                         System.out.println("2. Organization");
@@ -422,60 +431,19 @@ public class DoneeManagementUI {
                             switch (catChoice) {
                                 case 1:
                                     MessageUI.displayDoneeHeader();
-                                    searchByCategory("INDIVIDUAL");
+                                    resultList = searchByCategory("INDIVIDUAL");
                                     flag = true;
                                     break;
 
                                 case 2:
                                     MessageUI.displayDoneeHeader();
-                                    searchByCategory("ORGANIZATION");
+                                    resultList = searchByCategory("ORGANIZATION");
                                     flag = true;
                                     break;
 
                                 case 3:
                                     MessageUI.displayDoneeHeader();
-                                    searchByCategory("FAMILY");
-                                    flag = true;
-                                    break;
-
-                                default:
-                                    displayInvalidChoiceMessage();
-                                    break;
-                            }
-                        } else {
-                            displayInvalidChoiceMessage();
-                            scanner.next();
-                        }
-
-                        flag = true;
-                        break;
-
-                    case 6:
-                        System.out.println("Select Status: ");
-                        System.out.println("1. Active ");
-                        System.out.println("2. Inactive");
-                        System.out.println("3. Suspended");
-
-                        if (scanner.hasNextInt()) {
-                            int statusChoice = scanner.nextInt();
-                            scanner.nextLine();
-
-                            switch (statusChoice) {
-                                case 1:
-                                    MessageUI.displayDoneeHeader();
-                                    searchByStatus("ACTIVE");
-                                    flag = true;
-                                    break;
-
-                                case 2:
-                                    MessageUI.displayDoneeHeader();
-                                    searchByStatus("INACTIVE");
-                                    flag = true;
-                                    break;
-
-                                case 3:
-                                    MessageUI.displayDoneeHeader();
-                                    searchByStatus("SUSPENDED");
+                                    resultList = searchByCategory("FAMILY");
                                     flag = true;
                                     break;
 
@@ -492,18 +460,59 @@ public class DoneeManagementUI {
                         break;
 
                     case 7:
-                        System.out.print("Enter Age: ");
-                        int age = scanner.nextInt();
-                        MessageUI.displayDoneeHeader();
-                        searchByAge(age);
+                        System.out.println("Select Status: ");
+                        System.out.println("1. Active ");
+                        System.out.println("2. Inactive");
+                        System.out.println("3. Suspended");
+
+                        if (scanner.hasNextInt()) {
+                            int statusChoice = scanner.nextInt();
+                            scanner.nextLine();
+
+                            switch (statusChoice) {
+                                case 1:
+                                    MessageUI.displayDoneeHeader();
+                                    resultList = searchByStatus("ACTIVE");
+                                    flag = true;
+                                    break;
+
+                                case 2:
+                                    MessageUI.displayDoneeHeader();
+                                    resultList = searchByStatus("INACTIVE");
+                                    flag = true;
+                                    break;
+
+                                case 3:
+                                    MessageUI.displayDoneeHeader();
+                                    resultList = searchByStatus("SUSPENDED");
+                                    flag = true;
+                                    break;
+
+                                default:
+                                    displayInvalidChoiceMessage();
+                                    break;
+                            }
+                        } else {
+                            displayInvalidChoiceMessage();
+                            scanner.next();
+                        }
+
                         flag = true;
                         break;
 
                     case 8:
+                        System.out.print("Enter Age: ");
+                        int age = scanner.nextInt();
+                        MessageUI.displayDoneeHeader();
+                        resultList = searchByAge(age);
+                        flag = true;
+                        break;
+
+                    case 9:
                         System.out.print("Enter Description: ");
                         String description = scanner.nextLine();
                         MessageUI.displayDoneeHeader();
-                        searchByDescription(description);
+                        resultList = searchByDescription(description);
                         flag = true;
                         break;
 
@@ -516,18 +525,27 @@ public class DoneeManagementUI {
                 scanner.next();
             }
         } while (!flag);
+
+        return resultList;
     }
 
-    private void searchById(int doneeId) {
+    private ArrayList<Donee> searchById(int doneeId) {
+        ArrayList<Donee> resultList = new ArrayList<>();
         Donee donee = doneeMap.get(doneeId);
         if (donee != null) {
             System.out.println(donee.toString());
+            resultList.add(donee);
         } else {
             System.out.println("No donee found with ID: " + doneeId);
         }
+
+        return resultList;
+
     }
 
-    private void searchByName(String name) {
+    private ArrayList<Donee> searchByName(String name) {
+        ArrayList<Donee> resultList = new ArrayList<>();
+
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
@@ -535,14 +553,18 @@ public class DoneeManagementUI {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getName().equalsIgnoreCase(name)) {
                 System.out.println(donee.toString());
+                resultList.add(donee);
                 foundCount++;
             }
         }
 
         System.out.println(foundCount + " donee(s) found with name: " + name);
+        return resultList;
     }
 
-    private void searchByEmail(String email) {
+    private ArrayList<Donee> searchByEmail(String email) {
+        ArrayList<Donee> resultList = new ArrayList<>();
+
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
@@ -550,29 +572,37 @@ public class DoneeManagementUI {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getEmail().equalsIgnoreCase(email)) {
                 System.out.println(donee.toString());
+                resultList.add(donee);
                 foundCount++;
             }
         }
 
         System.out.println(foundCount + " donee(s) found with email: " + email);
+        return resultList;
     }
 
-    private void searchByPhoneNo(String phoneNo) {
+    private ArrayList<Donee> searchByPhoneNo(String phoneNo) {
+        ArrayList<Donee> resultList = new ArrayList<>();
+
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getPhoneNo().equalsIgnoreCase(phoneNo)) {
-               System.out.println(donee.toString());
+                System.out.println(donee.toString());
+                resultList.add(donee);
                 foundCount++;
             }
         }
 
         System.out.println(foundCount + " donee(s) found with phone number: " + phoneNo);
+        return resultList;
     }
 
-    private void searchByAddress(String address) {
+    private ArrayList<Donee> searchByAddress(String address) {
+        ArrayList<Donee> resultList = new ArrayList<>();
+
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
@@ -580,14 +610,18 @@ public class DoneeManagementUI {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getAddress().contains(address)) {
                 System.out.println(donee.toString());
+                resultList.add(donee);
                 foundCount++;
             }
         }
 
         System.out.println(foundCount + " donee(s) found with address: " + address);
+        return resultList;
     }
 
-    private void searchByCategory(String category) {
+    private ArrayList<Donee> searchByCategory(String category) {
+        ArrayList<Donee> resultList = new ArrayList<>();
+
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
@@ -595,14 +629,18 @@ public class DoneeManagementUI {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getCategory().toString().equalsIgnoreCase(category)) {
                 System.out.println(donee.toString());
+                resultList.add(donee);
                 foundCount++;
             }
         }
 
         System.out.println(foundCount + " donee(s) found with category: " + category);
+        return resultList;
     }
 
-    private void searchByStatus(String status) {
+    private ArrayList<Donee> searchByStatus(String status) {
+        ArrayList<Donee> resultList = new ArrayList<>();
+
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
@@ -610,14 +648,18 @@ public class DoneeManagementUI {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getStatus().toString().equalsIgnoreCase(status)) {
                 System.out.println(donee.toString());
+                resultList.add(donee);
                 foundCount++;
             }
         }
 
         System.out.println(foundCount + " donee(s) found with status: " + status);
+        return resultList;
     }
 
-    private void searchByAge(int age) {
+    private ArrayList<Donee> searchByAge(int age) {
+        ArrayList<Donee> resultList = new ArrayList<>();
+
         int foundCount = 0;
         LocalDate today = LocalDate.now();
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
@@ -627,14 +669,18 @@ public class DoneeManagementUI {
             int doneeAge = today.getYear() - donee.getDateOfBirth().getYear();
             if (doneeAge == age) {
                 System.out.println(donee.toString());
+                resultList.add(donee);
                 foundCount++;
             }
         }
 
         System.out.println(foundCount + " donee(s) found with age: " + age);
+        return resultList;
     }
 
-    private void searchByDescription(String description) {
+    private ArrayList<Donee> searchByDescription(String description) {
+        ArrayList<Donee> resultList = new ArrayList<>();
+
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
@@ -642,11 +688,42 @@ public class DoneeManagementUI {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getNeedsDescription().contains(description)) {
                 System.out.println(donee.toString());
+                resultList.add(donee);
                 foundCount++;
             }
         }
 
         System.out.println(foundCount + " donee(s) found with description: " + description);
+        return resultList;
+    }
+
+    public int selectDoneeAction() {
+        int selectInput = -1;
+        boolean flag = false;
+
+        do {
+            System.out.println("What would you like to do?");
+            System.out.println("1. Edit");
+            System.out.println("2. Remove");
+            System.out.println("3. View Donations Made");
+            System.out.println("0. Cancel");
+
+            if (scanner.hasNextInt()) {
+                selectInput = scanner.nextInt();
+                scanner.nextLine(); 
+
+                if (selectInput >= 0 && selectInput <= 3) {
+                    flag = true; 
+                } else {
+                    displayInvalidChoiceMessage();
+                }
+            } else {
+                displayInvalidChoiceMessage();
+                scanner.next(); 
+            }
+        } while (!flag);
+
+        return selectInput;
     }
 
 }
