@@ -12,6 +12,7 @@ import utility.DonorType;
 import static utility.MessageUI.displayDonorHeader;
 import static utility.MessageUI.line;
 import dao.DonorDAO;
+import java.util.InputMismatchException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import utility.DonorCategory;
@@ -28,20 +29,32 @@ public class DonorManagementUI {
     Scanner scanner = new Scanner(System.in);
 
     public int getMenuChoice() {
-        System.out.println("DONOR MAIN MENU");
-        System.out.println("1. Add new Donor");
-        System.out.println("2. Remove a Donor");
-        System.out.println("3. Update Donor Details");
-        System.out.println("4. Search Donor");
-        System.out.println("5. List Donors with All donations");
-        System.out.println("6. Filter Donor by Criteria");
-        System.out.println("7. Categorise Donor");
-        System.out.println("8. Generate Report");
-        System.out.println("0. Quit");
-        System.out.print("Enter choice: ");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-        System.out.println();
+        boolean correctInput = false;
+        int choice;
+        do {
+            System.out.println("DONOR MAIN MENU");
+            System.out.println("1. Add new Donor");
+            System.out.println("2. Remove a Donor");
+            System.out.println("3. Update Donor Details");
+            System.out.println("4. Search Donor");
+            System.out.println("5. List Donors with All donations");
+            System.out.println("6. Filter Donor by Criteria");
+            System.out.println("7. Categorise Donor");
+            System.out.println("8. Generate Report");
+            System.out.println("0. Quit");
+            System.out.print("Enter choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+            System.out.println();
+
+            if (choice >= 0 && choice <= 8) {
+                correctInput = true;
+            } else {
+                displayInvalidChoiceMessage();
+            }
+
+        } while (!correctInput);
+
         return choice;
     }
 
@@ -83,7 +96,9 @@ public class DonorManagementUI {
     }
 
     public void displayDonorDetails(Donor donor) {
+        MessageUI.line(15);
         System.out.println("Donor Details");
+        MessageUI.line(15);
         System.out.println("Donor ID            : " + donor.getDonorId());
         System.out.println("Donor Name          : " + donor.getName());
         System.out.println("Donor Email         : " + donor.getEmail());
@@ -133,7 +148,8 @@ public class DonorManagementUI {
         String phoneNo;
         String regex = "^(0\\d-\\d{8}|01\\d-\\d{8})$";
         do {
-            System.out.print("Enter Donor Phone No: ");
+            System.out.println("Example: (01x-xxxxxxxx)/ (0x-xxxxxxxx)");
+            System.out.print("Enter Donor Phone No : ");
             phoneNo = scanner.nextLine();
             if (!phoneNo.matches(regex)) {
                 System.out.println("Invalid Phone Number!!!");
@@ -231,13 +247,35 @@ public class DonorManagementUI {
         System.out.println("Exit From Donor Management System");
     }
 
+    public int inputDonorID() {
+        boolean validInput = false;
+        int id = -1;
+        do {
+            System.out.print("Donor ID: ");
+            try {
+                id = scanner.nextInt();
+                validInput = true;
+            } catch (InputMismatchException ex) {
+                scanner.nextLine();
+                displayInvalidChoiceMessage();
+
+            }
+        } while (!validInput);
+
+        return id;
+    }
+
     public int confirmationMessage() {
         boolean correctInput = false;
-        int input;
+        int input = -1;
         do {
             System.out.println("1-Yes 2-No 0-Exit");
             System.out.print("Enter No:");
-            input = scanner.nextInt();
+            try {
+                input = scanner.nextInt();
+            } catch (InputMismatchException ex) {
+                scanner.nextLine();
+            }
             if (input >= 0 && input <= 2) {
                 correctInput = true;
             } else {

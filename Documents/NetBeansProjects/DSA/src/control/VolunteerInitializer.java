@@ -1,13 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package control;
 
+import adt.HashMap;
+import dao.VolunteerDAO;
+import entity.Volunteer;
+
 /**
- *
- * @author user
+ * Initializes and manages volunteers in the charity event management system.
  */
 public class VolunteerInitializer {
-    
+
 }

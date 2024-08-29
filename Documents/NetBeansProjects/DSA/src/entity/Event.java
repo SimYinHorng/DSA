@@ -12,8 +12,8 @@ import utility.EventType;
  */
 public class Event implements Serializable{
 
-    private static int nextEventId = 1000;
-    private int eventId;
+    private static int nextEventId = 1;
+    private String eventId;
     private String eventName;
     private String eventAddress;
     private String eventStartDate;
@@ -27,13 +27,18 @@ public class Event implements Serializable{
     private ArrayList<Volunteer> participantList;
 
     public Event() {
-        this.eventId = nextEventId++;
+        this.eventId = generateEventId();
     }
+      // Method to generate the formatted event ID
+    private String generateEventId() {
+        return String.format("E%04d", nextEventId++); // e0001, e0002, etc.
+    }
+
 
     public Event(String eventName, String eventAddress, String eventStartDate, String eventEndDate,
                  String eventStartTime, String eventEndTime, String eventOrganizerName,
                  String eventOrganizerEmail, String eventOrganizerPhoneNo, EventType eventType) {
-        this.eventId = nextEventId++;
+        this.eventId = generateEventId();
         this.eventName = eventName;
         this.eventAddress = eventAddress;
         this.eventStartDate = eventStartDate;
@@ -56,11 +61,11 @@ public class Event implements Serializable{
         Event.nextEventId = nextEventId;
     }
 
-    public int getEventId() {
+    public String getEventId() {
         return eventId;
     }
 
-    public void setEventId(int eventId) {
+    public void setEventId(String eventId) {
         this.eventId = eventId;
     }
 

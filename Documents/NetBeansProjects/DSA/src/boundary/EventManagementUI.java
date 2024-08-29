@@ -1,5 +1,9 @@
 package boundary;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import adt.HashMap;
 import entity.Event;
 import entity.Volunteer;
@@ -13,12 +17,14 @@ import static utility.MessageUI.enterToContinue;
 
 /**
  * UI class for managing events.
- * 
+ *
  * Author: Terence
  */
 public class EventManagementUI {
 
     Scanner scanner = new Scanner(System.in);
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     public int getMenuChoice() {
         System.out.println("EVENT MAIN MENU");
@@ -38,16 +44,13 @@ public class EventManagementUI {
         return choice;
     }
 
-
-
-
     public Event inputEventDetails() {
         String eventName = inputEventName();
         String eventAddress = inputEventAddress();
         String eventStartDate = inputEventStartDate();
-        String eventEndDate = inputEventEndDate();
+        String eventEndDate = inputEventEndDate(eventStartDate);
         String eventStartTime = inputEventStartTime();
-        String eventEndTime = inputEventEndTime();
+        String eventEndTime = inputEventEndTime(eventStartTime);
         String eventOrganizerName = inputEventOrganizerName();
         String eventOrganizerEmail = inputEventOrganizerEmail();
         String eventOrganizerPhoneNo = inputEventOrganizerPhoneNo();
@@ -56,8 +59,6 @@ public class EventManagementUI {
         return new Event(eventName, eventAddress, eventStartDate, eventEndDate, eventStartTime, eventEndTime, eventOrganizerName, eventOrganizerEmail, eventOrganizerPhoneNo, eventType);
     }
 
-    
-    
     public String inputEventName() {
         System.out.print("Enter Event Name: ");
         String eventName = scanner.nextLine();
@@ -79,46 +80,98 @@ public class EventManagementUI {
     }
 
     public String inputEventStartDate() {
-        System.out.print("Enter Event Start Date (YYYY-MM-DD): ");
-        String eventStartDate = scanner.nextLine();
-        while (!isValidDate(eventStartDate)) {
-            System.out.print("Invalid date format. Enter Event Start Date (YYYY-MM-DD): ");
+        String eventStartDate;
+        LocalDate parsedDate = null;
+
+        do {
+            System.out.print("Enter Event Start Date (YYYY-MM-DD): ");
             eventStartDate = scanner.nextLine();
-        }
+            parsedDate = parseDate(eventStartDate);
+
+            if (parsedDate == null) {
+                System.out.println("Invalid date format. Expected format is YYYY-MM-DD.");
+            }
+        } while (parsedDate == null);
+
         return eventStartDate;
     }
 
-    public String inputEventEndDate() {
-        System.out.print("Enter Event End Date (YYYY-MM-DD): ");
-        String eventEndDate = scanner.nextLine();
-        while (!isValidDate(eventEndDate)) {
-            System.out.print("Invalid date format. Enter Event End Date (YYYY-MM-DD): ");
+    public String inputEventEndDate(String eventStartDate) {
+        String eventEndDate;
+        LocalDate parsedStartDate = parseDate(eventStartDate);
+        LocalDate parsedEndDate = null;
+
+        do {
+            System.out.print("Enter Event End Date (YYYY-MM-DD): ");
             eventEndDate = scanner.nextLine();
-        }
+            parsedEndDate = parseDate(eventEndDate);
+
+            if (parsedEndDate == null) {
+                System.out.println("Invalid date format. Expected format is YYYY-MM-DD.");
+            } else if (parsedEndDate.isBefore(parsedStartDate)) {
+                System.out.println("End date cannot be before start date.");
+                parsedEndDate = null;
+            }
+        } while (parsedEndDate == null);
+
         return eventEndDate;
     }
 
-    public String inputEventStartTime() {
-        System.out.print("Enter Event Start Time (HH:MM): ");
-        String eventStartTime = scanner.nextLine();
-        while (!isValidTime(eventStartTime)) {
-            System.out.print("Invalid time format. Enter Event Start Time (HH:MM): ");
-            eventStartTime = scanner.nextLine();
+    private LocalDate parseDate(String date) {
+        try {
+            return LocalDate.parse(date, DATE_FORMATTER);
+        } catch (DateTimeParseException e) {
+            return null;
         }
+    }
+
+    public String inputEventStartTime() {
+        String eventStartTime;
+        LocalTime parsedTime = null;
+
+        do {
+            System.out.print("Enter Event Start Time (HH:MM): ");
+            eventStartTime = scanner.nextLine();
+            parsedTime = parseTime(eventStartTime);
+
+            if (parsedTime == null) {
+                System.out.println("Invalid time format. Expected format is HH:MM.");
+            }
+        } while (parsedTime == null);
+
         return eventStartTime;
     }
 
-    public String inputEventEndTime() {
-        System.out.print("Enter Event End Time (HH:MM): ");
-        String eventEndTime = scanner.nextLine();
-        while (!isValidTime(eventEndTime)) {
-            System.out.print("Invalid time format. Enter Event End Time (HH:MM): ");
+    public String inputEventEndTime(String eventStartTime) {
+        String eventEndTime;
+        LocalTime parsedStartTime = parseTime(eventStartTime);
+        LocalTime parsedEndTime = null;
+
+        do {
+            System.out.print("Enter Event End Time (HH:MM): ");
             eventEndTime = scanner.nextLine();
-        }
+            parsedEndTime = parseTime(eventEndTime);
+
+            if (parsedEndTime == null) {
+                System.out.println("Invalid time format. Expected format is HH:MM.");
+            } else if (parsedEndTime.isBefore(parsedStartTime)) {
+                System.out.println("End time cannot be before start time.");
+                parsedEndTime = null;
+            }
+        } while (parsedEndTime == null);
+
         return eventEndTime;
     }
 
-    private String inputEventOrganizerName() {
+    private LocalTime parseTime(String time) {
+        try {
+            return LocalTime.parse(time, TIME_FORMATTER);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+    }
+
+    public String inputEventOrganizerName() {
         System.out.print("Enter Organizer Name: ");
         String eventOrganizerName = scanner.nextLine();
         while (eventOrganizerName.isEmpty()) {
@@ -128,7 +181,7 @@ public class EventManagementUI {
         return eventOrganizerName;
     }
 
-    private String inputEventOrganizerEmail() {
+    public String inputEventOrganizerEmail() {
         System.out.print("Enter Organizer Email: ");
         String eventOrganizerEmail = scanner.nextLine();
         while (!isValidEmail(eventOrganizerEmail)) {
@@ -138,7 +191,7 @@ public class EventManagementUI {
         return eventOrganizerEmail;
     }
 
-    private String inputEventOrganizerPhoneNo() {
+    public String inputEventOrganizerPhoneNo() {
         System.out.print("Enter Organizer Phone No: ");
         String eventOrganizerPhoneNo = scanner.nextLine();
         while (!isValidPhoneNumber(eventOrganizerPhoneNo)) {
@@ -148,29 +201,19 @@ public class EventManagementUI {
         return eventOrganizerPhoneNo;
     }
 
-
     // Validation methods
-    private boolean isValidDate(String date) {
-        // Add validation logic for the date format (YYYY-MM-DD)
-        return date.matches("\\d{4}-\\d{2}-\\d{2}");
-    }
-
-    private boolean isValidTime(String time) {
-        // Add validation logic for the time format (HH:MM)
-        return time.matches("\\d{2}:\\d{2}");
-    }
-
+   
+// Helper method to validate email format
     private boolean isValidEmail(String email) {
-        // Simple email validation pattern
-        return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+        return email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
     }
 
-    private boolean isValidPhoneNumber(String phoneNo) {
-        // Simple phone number validation (assuming 10-15 digits)
-        return phoneNo.matches("\\d{10,15}");
+// Helper method to validate phone number format
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        return phoneNumber.matches("^\\d{10}$");
     }
 
-    private EventType inputEventType() {
+    public EventType inputEventType() {
         boolean validInput = false;
         int input;
         EventType type = null;
@@ -210,16 +253,16 @@ public class EventManagementUI {
         return type;
     }
 
-    public void listAllEvents(HashMap<Integer, Event> eventMap) {
+    public void listAllEvents(HashMap<String, Event> eventMap) {
+        // Get an iterator over the key set of the HashMap
         Iterator keyIt = eventMap.keySet().getIterator();
 
         displayEventHeader();
         while (keyIt.hasNext()) {
-            System.out.println(eventMap.get((Integer)keyIt.next()).toString());
-        }
+           System.out.println(eventMap.get((String) keyIt.next()).toString());
+         }
+        line(305);
     }
-    
-    
 
     public void displayEventDetails(Event event) {
         System.out.println("Event Details");
@@ -303,9 +346,37 @@ public class EventManagementUI {
         return input;
     }
 
-    public int inputEventId() {
+    public String inputEventId() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Input Event Id:");
-        scanner.nextLine();
-        return 0;
+
+        // Reading the input as a string and then converting it to an integer
+        String eventId = scanner.nextLine();
+
+        return eventId;
     }
+
+    // Method to display the search menu
+    public void displaySearchMenu() {
+        System.out.println("Search by:");
+        System.out.println("1. Event ID");
+        System.out.println("2. Event Name");
+        System.out.println("3. Event Address");
+        System.out.println("4. Event Organizer Name");
+        System.out.println("5. Event Type");
+        System.out.print("Enter choice: ");
+    }
+
+    // Method to get the search criteria from the user
+    public int getSearchCriteria() {
+        return scanner.nextInt();
+    }
+
+    // Method to get a keyword from the user
+    public String getSearchKeyword(String keywordType) {
+        System.out.print("Enter " + keywordType + " keyword: ");
+        return scanner.nextLine().toLowerCase();
+    }
+
+    
 }

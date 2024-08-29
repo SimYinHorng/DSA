@@ -14,7 +14,7 @@ import java.util.Iterator;
  * @param <V>
  */
 public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
-
+//test
     private Node<K, V>[] buckets;
     private int size;
     private int capacity;
@@ -36,17 +36,20 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
     }
 
     @Override
-    public boolean put(K key, V value) {
+    public V put(K key, V value) {
         int index = hash(key);
         Node<K, V> node = buckets[index];
 
+        //check if got collision
         if (node == null) {
             buckets[index] = new Node<>(key, value);
             size++;
         } else {
             while (node != null) {
                 if (node.key.equals(key)) {
-                    return false; //already got the same key
+                    V oldValue = node.value;
+                    node.value = value;
+                    return oldValue; //to represent replace 
                 }
                 if (node.next == null) {
                     break;
@@ -61,7 +64,7 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
             resize();
         }
 
-        return true;
+        return null;
     }
 
     @Override
