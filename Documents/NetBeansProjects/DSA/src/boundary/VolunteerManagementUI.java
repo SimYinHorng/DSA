@@ -87,13 +87,13 @@ public class VolunteerManagementUI {
     
     public void displayVolunteerDetails(Volunteer volunteer) {
         System.out.println("Volunteer Details");
-        System.out.println("Donor ID            : " + volunteer.getVolunteerId());
-        System.out.println("Donor Name          : " + volunteer.getName());
-        System.out.println("Donor Email         : " + volunteer.getEmail());
-        System.out.println("Donor Phone No      : " + volunteer.getPhoneNo());
-        System.out.println("Donor Address       : " + volunteer.getAddress());
-        System.out.println("Donor Type          : " + volunteer.getType());
-        System.out.println("Donor Category      : " + volunteer.getCategory());
+        System.out.println("Volunteer ID            : " + volunteer.getVolunteerId());
+        System.out.println("Volunteer Name          : " + volunteer.getName());
+        System.out.println("Volunteer Email         : " + volunteer.getEmail());
+        System.out.println("VOlunteer Phone No      : " + volunteer.getPhoneNo());
+        System.out.println("Volunteer Address       : " + volunteer.getAddress());
+        System.out.println("Volunteer Type          : " + volunteer.getType());
+        System.out.println("Volunteer Category      : " + volunteer.getCategory());
     }
     
     public String enterVolunteerName() {
@@ -193,7 +193,7 @@ public class VolunteerManagementUI {
         do {
             System.out.println("1. Individual");
             System.out.println("2. Organization ");
-            System.out.print("Enter Donor Category: ");
+            System.out.print("Enter Volunteer Category: ");
             input = scanner.nextInt();
 
             switch (input) {

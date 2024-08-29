@@ -11,6 +11,8 @@ import entity.Volunteer;
 import static utility.MessageUI.displayInvalidChoiceMessage;
 import utility.VolunteerCategory;
 import utility.VolunteerType;
+import java.util.Scanner;
+
 
 
 /**
@@ -18,6 +20,7 @@ import utility.VolunteerType;
  * @author user
  */
 public class VolunteerManagement {
+    Scanner scanner = new Scanner(System.in);
     private HashMap<Integer, Volunteer> volunteerMap = new HashMap<>();
     private VolunteerDAO volunteerDAO = new VolunteerDAO();
     private VolunteerManagementUI volunteerUI = new VolunteerManagementUI();
@@ -38,9 +41,26 @@ public class VolunteerManagement {
                     addNewVolunteer();
                     break;
                 case 2:
-                    displayVolunteer();
+                    removeVolunteer();
                     break;
-
+                case 3: 
+                    searchVolunteer();
+                    break;
+                case 4:
+                    assignVolunteer();
+                    break;
+                case 5:
+                    searchEventUnderVolunteer();
+                    break;
+                case 6:
+                    listVolunteer();
+                    break;
+                case 7:
+                    filterVolunteer();
+                    break;
+                case 8:
+                    generateReport();
+                    break;
                 default:
                     displayInvalidChoiceMessage();
             }
@@ -97,10 +117,45 @@ public class VolunteerManagement {
         } while (!exit);
     }
 
-    public void displayVolunteer() {
+    private void removeVolunteer() {
+        System.out.print("Enter Volunteer ID to remove: ");
+        int volunteerId = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+    if (volunteerMap.containsKey(volunteerId)) {
+            System.out.println("Removing volunteer with ID: " + volunteerId);
+            volunteerMap.remove(volunteerId);
+            volunteerDAO.saveToFile(volunteerMap);
+            System.out.println("Volunteer removed successfully.");
+        } else {
+        System.out.println("No volunteer found with the given ID.");
+        }
+    }
+    
+    private void searchVolunteer() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    private void assignVolunteer() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    private void searchEventUnderVolunteer() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    public void listVolunteer() {
         volunteerUI.listAllVolunteer(volunteerMap);
     }
 
+    private void filterVolunteer() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    private void generateReport() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
     public static void main(String[] args) {
         VolunteerManagement productMaintenance = new VolunteerManagement();
         productMaintenance.runVolunteerManagement();
