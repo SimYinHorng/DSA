@@ -165,7 +165,7 @@ public class Donee implements Serializable {
     
     @Override
     public String toString() {
-        return String.format("|%-8d|%-25s|%-30s|%-15s|%-80s|%-12s|%-15s|%-80s|%-15s|%-15s|%-15s|%15d|", 
+        return String.format("|%-8d|%-15s|%-25s|%-15s|%-60s|%-12s|%-15s|%-50s|%-15s|%-17s|%-15s|%15d|", 
                              doneeId, name, email, phoneNo, address, category, dateOfBirth, needsDescription, registrationDate, lastAssistanceDate, status,
                              (!donationList.isEmpty() ? donationList.getNumberOfEntries() : 0));
     }

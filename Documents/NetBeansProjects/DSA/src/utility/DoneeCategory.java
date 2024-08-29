@@ -5,3 +5,4 @@ public enum DoneeCategory {
     ORGANIZATION,
     FAMILY
 }
+
