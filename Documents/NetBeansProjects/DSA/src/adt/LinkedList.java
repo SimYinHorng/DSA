@@ -1,8 +1,9 @@
 package adt;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
-public class LinkedList<T> implements ListInterface<T> {
+public class LinkedList<T> implements ListInterface<T>,Serializable {
 
     private Node firstNode;
     private int entryNum;

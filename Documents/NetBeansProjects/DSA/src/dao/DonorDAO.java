@@ -38,11 +38,10 @@ public class DonorDAO {
             ObjectOutputStream idStream = new ObjectOutputStream(new FileOutputStream(idFile));
             idStream.writeInt(Donor.getNextDonorId());
             idStream.close();
-//            System.out.println("Donor map saved successfully.");
         } catch (FileNotFoundException ex) {
             System.out.println("\nFile not found");
         } catch (IOException ex) {
-            System.out.println("\nCannot save to file");
+            System.out.println(ex);
         }
     }
 
@@ -58,12 +57,10 @@ public class DonorDAO {
             ObjectInputStream idStream = new ObjectInputStream(new FileInputStream(idFile));
             Donor.setNextDonorId(idStream.readInt());
             oiStream.close();
-
-//            System.out.println("Donor map retrieved successfully.");
         } catch (FileNotFoundException ex) {
             System.out.println("\nNo such file.");
         } catch (IOException ex) {
-            System.out.println("\nCannot read from file.");
+            System.out.println(ex);
         } catch (ClassNotFoundException ex) {
             System.out.println("\nClass not found.");
         }
