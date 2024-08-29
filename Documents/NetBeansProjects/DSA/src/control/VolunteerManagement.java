@@ -10,7 +10,7 @@ import dao.VolunteerDAO;
 import entity.Volunteer;
 import static utility.MessageUI.displayInvalidChoiceMessage;
 import utility.VolunteerCategory;
-import utility.VolunteerType;
+import utility.VolunteerGender;
 import java.util.Scanner;
 
 
@@ -78,6 +78,7 @@ public class VolunteerManagement {
                 case 1:
                     volunteerMap.put(newVolunteer.getVolunteerId(), newVolunteer);
                     volunteerDAO.saveToFile(volunteerMap);
+                    System.out.println("Volunteer added successfullt!!\n");
                     exit = true;
                     break;
                 case 2:
@@ -100,13 +101,18 @@ public class VolunteerManagement {
                             newVolunteer.setAddress(address);
                             break;
                         case 5:
-                            VolunteerType type = volunteerUI.enterVolunteerType();
-                            newVolunteer.setType(type);
+                            String dateOfBirth = volunteerUI.enterVolunteerDateOfBirth();
+                            newVolunteer.setDateOfBirth(dateOfBirth);
                             break;
                         case 6:
+                            VolunteerGender gender = volunteerUI.enterVolunteerGender();
+                            newVolunteer.setGender(gender);
+                            break;
+                        case 7:
                             VolunteerCategory cat = volunteerUI.enterVolunteerCategory();
                             newVolunteer.setCategory(cat);
                             break;
+                            
                     }
                     break;
                 case 0:
@@ -118,20 +124,43 @@ public class VolunteerManagement {
     }
 
     private void removeVolunteer() {
-        System.out.print("Enter Volunteer ID to remove: ");
-        int volunteerId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+    boolean continueRemoving = true;
 
-    if (volunteerMap.containsKey(volunteerId)) {
-            System.out.println("Removing volunteer with ID: " + volunteerId);
-            volunteerMap.remove(volunteerId);
-            volunteerDAO.saveToFile(volunteerMap);
-            System.out.println("Volunteer removed successfully.");
-        } else {
-        System.out.println("No volunteer found with the given ID.");
+    while (continueRemoving) {
+        volunteerUI.listAllVolunteer(volunteerMap);
+        int volunteerId;
+
+        while (true) {
+            System.out.print("Enter Volunteer ID to remove: ");
+            volunteerId = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            if (volunteerMap.containsKey(volunteerId)) {
+                // Prompt user and read input on the same line
+                System.out.print("Are you sure you want to remove the volunteer with ID: " + volunteerId + "? (Y/N): ");
+                String confirmation = scanner.nextLine().trim().toLowerCase();
+
+                if (confirmation.equals("y")) {
+                    volunteerMap.remove(volunteerId);
+                    volunteerDAO.saveToFile(volunteerMap);
+                    System.out.println("Volunteer removed successfully.\n");
+                    break; // Exit inner loop after successful removal
+                } else {
+                    System.out.println("Operation cancelled. No volunteer was removed.\n");
+                    break; // Exit inner loop if operation is cancelled
+                }
+            } else {
+                System.out.println("No volunteer found with the given ID. Please try again.\n");
+            }
         }
+
+        // Ask if the user wants to remove another volunteer
+        System.out.print("Do you want to remove another volunteer? (Y/N): ");
+        String removeMore = scanner.nextLine().trim().toLowerCase();
+        continueRemoving = removeMore.equals("y");
     }
-    
+}
+
     private void searchVolunteer() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }

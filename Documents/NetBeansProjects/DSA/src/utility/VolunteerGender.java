@@ -8,8 +8,7 @@ package utility;
  *
  * @author Eason Goh
  */
-public enum VolunteerType {
-    PUBLIC,
-    PRIVATE,
-    GOVERNMENT
+public enum VolunteerGender {
+    MALE,
+    FEMALE
 }

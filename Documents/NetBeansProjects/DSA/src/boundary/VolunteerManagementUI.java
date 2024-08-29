@@ -9,9 +9,9 @@ import entity.Volunteer;
 import java.util.Iterator;
 import java.util.Scanner;
 import utility.VolunteerCategory;
-import static utility.VolunteerCategory.INDIVIDUAL;
-import static utility.VolunteerCategory.ORGANIZATION;
-import utility.VolunteerType;
+import static utility.VolunteerCategory.HAVE_WORKING_EXPERIENCE;
+import static utility.VolunteerCategory.NO_WORKING_EXPERIENCE;
+import utility.VolunteerGender;
 import static utility.MessageUI.displayVolunteerHeader;
 import static utility.MessageUI.displayInvalidChoiceMessage;
 import static utility.MessageUI.enterToContinue;
@@ -26,7 +26,9 @@ public class VolunteerManagementUI {
     Scanner scanner = new Scanner(System.in);
     
     public int getMenuChoice(){
+        System.out.println("\n-------------------");
         System.out.println("VOLUNTEER MAIN MENU");
+        System.out.println("-------------------");
         System.out.println("1. Add new Volunteer");
         System.out.println("2. Remove a Volunteer");
         System.out.println("3. Search Volunteer");
@@ -52,20 +54,23 @@ public class VolunteerManagementUI {
         boolean correctInput = false;
         int choice;
         do {
+            System.out.println("\n-----------------------");
             System.out.println("Which Part Need to Edit");
+            System.out.println("-----------------------");
             System.out.println("1. Volunteer Name");
             System.out.println("2. Volunteer Email");
             System.out.println("3. Volunteer Phone No");
             System.out.println("4. Volunteer Address");
-            System.out.println("5. Volunteer Type ");
-            System.out.println("6. Volunteer Category");
+            System.out.println("5. Volunteer Date Of Birth");
+            System.out.println("6. Volunteer Gender ");
+            System.out.println("7. Volunteer Category");
             System.out.println("0. Quit");
             System.out.print("Enter choice: ");
             choice = scanner.nextInt();
             scanner.nextLine();
             System.out.println();
 
-            if (choice >= 0 && choice <= 6) {
+            if (choice >= 0 && choice <= 7) {
                 correctInput = true;
             } else {
                 displayInvalidChoiceMessage();
@@ -82,7 +87,7 @@ public class VolunteerManagementUI {
         while (keyIt.hasNext()) {
             System.out.println(volunteerMap.get((Integer) keyIt.next()).toString());
         }
-        line(205);
+        line(259);
     }
     
     public void displayVolunteerDetails(Volunteer volunteer) {
@@ -90,9 +95,10 @@ public class VolunteerManagementUI {
         System.out.println("Volunteer ID            : " + volunteer.getVolunteerId());
         System.out.println("Volunteer Name          : " + volunteer.getName());
         System.out.println("Volunteer Email         : " + volunteer.getEmail());
-        System.out.println("VOlunteer Phone No      : " + volunteer.getPhoneNo());
+        System.out.println("Volunteer Phone No      : " + volunteer.getPhoneNo());
         System.out.println("Volunteer Address       : " + volunteer.getAddress());
-        System.out.println("Volunteer Type          : " + volunteer.getType());
+        System.out.println("Volunteer Date Of Birth : " + volunteer.getDateOfBirth());
+        System.out.println("Volunteer Gender        : " + volunteer.getGender());
         System.out.println("Volunteer Category      : " + volunteer.getCategory());
     }
     
@@ -119,7 +125,7 @@ public class VolunteerManagementUI {
         String email;
         String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
         do {
-            System.out.print("Enter Donor Email: ");
+            System.out.print("Enter Volunteer Email: ");
             email = scanner.nextLine();
 
             if (!email.matches(regex)) {
@@ -138,7 +144,7 @@ public class VolunteerManagementUI {
             System.out.print("Enter Volunteer Phone No: ");
             phoneNo = scanner.nextLine();
             if (!phoneNo.matches(regex)) {
-                System.out.println("Invalid Phone Number with - !!!");
+                System.out.println("Invalid Phone Number format!!!");
                 enterToContinue();
             }
         } while (!phoneNo.matches(regex));
@@ -152,28 +158,38 @@ public class VolunteerManagementUI {
         return address;
     }
 
-    public VolunteerType enterVolunteerType() {
+    public String enterVolunteerDateOfBirth(){
+        String dateOfBirth;
+        String regex = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$";
+        do {
+            System.out.print("Enter Volunteer Date Of Birth [YYYY-MM-DD]: ");
+            dateOfBirth = scanner.nextLine();
+            if (!dateOfBirth.matches(regex)) {
+                System.out.println("Invalid Date Of Birth! Please enter in the format [YYYY-MM-DD].");
+                enterToContinue();
+            }
+        } while (!dateOfBirth.matches(regex));
+
+        return dateOfBirth;
+    }
+    
+    public VolunteerGender enterVolunteerGender() {
         boolean validInput = false;
         int input;
-        VolunteerType type = null;
+        VolunteerGender gender = null;
         do {
-            System.out.println("1. Public");
-            System.out.println("2. Private ");
-            System.out.println("3. Government ");
-            System.out.print("Enter Volunteer Type: ");
+            System.out.println("1. Male");
+            System.out.println("2. Female");
+            System.out.print("Enter Volunteer Gender: ");
             input = scanner.nextInt();
 
             switch (input) {
                 case 1:
-                    type = VolunteerType.PUBLIC;
+                    gender = VolunteerGender.MALE;
                     validInput = true;
                     break;
                 case 2:
-                    type = VolunteerType.PRIVATE;
-                    validInput = true;
-                    break;
-                case 3:
-                    type = VolunteerType.GOVERNMENT;
+                    gender = VolunteerGender.FEMALE;
                     validInput = true;
                     break;
                 default:
@@ -183,7 +199,7 @@ public class VolunteerManagementUI {
 
         } while (!validInput);
 
-        return type;
+        return gender;
     }
 
     public VolunteerCategory enterVolunteerCategory() {
@@ -191,18 +207,18 @@ public class VolunteerManagementUI {
         int input;
         VolunteerCategory category = null;
         do {
-            System.out.println("1. Individual");
-            System.out.println("2. Organization ");
+            System.out.println("1. Have working experience ");
+            System.out.println("2. No working experience ");
             System.out.print("Enter Volunteer Category: ");
             input = scanner.nextInt();
 
             switch (input) {
                 case 1:
-                    category = VolunteerCategory.INDIVIDUAL;
+                    category = VolunteerCategory.HAVE_WORKING_EXPERIENCE;
                     validInput = true;
                     break;
                 case 2:
-                    category = VolunteerCategory.ORGANIZATION;
+                    category = VolunteerCategory.NO_WORKING_EXPERIENCE;
                     validInput = true;
                     break;
                 default:
@@ -218,15 +234,11 @@ public class VolunteerManagementUI {
         String volunteerEmail = enterVolunteerEmail();
         String volunteerPhoneNo = enterVolunteerPhoneNo();
         String volunteerAddress = enterVolunteerAddress();
+        String volunteerDateOfBirth = enterVolunteerDateOfBirth();
+        VolunteerGender volunteerGender = enterVolunteerGender();
         VolunteerCategory volunteerCategory = enterVolunteerCategory();
-        switch (volunteerCategory) {
-            case INDIVIDUAL:
-                return new Volunteer(volunteerName, volunteerEmail, volunteerPhoneNo, volunteerAddress, volunteerEmail, VolunteerType.PRIVATE, volunteerCategory);
-            case ORGANIZATION:
-                VolunteerType volunteerType = enterVolunteerType();
-                return new Volunteer(volunteerName, volunteerEmail, volunteerPhoneNo, volunteerAddress, volunteerEmail, volunteerType, volunteerCategory);
-        }
-        return new Volunteer();
+   
+        return new Volunteer(volunteerName, volunteerEmail, volunteerPhoneNo, volunteerAddress, volunteerDateOfBirth, volunteerGender, volunteerCategory);
     }
 
     public static void displayExitMessage() {
@@ -247,19 +259,5 @@ public class VolunteerManagementUI {
             }
         } while (!correctInput);
         return input;
-    }
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    } 
 }
