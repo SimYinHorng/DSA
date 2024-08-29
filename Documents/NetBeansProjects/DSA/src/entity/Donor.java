@@ -5,6 +5,7 @@
 package entity;
 
 import adt.ArrayList;
+import adt.LinkedList;
 import java.io.Serializable;
 import java.util.Objects;
 import utility.DonorCategory;
@@ -24,7 +25,7 @@ public class Donor implements Serializable {
     private String address;
     private DonorType type; // public, private, government
     private DonorCategory category; // individual, organization
-    private ArrayList<Donation> donationList;
+    private LinkedList<Donation> donationList;
 
     public Donor() {
         this.donorId = nextDonorId++;
@@ -38,10 +39,10 @@ public class Donor implements Serializable {
         this.address = address;
         this.type = type;
         this.category = category;
-        this.donationList = new ArrayList<>();
+        this.donationList = new LinkedList<>();
     }
 
-    public Donor(String name, String email, String phoneNo, String address, String dateOfBirth, DonorType type, DonorCategory category,ArrayList<Donation> donationList) {
+    public Donor(String name, String email, String phoneNo, String address, String dateOfBirth, DonorType type, DonorCategory category,LinkedList<Donation> donationList) {
         this.donorId = nextDonorId++;
         this.name = name;
         this.email = email;
@@ -116,11 +117,11 @@ public class Donor implements Serializable {
         this.category = category;
     }
 
-    public ArrayList<Donation> getDonationList() {
+    public LinkedList<Donation> getDonationList() {
         return donationList;
     }
 
-    public void setDonationList(ArrayList<Donation> donationList) {
+    public void setDonationList(LinkedList<Donation> donationList) {
         this.donationList = donationList;
     }
 
