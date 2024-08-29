@@ -9,6 +9,7 @@ import entity.Donee;
 import java.util.Scanner;
 import utility.DoneeCategory;
 import static utility.MessageUI.displayInvalidChoiceMessage;
+import static utility.MessageUI.enterToContinue;
 
 public class DoneeManagement {
 
@@ -21,10 +22,12 @@ public class DoneeManagement {
     }
 
     public void runDoneeManagement() {
+        int choice;
 
-        int choice = doneeUI.showDoneeManagementMenu();
-
-        menuChoice(choice);
+        do {
+            choice = doneeUI.showDoneeManagementMenu();
+            menuChoice(choice);
+        } while (choice != 0);
 
     }
 
@@ -39,26 +42,14 @@ public class DoneeManagement {
                 break;
 
             case 2:
-                //removeDonee();
+                searchDonee();
                 break;
 
             case 3:
-                //updateDonee();
+                listDonee();
                 break;
 
             case 4:
-                //searchDonee();
-                break;
-
-            case 5:
-                //listDonee();
-                break;
-
-            case 6:
-                //filterDonee();
-                break;
-
-            case 7:
                 //generateReport();
                 break;
 
@@ -69,42 +60,57 @@ public class DoneeManagement {
 
     }
 
-    
-    public void addDonee(){
+    public void addDonee() {
         boolean exit = false;
         Donee newDonee = doneeUI.createNewDonee();
-        
-        do{
-            
+
+        do {
+
             doneeUI.displayDoneeDetails(newDonee);
             System.out.println("Are these details correct?");
             int input = doneeUI.confirmationMessage();
-            
-            switch(input){
-                case 1: 
+
+            switch (input) {
+                case 1:
                     doneeMap.put(newDonee.getDoneeId(), newDonee);
                     doneeDAO.saveToFile(doneeMap);
                     exit = true;
                     break;
-                    
+
                 case 2:
-                    
-                    
-                    
-                    
-                    
+                    editDonee(newDonee);
                     break;
-                    
+
+                case 0:
+                    break;
+
+                default:
+                    displayInvalidChoiceMessage();
+                    break;
             }
 
-        }while(!exit);
+        } while (!exit);
     }
-    
-    
-    
-    
+
+    public void editDonee(Donee donee) {
+        doneeUI.showDoneeEditMenu(donee);
+
+    }
+
+    public void listDonee() {
+        doneeUI.listAllDonees(doneeMap);
+        enterToContinue();
+
+    }
+
+    public void searchDonee() {
+        doneeUI.showDoneeSearchMenu(doneeMap);
+
+    }
+
     public static void main(String[] args) {
         DoneeManagement mainDonee = new DoneeManagement();
+
         mainDonee.runDoneeManagement();
 
     }
