@@ -9,12 +9,12 @@ import java.util.Iterator;
 
 /**
  *
- * @author user
+ * @author SYH
  * @param <K>
  * @param <V>
  */
 public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
-//test
+
     private Node<K, V>[] buckets;
     private int size;
     private int capacity;
@@ -49,7 +49,7 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
                 if (node.key.equals(key)) {
                     V oldValue = node.value;
                     node.value = value;
-                    return oldValue; //to represent replace 
+                    return oldValue;
                 }
                 if (node.next == null) {
                     break;
@@ -69,6 +69,9 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
 
     @Override
     public V get(K key) {
+        if(key == null){
+            return null;
+        }
         int index = hash(key);
         Node<K, V> node = buckets[index];
 
