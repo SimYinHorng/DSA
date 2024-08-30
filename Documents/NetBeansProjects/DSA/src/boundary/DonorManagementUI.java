@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.Scanner;
 import utility.DonorType;
-import static utility.MessageUI.displayDonorHeader;
+import static utility.MessageUI.displayDonorHeader;     
 import java.util.InputMismatchException;
 import utility.DonorCategory;
 import utility.MessageUI;
@@ -110,7 +110,7 @@ public class DonorManagementUI {
     }
 
     public int getCategorizeMenu() {
-        boolean correctInput = false;
+        boolean validInput = false;
         int choice;
         do {
             System.out.println("Select One Category:");
@@ -122,12 +122,34 @@ public class DonorManagementUI {
             choice = validateInt();
             System.out.println("");
             if (choice >= 0 && choice <= 3) {
-                correctInput = true;
+                validInput = true;
             } else {
                 displayInvalidChoiceMessage();
             }
 
-        } while (!correctInput);
+        } while (!validInput);
+        return choice;
+    }
+
+    public int getSubMenu() {
+        boolean validInput = false;
+        int choice;
+        do {
+            System.out.println("Select an Action:");
+            System.out.println("1. Delete");
+            System.out.println("2. Update");
+            System.out.println("3. List Donations");
+            System.out.println("0. Quit");
+            System.out.print("Enter choice: ");
+            choice = validateInt();
+            System.out.println("");
+            if (choice >= 0 && choice <= 3) {   
+                validInput = true;
+            } else {
+                displayInvalidChoiceMessage();  
+            }
+
+        } while (!validInput);
         return choice;
     }
 
@@ -239,10 +261,10 @@ public class DonorManagementUI {
     public void displayDonorDonations(LinkedList<Donation> donationList) {
         Iterator it = donationList.iterator();
         line(86);
-        System.out.printf("| %-10s| %-9s| %-7s| %-30s| %-14s|\n","Donation ID","Donee Id","Amount (RM)","Description","Donation Date");
+        System.out.printf("| %-10s| %-9s| %-7s| %-30s| %-14s|\n", "Donation ID", "Donee Id", "Amount (RM)", "Description", "Donation Date");
         line(86);
-        if(donationList.isEmpty()){
-            System.out.printf("|%50s%34s|\n","No Record Found","");
+        if (donationList.isEmpty()) {
+            System.out.printf("|%50s%34s|\n", "No Record Found", "");
         }
         while (it.hasNext()) {
             Donation donation = (Donation) it.next();
