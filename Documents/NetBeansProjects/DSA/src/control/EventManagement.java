@@ -395,7 +395,7 @@ public class EventManagement {
  
     public void displayAllEvents() {
         eventUI.listAllEvents(eventMap);
-        enterToContinue();
+////////        enterToContinue();
     }
 
     public static void main(String[] args) {
