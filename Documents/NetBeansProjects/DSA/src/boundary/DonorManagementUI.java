@@ -6,7 +6,9 @@ package boundary;
 
 import adt.HashMap;
 import adt.LinkedList;
+import entity.Donation;
 import entity.Donor;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.Scanner;
 import utility.DonorType;
@@ -234,6 +236,23 @@ public class DonorManagementUI {
         System.out.println("Number of Donations : " + donor.getDonationList().getNumberOfEntries());
     }
 
+    public void displayDonorDonations(LinkedList<Donation> donationList) {
+        Iterator it = donationList.iterator();
+        line(86);
+        System.out.printf("| %-10s| %-9s| %-7s| %-30s| %-14s|\n","Donation ID","Donee Id","Amount (RM)","Description","Donation Date");
+        line(86);
+        if(donationList.isEmpty()){
+            System.out.printf("|%50s%34s|\n","No Record Found","");
+        }
+        while (it.hasNext()) {
+            Donation donation = (Donation) it.next();
+            System.out.printf("|%-10d|%-15s|%-10.2f|%-30s|%-14s|",
+                    donation.getDonationId(), donation.getDoneeId(), donation.getAmount(), donation.getDescription(),
+                    donation.getDonationDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+        }
+        line(86);
+    }
+
     public String inputDonorName() {
         boolean validName = false;
         String regex = "^[a-zA-Z\\s]+$|^[a-zA-Z0-9\\s&.,'-]+$";
@@ -277,7 +296,7 @@ public class DonorManagementUI {
 
     public String inputDonorPhoneNo() {
         String phoneNo;
-        String regex = "^(0\\d-\\d{8}|01\\d-\\d{8})$";
+        String regex = "^(0\\d-\\d{7,8}|01\\d-\\d{7,8})$";
         do {
             System.out.println("Example: (01x-xxxxxxxx)/ (0x-xxxxxxxx)");
             System.out.print("Enter Donor Phone No : ");
@@ -409,40 +428,46 @@ public class DonorManagementUI {
         System.out.printf("| Donor Type     | Number Of Donors | Percentage (%%) | Total Number of Donations | Total Donations (RM) |\n");
         reportLine();
     }
-    
-    public static void reportLine(){
+
+    public static void reportLine() {
         line(105);
     }
 
-    public static void reportRow(){
+    public static void reportRow() {
         System.out.printf("|%-103s|\n", "");
     }
-    
+
     public void reportCatHeader() {
         reportLine();
         reportRow();
-        System.out.printf("| Summary By Donor Category : %-74s|\n","");
+        System.out.printf("| Summary By Donor Category : %-74s|\n", "");
         reportLine();
         System.out.printf("| Donor Category | Number Of Donors | Percentage (%%) | Total Number of Donations | Total Donations (RM) |\n");
         reportLine();
     }
-    
-    public void topDonorHeader(){
+
+    public void topDonorHeader() {
         reportLine();
         reportRow();
-        System.out.printf("| Top 5 Donors (by Total Number of Donations) %-58s|\n","");
+        System.out.printf("| Top 5 Donors (by Total Number of Donations) %-58s|\n", "");
         reportLine();
-        System.out.printf("| Rank | Donor Name | Donor Type | Donor Category | Total Number of Donations |  Total Donations (RM)   |\n");
+        System.out.printf("| Rank | %-27s| Donor Category | Total Number of Donations | Total Donations (RM) |\n", "Donor Name");
         reportLine();
-        
+
     }
-    
-    public void botDonorHeader(){
+
+    public void botDonorHeader() {
         reportLine();
         reportRow();
-        System.out.printf("| Bottom 5 Donors (by Total Number of Donations) %-55s|\n","");
+        System.out.printf("| Bottom 5 Donors (by Total Number of Donations) %-55s|\n", "");
         reportLine();
-        System.out.printf("| Rank | Donor Name | Donor Type | Donor Category | Total Number of Donations |  Total Donations (RM)   |\n");
+        System.out.printf("| Rank | %-27s| Donor Category | Total Number of Donations | Total Donations (RM) |\n", "Donor Name");
+        reportLine();
+    }
+
+    public void reportFooter() {
+        reportLine();
+        System.out.printf("| %13sThis report is for staff use only. Please handle the information with care. %13s|\n", "", "");
         reportLine();
     }
 

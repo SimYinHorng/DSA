@@ -4,8 +4,10 @@
  */
 package control;
 
+import adt.CircularLinkedQueue;
 import adt.HashMap;
 import adt.LinkedList;
+import adt.LinkedStack;
 import boundary.DonorManagementUI;
 import static boundary.DonorManagementUI.reportLine;
 import dao.DonorDAO;
@@ -55,7 +57,7 @@ public class DonorManagement {
                     SearchDonor();
                     break;
                 case 5:
-//                    ListDonorDonations();
+                    ListDonorDonations();
                     break;
                 case 6:
                     FilterDonor();
@@ -282,37 +284,30 @@ public class DonorManagement {
 
         } while (!exit);
     }
-//
-//    public void ListDonorDonations() {
-//        boolean exit = false;
-//        do {
-//            donorUI.listAllDonors(donorMap);
-//            System.out.println("Select Donor To List Donation (0 to exit)");
-//            int listId = donorUI.inputDonorID();
-//            if (listId == 0) {
-//                exit = true;
-//            } else {
-//                //need validation for valid donor
-//                Donor deleteDonor = donorMap.get(removeId);
-//                donorUI.displayDonorDetails(deleteDonor);
-//                System.out.println("Confirm Delete this Donor? ");
-//                int confirm = donorUI.confirmationMessage();
-//                switch (confirm) {
-//                    case 1:
-//                        donorMap.remove(removeId);
-//                        donorDAO.saveToFile(donorMap);
-//                        break;
-//                    case 2:
-//                        break;
-//                    case 0:
-//                        exit = true;
-//                        break;
-//                }
-//            }
-//
-//        } while (!exit);
-//    }
-    
+
+    public void ListDonorDonations() {
+        boolean exit = false;
+        do {
+            donorUI.listAllDonors(donorMap);
+            System.out.println("Select Donor To List its Donation (0 to exit)");
+            int listId = donorUI.inputDonorID();
+            if (listId == 0) {
+                exit = true;
+            } else {
+                Donor listDonor = donorMap.get(listId);
+                if (listDonor != null) {
+                    donorUI.displayDonorDetails(listDonor);
+                    donorUI.displayDonorDonations(listDonor.getDonationList());
+                    
+                } else {
+                    System.out.println("Invalid Donor Id!!!");
+                    enterToContinue();
+                }
+            }
+
+        } while (!exit);
+    }
+
     public void FilterDonor() {
         boolean exit = false;
         do {
@@ -446,7 +441,7 @@ public class DonorManagement {
         double publicTtlDonationAmt = 0;
         double privateTtlDonationAmt = 0;
         double govTtlDonationAmt = 0;
-         double indiTtlDonationAmt = 0;
+        double indiTtlDonationAmt = 0;
         double orgTtlDonationAmt = 0;
         while (keyIt.hasNext()) {
             Integer key = (Integer) keyIt.next();
@@ -483,8 +478,8 @@ public class DonorManagement {
                 default:
                     break;
             }
-            
-            switch(donor.getCategory()){
+
+            switch (donor.getCategory()) {
                 case INDIVIDUAL:
                     indiDonor.add(donor);
                     Iterator indiIt = donor.getDonationList().iterator();
@@ -504,7 +499,38 @@ public class DonorManagement {
                     }
                     break;
             }
-            
+
+        }
+        //for top 5 and bottom 5 donor
+        keyIt = donorMap.keySet().getIterator();
+        LinkedList<Donor> sortedDonor = new LinkedList<>();
+        LinkedStack<Donor> botDonor = new LinkedStack<>();
+        CircularLinkedQueue<Donor> topDonor = new CircularLinkedQueue<>();
+        while (keyIt.hasNext()) {
+            Integer key = (Integer) keyIt.next();
+            Donor donor = donorMap.get(key);
+            sortedDonor.add(donor);
+        }
+
+        //bubble sorts
+        int n = sortedDonor.getNumberOfEntries();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                Donor donor1 = sortedDonor.getEntry(j + 1);
+                Donor donor2 = sortedDonor.getEntry(j + 2);
+                if (donor1.getDonationList().getNumberOfEntries() < donor2.getDonationList().getNumberOfEntries()) {
+                    // Swap donor1 and donor2
+                    sortedDonor.replace(j + 1, donor2);
+                    sortedDonor.replace(j + 2, donor1);
+                }
+            }
+        }
+
+        for (int i = 1; i < sortedDonor.getNumberOfEntries() + 1; i++) {
+            Donor donor = sortedDonor.getEntry(i);
+            System.out.println("Donor " + (i + 1) + ": " + donor.getName() + " - Donations: " + donor.getDonationList().getNumberOfEntries());
+            topDonor.enqueue(donor);
+            botDonor.push(donor);
         }
 
         int totalDonor = donorMap.size();
@@ -513,18 +539,47 @@ public class DonorManagement {
         int govDonorQty = govDonor.getNumberOfEntries();
         int indiDonorQty = indiDonor.getNumberOfEntries();
         int orgDonorQty = orgDonor.getNumberOfEntries();
-        
-        donorUI.reportHeader(formattedDateTime,totalDonor);
-        
+
+        donorUI.reportHeader(formattedDateTime, totalDonor);
+
         System.out.printf("| %-15s| %-17d| %-15.2f| %-26d| %-21.2f|\n", DonorType.PUBLIC.toString(), publicDonorQty, (double) publicDonorQty / totalDonor * 100, publicDonationQty, publicTtlDonationAmt);
         System.out.printf("| %-15s| %-17d| %-15.2f| %-26d| %-21.2f|\n", DonorType.PRIVATE.toString(), privateDonorQty, (double) privateDonorQty / totalDonor * 100, privateDonationQty, privateTtlDonationAmt);
         System.out.printf("| %-15s| %-17d| %-15.2f| %-26d| %-21.2f|\n", DonorType.GOVERNMENT.toString(), govDonorQty, (double) govDonorQty / totalDonor * 100, govDonationQty, govTtlDonationAmt);
-        
+
         donorUI.reportCatHeader();
         System.out.printf("| %-15s| %-17d| %-15.2f| %-26d| %-21.2f|\n", DonorCategory.INDIVIDUAL.toString(), indiDonorQty, (double) indiDonorQty / totalDonor * 100, indiDonationQty, indiTtlDonationAmt);
         System.out.printf("| %-15s| %-17d| %-15.2f| %-26d| %-21.2f|\n", DonorCategory.ORGANIZATION.toString(), orgDonorQty, (double) orgDonorQty / totalDonor * 100, orgDonationQty, orgTtlDonationAmt);
         donorUI.topDonorHeader();
+        for (int i = 1; i < 6; i++) {
+            Donor donor = topDonor.dequeue();
+            if (donor != null) {
+                double amount = 0;
+                Iterator amtIt = donor.getDonationList().iterator();
+                while (amtIt.hasNext()) {
+                    Donation donation = (Donation) amtIt.next();
+                    amount += donation.getAmount();
+                }
+
+                System.out.printf("| %-5d| %-27s| %-15s| %-26d| %-21.2f|\n", i, donor.getName(), donor.getCategory().toString(), donor.getDonationList().getNumberOfEntries(), amount);
+            }
+
+        }
         donorUI.botDonorHeader();
+        for (int i = 1; i < 6; i++) {
+            Donor donor = botDonor.pop();
+            if (donor != null) {
+                double amount = 0;
+                Iterator amtIt = donor.getDonationList().iterator();
+                while (amtIt.hasNext()) {
+                    Donation donation = (Donation) amtIt.next();
+                    amount += donation.getAmount();
+                }
+
+                System.out.printf("| %-5d| %-27s| %-15s| %-26d| %-21.2f|\n", i, donor.getName(), donor.getCategory().toString(), donor.getDonationList().getNumberOfEntries(), amount);
+            }
+
+        }
+        donorUI.reportFooter();
     }
 
     public LinkedList<Donor> filterBy(int criteria, Object searchValue) {
