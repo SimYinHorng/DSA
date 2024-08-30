@@ -5,16 +5,15 @@
 package adt;
 
 import java.io.Serializable;
-import java.util.Iterator;
 
 /**
  *
- * @author user
+ * @author SYH
  * @param <K>
  * @param <V>
  */
 public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
-//test
+
     private Node<K, V>[] buckets;
     private int size;
     private int capacity;
@@ -49,7 +48,7 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
                 if (node.key.equals(key)) {
                     V oldValue = node.value;
                     node.value = value;
-                    return oldValue; //to represent replace 
+                    return oldValue;
                 }
                 if (node.next == null) {
                     break;
@@ -175,7 +174,6 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
                 int newIndex = Math.abs(node.key.hashCode()) % newCapacity;
                 Node<K, V> nextNode = node.next;
 
-                // Rehashing and placing nodes in the new bucket array
                 node.next = newBuckets[newIndex];
                 newBuckets[newIndex] = node;
 

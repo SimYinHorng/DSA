@@ -1,4 +1,4 @@
-package control;
+package dao;
 
 import adt.HashMap;
 import dao.VolunteerDAO;
