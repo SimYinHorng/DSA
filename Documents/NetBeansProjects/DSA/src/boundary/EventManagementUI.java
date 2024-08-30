@@ -22,9 +22,12 @@ import static utility.MessageUI.enterToContinue;
  */
 public class EventManagementUI {
 
-    Scanner scanner = new Scanner(System.in);
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+private static final Scanner scanner = new Scanner(System.in);
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
+    private static final String TIME_FORMAT = "HH:mm";
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
 
     public int getMenuChoice() {
         System.out.println("EVENT MAIN MENU");
@@ -253,16 +256,6 @@ public class EventManagementUI {
         return type;
     }
 
-    public void listAllEvents(HashMap<String, Event> eventMap) {
-        // Get an iterator over the key set of the HashMap
-        Iterator keyIt = eventMap.keySet().getIterator();
-
-        displayEventHeader();
-        while (keyIt.hasNext()) {
-           System.out.println(eventMap.get((String) keyIt.next()).toString());
-         }
-        line(305);
-    }
 
     public void displayEventDetails(Event event) {
         System.out.println("Event Details");

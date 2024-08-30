@@ -151,7 +151,7 @@ public class DoneeManagement {
 
         System.out.println("\nWhat would you like to do with the selected donee?");
         for (int i = 0; i < doneeList.getNumberOfEntries(); i++) {
-            System.out.println((i + 1) + ". " + doneeList.getEntry(i).toString());
+            System.out.println((i + 1) + ". " + doneeList.getEntry(i+1).toString());
         }
 
         int selection = -1;
@@ -161,7 +161,7 @@ public class DoneeManagement {
                 selection = scanner.nextInt();
                 scanner.nextLine();
                 if (selection > 0 && selection <= doneeList.getNumberOfEntries()) {
-                    return doneeList.getEntry(selection - 1);
+                    return doneeList.getEntry(selection);
                 } else {
                     displayInvalidChoiceMessage();
                 }

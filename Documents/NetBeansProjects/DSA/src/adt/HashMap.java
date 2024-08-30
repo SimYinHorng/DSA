@@ -5,7 +5,6 @@
 package adt;
 
 import java.io.Serializable;
-import java.util.Iterator;
 
 /**
  *
