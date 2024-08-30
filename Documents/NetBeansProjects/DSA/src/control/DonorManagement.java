@@ -9,7 +9,6 @@ import adt.HashMap;
 import adt.LinkedList;
 import adt.LinkedStack;
 import boundary.DonorManagementUI;
-import static boundary.DonorManagementUI.reportLine;
 import dao.DonorDAO;
 import entity.Donation;
 import entity.Donor;
@@ -18,7 +17,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import utility.DonorCategory;
 import utility.DonorType;
-import utility.MessageUI;
 import static utility.MessageUI.displayInvalidChoiceMessage;
 import static utility.MessageUI.enterToContinue;
 
@@ -135,32 +133,8 @@ public class DonorManagement {
         boolean exit = false;
         do {
             donorUI.listAllDonors(donorMap);
-            System.out.println("Select Donor To Delete (0 to exit)");
-            int removeId = donorUI.inputDonorID();
-            if (removeId == 0) {
-                exit = true;
-            } else {
-                Donor deleteDonor = donorMap.get(removeId);
-                if (deleteDonor != null) {
-                    donorUI.displayDonorDetails(deleteDonor);
-                    System.out.println("Confirm Delete this Donor? ");
-                    int confirm = donorUI.confirmationMessage();
-                    switch (confirm) {
-                        case 1:
-                            donorMap.remove(removeId);
-                            donorDAO.saveToFile(donorMap);
-                            break;
-                        case 2:
-                            break;
-                        case 0:
-                            exit = true;
-                            break;
-                    }
-                } else {
-                    System.out.println("Invalid Donor Id!!!");
-                    enterToContinue();
-                }
-            }
+            
+            exit = deleteFunction();
 
         } while (!exit);
 
@@ -298,7 +272,7 @@ public class DonorManagement {
                 if (listDonor != null) {
                     donorUI.displayDonorDetails(listDonor);
                     donorUI.displayDonorDonations(listDonor.getDonationList());
-                    
+
                 } else {
                     System.out.println("Invalid Donor Id!!!");
                     enterToContinue();
@@ -580,6 +554,62 @@ public class DonorManagement {
 
         }
         donorUI.reportFooter();
+    }
+
+    public void subMenu() {
+        int choice;
+        
+        do {
+            choice = donorUI.getSubMenu();
+            switch (choice) {
+                case 0:
+                    break;
+                case 1:
+                    deleteFunction();
+                    break;
+                case 2:
+
+                    break;
+                case 3:
+
+                    break;
+
+                default:
+                    displayInvalidChoiceMessage();
+                    break;
+            }
+        } while (choice != 0);
+    }
+
+    public boolean deleteFunction() {
+        boolean exit = false;
+        System.out.println("Select Donor To Delete (0 to exit)");
+        int removeId = donorUI.inputDonorID();
+        if (removeId == 0) {
+            exit = true;
+        } else {
+            Donor deleteDonor = donorMap.get(removeId);
+            if (deleteDonor != null) {
+                donorUI.displayDonorDetails(deleteDonor);
+                System.out.println("Confirm Delete this Donor? ");
+                int confirm = donorUI.confirmationMessage();
+                switch (confirm) {
+                    case 1:
+                        donorMap.remove(removeId);
+                        donorDAO.saveToFile(donorMap);
+                        break;
+                    case 2:
+                        break;
+                    case 0:
+                        exit = true;
+                        break;
+                }
+            } else {
+                System.out.println("Invalid Donor Id!!!");
+                enterToContinue();
+            }
+        }
+        return exit;
     }
 
     public LinkedList<Donor> filterBy(int criteria, Object searchValue) {
