@@ -30,7 +30,9 @@ public class DonorManagementUI {
         boolean correctInput = false;
         int choice;
         do {
+            line(15);
             System.out.println("DONOR MAIN MENU");
+            line(15);
             System.out.println("1. Add new Donor");
             System.out.println("2. Remove a Donor");
             System.out.println("3. Update Donor Details");
@@ -417,10 +419,30 @@ public class DonorManagementUI {
     }
     
     public void reportCatHeader() {
+        reportLine();
         reportRow();
         System.out.printf("| Summary By Donor Category : %-74s|\n","");
         reportLine();
         System.out.printf("| Donor Category | Number Of Donors | Percentage (%%) | Total Number of Donations | Total Donations (RM) |\n");
+        reportLine();
+    }
+    
+    public void topDonorHeader(){
+        reportLine();
+        reportRow();
+        System.out.printf("| Top 5 Donors (by Total Number of Donations) %-58s|\n","");
+        reportLine();
+        System.out.printf("| Rank | Donor Name | Donor Type | Donor Category | Total Number of Donations |  Total Donations (RM)   |\n");
+        reportLine();
+        
+    }
+    
+    public void botDonorHeader(){
+        reportLine();
+        reportRow();
+        System.out.printf("| Bottom 5 Donors (by Total Number of Donations) %-55s|\n","");
+        reportLine();
+        System.out.printf("| Rank | Donor Name | Donor Type | Donor Category | Total Number of Donations |  Total Donations (RM)   |\n");
         reportLine();
     }
 

@@ -282,7 +282,7 @@ public class DonorManagement {
 
         } while (!exit);
     }
-
+//
 //    public void ListDonorDonations() {
 //        boolean exit = false;
 //        do {
@@ -312,6 +312,7 @@ public class DonorManagement {
 //
 //        } while (!exit);
 //    }
+    
     public void FilterDonor() {
         boolean exit = false;
         do {
@@ -518,11 +519,12 @@ public class DonorManagement {
         System.out.printf("| %-15s| %-17d| %-15.2f| %-26d| %-21.2f|\n", DonorType.PUBLIC.toString(), publicDonorQty, (double) publicDonorQty / totalDonor * 100, publicDonationQty, publicTtlDonationAmt);
         System.out.printf("| %-15s| %-17d| %-15.2f| %-26d| %-21.2f|\n", DonorType.PRIVATE.toString(), privateDonorQty, (double) privateDonorQty / totalDonor * 100, privateDonationQty, privateTtlDonationAmt);
         System.out.printf("| %-15s| %-17d| %-15.2f| %-26d| %-21.2f|\n", DonorType.GOVERNMENT.toString(), govDonorQty, (double) govDonorQty / totalDonor * 100, govDonationQty, govTtlDonationAmt);
-        reportLine();
+        
         donorUI.reportCatHeader();
         System.out.printf("| %-15s| %-17d| %-15.2f| %-26d| %-21.2f|\n", DonorCategory.INDIVIDUAL.toString(), indiDonorQty, (double) indiDonorQty / totalDonor * 100, indiDonationQty, indiTtlDonationAmt);
         System.out.printf("| %-15s| %-17d| %-15.2f| %-26d| %-21.2f|\n", DonorCategory.ORGANIZATION.toString(), orgDonorQty, (double) orgDonorQty / totalDonor * 100, orgDonationQty, orgTtlDonationAmt);
-        reportLine();
+        donorUI.topDonorHeader();
+        donorUI.botDonorHeader();
     }
 
     public LinkedList<Donor> filterBy(int criteria, Object searchValue) {
