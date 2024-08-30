@@ -261,10 +261,10 @@ public class DonorManagementUI {
     public void displayDonorDonations(LinkedList<Donation> donationList) {
         Iterator it = donationList.iterator();
         line(86);
-        System.out.printf("| %-10s| %-9s| %-7s| %-30s| %-14s|\n", "Donation ID", "Donee Id", "Amount (RM)", "Description", "Donation Date");
+        System.out.printf("| %-10s| %-9s| %-7s| %-30s| %-14s|\n","Donation ID","Donee Id","Amount (RM)","Description","Donation Date");
         line(86);
-        if (donationList.isEmpty()) {
-            System.out.printf("|%50s%34s|\n", "No Record Found", "");
+        if(donationList.isEmpty()){
+            System.out.printf("|%50s%34s|\n","No Record Found","");
         }
         while (it.hasNext()) {
             Donation donation = (Donation) it.next();
