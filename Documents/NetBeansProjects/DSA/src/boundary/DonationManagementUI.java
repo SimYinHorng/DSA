@@ -1,11 +1,14 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package boundary;
 
-import control.DonationManagement;
+import adt.ArrayList;
 import entity.Donation;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.List;
 import java.util.Scanner;
 import utility.MessageUI;
 import static utility.MessageUI.displayInvalidChoiceMessage;
@@ -14,7 +17,6 @@ import static utility.MessageUI.enterToContinue;
 public class DonationManagementUI {
 
     private final Scanner scanner = new Scanner(System.in);
-    private final DonationManagement donationManagement = new DonationManagement(); // Use DonationManagement
 
     public int showDonationManagementMenu() {
         boolean flag = false;
@@ -45,96 +47,15 @@ public class DonationManagementUI {
         return choice;
     }
 
-    public void addNewDonation() {
-        Donation newDonation = createNewDonation(); // Create a new donation using the input methods
-        donationManagement.addDonation(newDonation); // Add the donation using DonationManagement
-        System.out.println("Donation added successfully!");
-    }
-
-    public void removeDonation() {
-        System.out.print("Enter the Donation ID to remove: ");
-        int donationId = scanner.nextInt();
-        scanner.nextLine();
-
-        if (donationManagement.removeDonation(donationId)) {
-            System.out.println("Donation removed successfully!");
-        } else {
-            System.out.println("Donation ID not found.");
-        }
-    }
-
-    public void updateDonation() {
-        System.out.print("Enter the Donation ID to update: ");
-        int donationId = scanner.nextInt();
-        scanner.nextLine();
-
-        Donation donation = donationManagement.getDonationById(donationId);
-        if (donation != null) {
-            System.out.println("Updating Donation ID: " + donationId);
-            donation.setDonorId(inputDonorId());
-            donation.setDoneeId(inputDoneeId());
-            donation.setAmount(inputAmount());
-            donation.setDescription(inputDescription());
-            donation.setDonationDate(inputDonationDate());
-
-            donationManagement.updateDonation(donation); // Update the donation using DonationManagement
-            System.out.println("Donation updated successfully!");
-        } else {
-            System.out.println("Donation ID not found.");
-        }
-    }
-
-    public void searchDonation() {
-        System.out.print("Enter the Donation ID to search: ");
-        int donationId = scanner.nextInt();
-        scanner.nextLine();
-
-        Donation donation = donationManagement.getDonationById(donationId);
-        if (donation != null) {
-            displayDonationDetails(donation); // Display the donation details
-        } else {
-            System.out.println("Donation ID not found.");
-        }
-    }
-
-    public void listDonations() {
-        List<Donation> donations = donationManagement.listAllDonations();
-        if (donations.isEmpty()) {
-            System.out.println("No donations found.");
-        } else {
-            for (Donation donation : donations) {
-                displayDonationDetails(donation);
-            }
-        }
-    }
-
-    public void filterDonations() {
-        System.out.print("Enter minimum donation amount to filter: ");
-        double minAmount = scanner.nextDouble();
-        scanner.nextLine();
-
-        List<Donation> filteredDonations = donationManagement.filterDonationsByAmount(minAmount);
-        if (filteredDonations.isEmpty()) {
-            System.out.println("No donations found for the specified criteria.");
-        } else {
-            for (Donation donation : filteredDonations) {
-                displayDonationDetails(donation);
-            }
-        }
-    }
-
-    public void generateReport() {
-        String report = donationManagement.generateReport();
-        System.out.println(report);
-    }
-
     public Donation createNewDonation() {
         String donorId = inputDonorId();
         String doneeId = inputDoneeId();
         double amount = inputAmount();
         String description = inputDescription();
         LocalDate donationDate = inputDonationDate();
-        return new Donation(donorId, doneeId, amount, description, donationDate);
+        Donation newDonation = new Donation(donorId, doneeId, amount, description, donationDate);
+
+        return newDonation;
     }
 
     public String inputDonorId() {
@@ -224,4 +145,5 @@ public class DonationManagementUI {
         } while (!correctInput);
         return input;
     }
+
 }

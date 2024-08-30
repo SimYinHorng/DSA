@@ -8,7 +8,7 @@ import adt.ArrayList;
 import java.io.Serializable;
 import java.util.Objects;
 import utility.VolunteerCategory;
-import utility.VolunteerType;
+import utility.VolunteerGender;
 /**
  *
  * @author user
@@ -21,7 +21,8 @@ public class Volunteer implements Serializable {
     private String email;
     private String phoneNo;
     private String address;
-    private VolunteerType type;
+    private String dateOfBirth;
+    private VolunteerGender gender;
     private VolunteerCategory category;
     private ArrayList<Volunteer> volunteerList;
     
@@ -30,13 +31,14 @@ public class Volunteer implements Serializable {
         
     }
     
-    public Volunteer(String name, String email, String phoneNo, String address, String dateOfBirth, VolunteerType type, VolunteerCategory category) {
+    public Volunteer(String name, String email, String phoneNo, String address, String dateOfBirth, VolunteerGender gender, VolunteerCategory category) {
         this.volunteerId = nextVolunteerId++;
         this.name = name;
         this.email = email;
         this.phoneNo = phoneNo;
         this.address = address;
-        this.type = type;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
         this.category = category;
         this.volunteerList = new ArrayList<>();
       
@@ -90,12 +92,20 @@ public class Volunteer implements Serializable {
         this.address = address;
     }
 
-    public VolunteerType getType() {
-        return type;
+    public String getDateOfBirth(){
+        return dateOfBirth;
+    }
+    
+    public void setDateOfBirth(String dateOfBirth){
+        this.dateOfBirth = dateOfBirth;
+    }
+    
+    public VolunteerGender getGender() {
+        return gender;
     }
 
-    public void setType(VolunteerType type) {
-        this.type = type;
+    public void setGender(VolunteerGender gender) {
+        this.gender = gender;
     }
 
     public VolunteerCategory getCategory() {
@@ -112,7 +122,7 @@ public class Volunteer implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("|%-8d|%-25s|%-30s|%-15s|%-80s|%-11s|%-12s|%15d|", volunteerId, name, email, phoneNo, address, type,category, (!volunteerList.isEmpty() ? volunteerList.getNumberOfEntries() : 0));
+        return String.format("| %-14d | %-25s | %-30s | %-15s | %-80s | %-16s | %-11s | %-25s | %15d |", volunteerId, name, email, phoneNo, address, dateOfBirth,gender,category, (!volunteerList.isEmpty() ? volunteerList.getNumberOfEntries() : 0));
     }
 
     @Override
@@ -129,7 +139,10 @@ public class Volunteer implements Serializable {
                Objects.equals(email, volunteer.email) &&
                Objects.equals(phoneNo, volunteer.phoneNo) &&
                Objects.equals(address, volunteer.address) &&
-               Objects.equals(type, volunteer.type);
+               Objects.equals(dateOfBirth, volunteer.dateOfBirth) &&
+               Objects.equals(gender, volunteer.gender) &&
+               Objects.equals(category, volunteer.category);
+        
     }
     
     

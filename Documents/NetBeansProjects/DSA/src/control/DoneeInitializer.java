@@ -8,6 +8,6 @@ package control;
  *
  * @author user
  */
-public class DonationManagement {
+public class DoneeInitializer {
     
 }

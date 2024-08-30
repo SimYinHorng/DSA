@@ -1,6 +1,6 @@
 package dao;
 
-import java.util.HashMap;
+import adt.HashMap;
 import entity.Donation;
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,25 +17,6 @@ public class DonationDAO {
 
     private static String fileName = "src/data/donation.dat";  // File to store Donation objects
     private static String idFileName = "src/data/donationId.dat";  // File to store next Donation ID
-    
-    // In-memory storage of donations
-    private HashMap<Integer, Donation> donationMap;
-
-    /**
-     * Constructor to initialize DonationDAO and load data from the file.
-     */
-    public DonationDAO() {
-        donationMap = retrieveFromFile();  // Load donations from the file
-    }
-
-    /**
-     * Gets all donations.
-     * 
-     * @return A HashMap containing all Donation objects.
-     */
-    public HashMap<Integer, Donation> getAllDonations() {
-        return donationMap;
-    }
 
     /**
      * Saves the Donation HashMap to the file.
@@ -69,7 +50,7 @@ public class DonationDAO {
      * 
      * @return A HashMap containing Donation objects.
      */
-    private HashMap<Integer, Donation> retrieveFromFile() {
+    public HashMap<Integer, Donation> retrieveFromFile() {
         File file = new File(fileName);
         File idFile = new File(idFileName);
         HashMap<Integer, Donation> donationMap = new HashMap<>();  // Initialize an empty HashMap
@@ -93,36 +74,4 @@ public class DonationDAO {
         }
         return donationMap;
     }
-
-    /**
-     * Adds a donation to the in-memory map and persists the change.
-     * 
-     * @param donation The Donation object to add.
-     */
-    public void saveDonation(Donation donation) {
-        donationMap.put(donation.getDonationId(), donation);
-        saveToFile(donationMap);
-    }
-
-    /**
-     * Deletes a donation by its ID and persists the change.
-     * 
-     * @param donationId The ID of the donation to remove.
-     */
-    public void deleteDonation(int donationId) {
-        donationMap.remove(donationId);
-        saveToFile(donationMap);
-    }
-
-    /**
-     * Updates an existing donation and persists the change.
-     * 
-     * @param donation The updated Donation object.
-     */
-    public void updateDonation(Donation donation) {
-        donationMap.put(donation.getDonationId(), donation);
-        saveToFile(donationMap);
-    }
 }
-
- 

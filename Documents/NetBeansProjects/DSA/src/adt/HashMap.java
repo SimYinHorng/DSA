@@ -5,6 +5,7 @@
 package adt;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 /**
  *
@@ -177,6 +178,7 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
                 int newIndex = Math.abs(node.key.hashCode()) % newCapacity;
                 Node<K, V> nextNode = node.next;
 
+                // Rehashing and placing nodes in the new bucket array
                 node.next = newBuckets[newIndex];
                 newBuckets[newIndex] = node;
 

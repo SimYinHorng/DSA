@@ -9,6 +9,6 @@ package utility;
  * @author Eason Goh
  */
 public enum VolunteerCategory {
-    INDIVIDUAL,
-    ORGANIZATION
+    HAVE_WORKING_EXPERIENCE,
+    NO_WORKING_EXPERIENCE
 }
