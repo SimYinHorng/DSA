@@ -46,10 +46,10 @@ public class MessageUI {
 
     public static void displayEventHeader() {
         line(305);
-        System.out.printf(
-                "%-10s %-20s %-30s %-15s %-15s %-10s %-10s %-20s%n",
-                "Event Id", "Event Name", "Event Address", "Start Date", "End Date", "Start Time", "End Time", "Organizer"
-        );
+//        System.out.printf(
+////                "%-10s %-20s %-30s %-15s %-15s %-10s %-10s %-20s%n",
+//                "Event Id", "Event Name", "Event Address", "Start Date", "End Date", "Start Time", "End Time", "Organizer"
+//        );
         line(305);
     }
 
