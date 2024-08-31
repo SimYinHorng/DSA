@@ -5,9 +5,13 @@
 package boundary;
 
 import adt.HashMap;
+import adt.LinkedList;
+import entity.Donor;
 import entity.Volunteer;
+import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Scanner;
+import static utility.MessageUI.displayDonorHeader;
 import utility.VolunteerCategory;
 import static utility.VolunteerCategory.HAVE_WORKING_EXPERIENCE;
 import static utility.VolunteerCategory.NO_WORKING_EXPERIENCE;
@@ -103,6 +107,88 @@ public class VolunteerManagementUI {
         System.out.println("Volunteer Gender        : " + volunteer.getGender());
         System.out.println("Volunteer Category      : " + volunteer.getCategory());
         System.out.println("--------------------------------------------------------------\n");
+    }
+    
+    public int eventVounteerFilterMenu() {
+        boolean correctInput = false;
+        int choice;
+        do {
+            System.out.println("Number of events assign to Volunteer");
+            System.out.println("1. Above or Equal x quantity");
+            System.out.println("2. Between x & y quantity");
+            System.out.println("3. Below or Equal x quantity");
+            System.out.println("4. Equal to x quantity");
+            System.out.println("0. Quit");
+            System.out.print("Enter choice: ");
+            choice = validateInt();
+            System.out.println("");
+            if (choice >= 0 && choice <= 4) {
+                correctInput = true;
+            } else {
+                displayInvalidChoiceMessage();
+            }
+
+        } while (!correctInput);
+        return choice;
+    }
+    
+    public void filterHeader(String search) {
+        line(205);
+        System.out.printf("|Search Result Of : %-184s|\n", search);
+    }
+    
+    public void displayOutput(LinkedList<Volunteer> volunteerList) {
+        Iterator linkedIt = volunteerList.iterator();
+        displayVolunteerHeader();
+        if (volunteerList.isEmpty()) {
+            System.out.printf("| %-202s|\n", "No Record Found");
+        } else {
+            while (linkedIt.hasNext()) {
+                System.out.println(linkedIt.next().toString());
+            }
+
+        }
+        line(205);
+    }
+    
+    public int getSearchMenu() {
+        boolean correctInput = false;
+        int choice;
+        do {
+            System.out.println("\n----------------");
+            System.out.println("Search Volunteer");
+            System.out.println("----------------");
+            System.out.println("1. Search by ID");
+            System.out.println("2. Search by Name");
+            System.out.println("3. Search by Email");
+            System.out.println("4. Search by Phone Number");
+            System.out.println("5. Search by Address");
+            System.out.println("6. Search by Gender");
+            System.out.println("7. Search by Category");
+            System.out.println("0. Back to Main Menu");
+            System.out.print("Enter choice: ");
+            choice = validateInt();
+            System.out.println("");
+            if (choice >= 0 && choice <= 7) {
+                correctInput = true;
+            } else {
+                displayInvalidChoiceMessage();
+            }
+
+        } while (!correctInput);
+        return choice;
+    }
+    
+    public int validateInt() {
+        try {
+            int number = scanner.nextInt();
+            scanner.nextLine();
+            return number;
+        } catch (InputMismatchException e) {
+            scanner.nextLine();
+            return -1;
+        }
+
     }
     
     public String enterVolunteerName() {
