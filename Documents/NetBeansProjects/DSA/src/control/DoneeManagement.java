@@ -52,6 +52,10 @@ public class DoneeManagement {
                 break;
 
             case 4:
+                //filterDonee();
+                break;
+                
+            case 5:
                 //generateReport();
                 break;
 
@@ -108,35 +112,53 @@ public class DoneeManagement {
     public void searchDonee() {
         ArrayList<Donee> resultList = doneeUI.showDoneeSearchMenu(doneeMap);
         Donee selectedDonee = selectDoneeFromResults(resultList);
-        int choice = doneeUI.selectDoneeAction();
 
-        switch (choice) {
-            case 0:
-                break;
+        if (selectedDonee != null) {
+            int choice = doneeUI.selectDoneeAction();
+            switch (choice) {
+                case 0:
+                    break;
 
-            case 1:
-                editDonee(selectedDonee);
-                break;
+                case 1:
+                    editDonee(selectedDonee);
+                    break;
 
-            case 2:
-                removeDonee(selectedDonee);
-                break;
+                case 2:
+                    removeDonee(selectedDonee);
+                    break;
 
-            case 3:
-                viewAllDonations(selectedDonee);
+                case 3:
+                    viewAllDonations(selectedDonee);
+                    break;
 
-                break;
-
-            default:
-                displayInvalidChoiceMessage();
-                break;
+                default:
+                    displayInvalidChoiceMessage();
+                    break;
+            }
         }
 
     }
 
     public void removeDonee(Donee donee) {
-        //tmr do
+        if (donee != null && doneeMap.containsKey(donee.getDoneeId())) {
+            doneeUI.displayDoneeDetails(donee);
+            
+            System.out.println("Are you sure you want to remove the donee with ID " + donee.getDoneeId() + "?");
+            int confirmation = doneeUI.confirmationMessage();
 
+            if (confirmation == 1) { 
+                doneeMap.remove(donee.getDoneeId());
+                doneeDAO.saveToFile(doneeMap);
+                System.out.println("Donee with ID " + donee.getDoneeId() + " has been successfully removed.");
+            } else if (confirmation == 2) { 
+                System.out.println("Operation canceled. Donee was not removed.");
+            } else {
+                System.out.println("Exiting removal process.");
+            }
+        } else {
+            System.out.println("Donee not found or invalid Donee.");
+        }
+        enterToContinue();
     }
 
     public void viewAllDonations(Donee donee) {
@@ -149,11 +171,6 @@ public class DoneeManagement {
             return null;
         }
 
-        System.out.println("\nWhat would you like to do with the selected donee?");
-        for (int i = 0; i < doneeList.getNumberOfEntries(); i++) {
-            System.out.println((i + 1) + ". " + doneeList.getEntry(i).toString());
-        }
-
         int selection = -1;
         do {
             System.out.print("Enter the number corresponding to the donee: ");
@@ -161,7 +178,7 @@ public class DoneeManagement {
                 selection = scanner.nextInt();
                 scanner.nextLine();
                 if (selection > 0 && selection <= doneeList.getNumberOfEntries()) {
-                    return doneeList.getEntry(selection - 1);
+                    return doneeList.getEntry(selection);
                 } else {
                     displayInvalidChoiceMessage();
                 }

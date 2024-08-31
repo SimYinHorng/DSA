@@ -31,7 +31,8 @@ public class DoneeManagementUI {
             System.out.println("1. Add a new Donee");
             System.out.println("2. Search Donee");
             System.out.println("3. List Donee");
-            System.out.println("4. Generate Report");
+            System.out.println("4. Filter Donee");
+            System.out.println("5. Generate Report");
             System.out.println("0. Exit");
             System.out.println("What would you like to do?");
             choice = scanner.nextInt();
@@ -240,7 +241,7 @@ public class DoneeManagementUI {
         System.out.println("Last Assistance Date: " + (donee.getLastAssistanceDate() != null ? donee.getLastAssistanceDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) : "Not yet assisted"));
         System.out.println("Status              : " + donee.getStatus());
         System.out.println("Number of Donations Received : " + donee.getDonationList().getNumberOfEntries());
-        System.out.println("\n\n");
+        System.out.println("\n");
     }
 
     public void showDoneeEditMenu(Donee donee) {
@@ -329,7 +330,7 @@ public class DoneeManagementUI {
         int input = -1;
         do {
             System.out.println("1-Yes 2-No 0-Exit");
-            System.out.print("Enter No:");
+            System.out.print("Enter Number:");
             try {
                 input = scanner.nextInt();
             } catch (InputMismatchException ex) {
@@ -533,26 +534,24 @@ public class DoneeManagementUI {
         ArrayList<Donee> resultList = new ArrayList<>();
         Donee donee = doneeMap.get(doneeId);
         if (donee != null) {
-            System.out.println(donee.toString());
+            System.out.println("1. " + donee.toString());
             resultList.add(donee);
         } else {
             System.out.println("No donee found with ID: " + doneeId);
         }
-
         return resultList;
-
     }
 
     private ArrayList<Donee> searchByName(String name) {
         ArrayList<Donee> resultList = new ArrayList<>();
-
+        int index = 1;
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getName().equalsIgnoreCase(name)) {
-                System.out.println(donee.toString());
+                System.out.println(index++ + ". " + donee.toString());
                 resultList.add(donee);
                 foundCount++;
             }
@@ -564,14 +563,14 @@ public class DoneeManagementUI {
 
     private ArrayList<Donee> searchByEmail(String email) {
         ArrayList<Donee> resultList = new ArrayList<>();
-
+        int index = 1;
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getEmail().equalsIgnoreCase(email)) {
-                System.out.println(donee.toString());
+                System.out.println(index++ + ". " + donee.toString());
                 resultList.add(donee);
                 foundCount++;
             }
@@ -583,14 +582,14 @@ public class DoneeManagementUI {
 
     private ArrayList<Donee> searchByPhoneNo(String phoneNo) {
         ArrayList<Donee> resultList = new ArrayList<>();
-
+        int index = 1;
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getPhoneNo().equalsIgnoreCase(phoneNo)) {
-                System.out.println(donee.toString());
+                System.out.println(index++ + ". " + donee.toString());
                 resultList.add(donee);
                 foundCount++;
             }
@@ -602,14 +601,14 @@ public class DoneeManagementUI {
 
     private ArrayList<Donee> searchByAddress(String address) {
         ArrayList<Donee> resultList = new ArrayList<>();
-
+        int index = 1;
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getAddress().contains(address)) {
-                System.out.println(donee.toString());
+                System.out.println(index++ + ". " + donee.toString());
                 resultList.add(donee);
                 foundCount++;
             }
@@ -621,14 +620,14 @@ public class DoneeManagementUI {
 
     private ArrayList<Donee> searchByCategory(String category) {
         ArrayList<Donee> resultList = new ArrayList<>();
-
+        int index = 1;
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getCategory().toString().equalsIgnoreCase(category)) {
-                System.out.println(donee.toString());
+                System.out.println(index++ + ". " + donee.toString());
                 resultList.add(donee);
                 foundCount++;
             }
@@ -640,14 +639,14 @@ public class DoneeManagementUI {
 
     private ArrayList<Donee> searchByStatus(String status) {
         ArrayList<Donee> resultList = new ArrayList<>();
-
+        int index = 1;
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getStatus().toString().equalsIgnoreCase(status)) {
-                System.out.println(donee.toString());
+                System.out.println(index++ + ". " + donee.toString());
                 resultList.add(donee);
                 foundCount++;
             }
@@ -659,7 +658,7 @@ public class DoneeManagementUI {
 
     private ArrayList<Donee> searchByAge(int age) {
         ArrayList<Donee> resultList = new ArrayList<>();
-
+        int index = 1;
         int foundCount = 0;
         LocalDate today = LocalDate.now();
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
@@ -668,7 +667,7 @@ public class DoneeManagementUI {
             Donee donee = doneeMap.get(keyIt.next());
             int doneeAge = today.getYear() - donee.getDateOfBirth().getYear();
             if (doneeAge == age) {
-                System.out.println(donee.toString());
+                System.out.println(index++ + ". " + donee.toString());
                 resultList.add(donee);
                 foundCount++;
             }
@@ -680,14 +679,14 @@ public class DoneeManagementUI {
 
     private ArrayList<Donee> searchByDescription(String description) {
         ArrayList<Donee> resultList = new ArrayList<>();
-
+        int index = 1;
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getNeedsDescription().contains(description)) {
-                System.out.println(donee.toString());
+                System.out.println(index++ + ". " + donee.toString());
                 resultList.add(donee);
                 foundCount++;
             }
@@ -710,16 +709,16 @@ public class DoneeManagementUI {
 
             if (scanner.hasNextInt()) {
                 selectInput = scanner.nextInt();
-                scanner.nextLine(); 
+                scanner.nextLine();
 
                 if (selectInput >= 0 && selectInput <= 3) {
-                    flag = true; 
+                    flag = true;
                 } else {
                     displayInvalidChoiceMessage();
                 }
             } else {
                 displayInvalidChoiceMessage();
-                scanner.next(); 
+                scanner.next();
             }
         } while (!flag);
 
