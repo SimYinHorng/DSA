@@ -5,9 +5,11 @@ import entity.Event;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Scanner;
+import utility.EventStatus;
 import utility.EventType;
 import static utility.MessageUI.*;
 
@@ -72,8 +74,13 @@ public class EventManagementUI {
             System.out.print("Enter Event Start Date (yyyy-MM-dd): ");
             String input = scanner.nextLine().trim();
             try {
-                return LocalDate.parse(input, DATE_FORMATTER);
-            } catch (Exception e) {
+                LocalDate date = LocalDate.parse(input, DATE_FORMATTER);
+                if (date.isBefore(LocalDate.now())) {
+                    System.out.println("Start date cannot be in the past.");
+                } else {
+                    return date;
+                }
+            } catch (DateTimeParseException e) {
                 System.out.println("Invalid date format. Please use yyyy-MM-dd.");
             }
         }
@@ -165,14 +172,28 @@ public class EventManagementUI {
         return phoneNumber.matches("^\\d{10}$");
     }
 
-    public String inputEventStatus() {
-        System.out.print("Enter Event Status: ");
-        String eventStatus = scanner.nextLine();
-        while (eventStatus.isEmpty()) {
-            System.out.print("Event Status cannot be empty. Enter Event Status: ");
-            eventStatus = scanner.nextLine();
+    public EventStatus chooseEventStatus() {
+        EventStatus[] statuses = EventStatus.values();
+
+        System.out.println("Select Event Status:");
+        for (int i = 0; i < statuses.length; i++) {
+            System.out.printf("%d. %s%n", i + 1, statuses[i]);
         }
-        return eventStatus;
+
+        int choice = -1;
+        while (choice < 1 || choice > statuses.length) {
+            System.out.print("Enter choice (number): ");
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+                if (choice < 1 || choice > statuses.length) {
+                    System.out.println("Invalid choice. Please select a number between 1 and " + statuses.length + ".");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+            }
+        }
+
+        return statuses[choice - 1];
     }
 
     public int inputVolunteerNeedForTheEvent() {
@@ -430,7 +451,42 @@ public class EventManagementUI {
                 System.out.println(eventIt.next().toString()); // Adjusted for Event entity
             }
         }
-        line(205); // Method to print a line with the specified length
+        line(400);
+    }
+
+    public String inputVolunteerId() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter Volunteer ID: ");
+        while (!scanner.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a numeric Volunteer ID.");
+            scanner.next(); // clear invalid input
+        }
+        return scanner.next();
+    }
+
+    public int getConfirmation() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("1. Yes");
+        System.out.println("2. No");
+        System.out.println("0. Exit");
+        System.out.print("Enter choice: ");
+        while (!scanner.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a number (0, 1, or 2).");
+            scanner.next(); // clear invalid input
+        }
+        return scanner.nextInt();
+    }
+
+    public int getRetryChoice() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("0. Exit");
+        System.out.println("1. Retry");
+        System.out.print("Enter choice: ");
+        while (!scanner.hasNextInt()) {
+            System.out.println("Invalid input. Please enter 0 or 1.");
+            scanner.next(); // clear invalid input
+        }
+        return scanner.nextInt();
     }
 
 }

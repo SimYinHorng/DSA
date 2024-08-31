@@ -1,10 +1,12 @@
 package entity;
 
+import adt.LinkedList;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
+import utility.EventStatus;
 import utility.EventType;
 
 /**
@@ -13,7 +15,7 @@ import utility.EventType;
  * Author: Terence
  */
 public class Event implements Serializable {
-
+ private static final long serialVersionUID = 1L;
     private static int nextEventId = 1;
     private String eventId;
     private String eventName;
@@ -26,37 +28,40 @@ public class Event implements Serializable {
     private String eventOrganizerName;
     private String eventOrganizerEmail;
     private String eventOrganizerPhoneNo;
-    private String eventStatus;
+    private EventStatus eventStatus;
     private EventType eventType;
     private int volunteerNeed;
     private int availableVolunteerNeeded;
     private LocalDateTime lastEditTime;
+    private LinkedList<Integer> participantList; // List to store volunteer IDs
 
     public Event() {
         this.eventId = generateEventId();
         this.lastEditTime = LocalDateTime.now();
+        this.participantList = new LinkedList<>(); // Initialize participant list
     }
 
     public Event(String eventName, String eventAddress, LocalDate eventStartDate, LocalDate eventEndDate,
             LocalTime eventStartTime, LocalTime eventEndTime, String eventDescription,
             String eventOrganizerName, String eventOrganizerEmail, String eventOrganizerPhoneNo,
-            String eventStatus, EventType eventType, int volunteerNeed, int availableVolunteerNeeded) {
+            EventStatus eventStatus, EventType eventType, int volunteerNeed, int availableVolunteerNeeded) {
         this.eventId = generateEventId();
-        this.eventName = validateNonEmpty(eventName, "Event name");
-        this.eventAddress = validateNonEmpty(eventAddress, "Event address");
-        this.eventStartDate = Objects.requireNonNull(eventStartDate, "Event start date cannot be null");
-        this.eventEndDate = Objects.requireNonNull(eventEndDate, "Event end date cannot be null");
-        this.eventStartTime = Objects.requireNonNull(eventStartTime, "Event start time cannot be null");
-        this.eventEndTime = Objects.requireNonNull(eventEndTime, "Event end time cannot be null");
-        this.eventDescription = validateNonEmpty(eventDescription, "Event description");
-        this.eventOrganizerName = validateNonEmpty(eventOrganizerName, "Event organizer name");
-        this.eventOrganizerEmail = validateNonEmpty(eventOrganizerEmail, "Event organizer email");
-        this.eventOrganizerPhoneNo = validateNonEmpty(eventOrganizerPhoneNo, "Event organizer phone number");
-        this.eventStatus = validateNonEmpty(eventStatus, "Event status");
-        this.eventType = Objects.requireNonNull(eventType, "Event type cannot be null");
+        this.eventName = eventName;
+        this.eventAddress = eventAddress;
+        this.eventStartDate = eventStartDate;
+        this.eventEndDate = eventEndDate;
+        this.eventStartTime = eventStartTime;
+        this.eventEndTime = eventEndTime;
+        this.eventDescription = eventDescription;
+        this.eventOrganizerName = eventOrganizerName;
+        this.eventOrganizerEmail = eventOrganizerEmail;
+        this.eventOrganizerPhoneNo = eventOrganizerPhoneNo;
+        this.eventStatus = eventStatus;
+        this.eventType = eventType;
         this.volunteerNeed = volunteerNeed;
         this.availableVolunteerNeeded = availableVolunteerNeeded;
         this.lastEditTime = LocalDateTime.now();
+        this.participantList = new LinkedList<>(); // Initialize participant list
     }
 
     private String generateEventId() {
@@ -85,7 +90,7 @@ public class Event implements Serializable {
     }
 
     public void setEventName(String eventName) {
-        this.eventName = validateNonEmpty(eventName, "Event name");
+        this.eventName = eventName;
     }
 
     public String getEventAddress() {
@@ -93,7 +98,7 @@ public class Event implements Serializable {
     }
 
     public void setEventAddress(String eventAddress) {
-        this.eventAddress = validateNonEmpty(eventAddress, "Event address");
+        this.eventAddress = eventAddress;
     }
 
     public LocalDate getEventStartDate() {
@@ -101,7 +106,7 @@ public class Event implements Serializable {
     }
 
     public void setEventStartDate(LocalDate eventStartDate) {
-        this.eventStartDate = Objects.requireNonNull(eventStartDate, "Event start date cannot be null");
+        this.eventStartDate = eventStartDate;
     }
 
     public LocalDate getEventEndDate() {
@@ -109,7 +114,7 @@ public class Event implements Serializable {
     }
 
     public void setEventEndDate(LocalDate eventEndDate) {
-        this.eventEndDate = Objects.requireNonNull(eventEndDate, "Event end date cannot be null");
+        this.eventEndDate = eventEndDate;
     }
 
     public LocalTime getEventStartTime() {
@@ -117,7 +122,7 @@ public class Event implements Serializable {
     }
 
     public void setEventStartTime(LocalTime eventStartTime) {
-        this.eventStartTime = Objects.requireNonNull(eventStartTime, "Event start time cannot be null");
+        this.eventStartTime = eventStartTime;
     }
 
     public LocalTime getEventEndTime() {
@@ -125,7 +130,7 @@ public class Event implements Serializable {
     }
 
     public void setEventEndTime(LocalTime eventEndTime) {
-        this.eventEndTime = Objects.requireNonNull(eventEndTime, "Event end time cannot be null");
+        this.eventEndTime = eventEndTime;
     }
 
     public String getEventDescription() {
@@ -133,7 +138,7 @@ public class Event implements Serializable {
     }
 
     public void setEventDescription(String eventDescription) {
-        this.eventDescription = validateNonEmpty(eventDescription, "Event description");
+        this.eventDescription = eventDescription;
     }
 
     public String getEventOrganizerName() {
@@ -141,7 +146,7 @@ public class Event implements Serializable {
     }
 
     public void setEventOrganizerName(String eventOrganizerName) {
-        this.eventOrganizerName = validateNonEmpty(eventOrganizerName, "Event organizer name");
+        this.eventOrganizerName = eventOrganizerName;
     }
 
     public String getEventOrganizerEmail() {
@@ -149,7 +154,7 @@ public class Event implements Serializable {
     }
 
     public void setEventOrganizerEmail(String eventOrganizerEmail) {
-        this.eventOrganizerEmail = validateNonEmpty(eventOrganizerEmail, "Event organizer email");
+        this.eventOrganizerEmail = eventOrganizerEmail;
     }
 
     public String getEventOrganizerPhoneNo() {
@@ -157,15 +162,15 @@ public class Event implements Serializable {
     }
 
     public void setEventOrganizerPhoneNo(String eventOrganizerPhoneNo) {
-        this.eventOrganizerPhoneNo = validateNonEmpty(eventOrganizerPhoneNo, "Event organizer phone number");
+        this.eventOrganizerPhoneNo = eventOrganizerPhoneNo;
     }
 
-    public String getEventStatus() {
+    public EventStatus getEventStatus() {
         return eventStatus;
     }
 
-    public void setEventStatus(String eventStatus) {
-        this.eventStatus = validateNonEmpty(eventStatus, "Event status");
+    public void setEventStatus(EventStatus eventStatus) {
+        this.eventStatus = eventStatus;
     }
 
     public EventType getEventType() {
@@ -173,7 +178,7 @@ public class Event implements Serializable {
     }
 
     public void setEventType(EventType eventType) {
-        this.eventType = Objects.requireNonNull(eventType, "Event type cannot be null");
+        this.eventType = eventType;
     }
 
     public int getVolunteerNeed() {
@@ -200,16 +205,18 @@ public class Event implements Serializable {
         this.lastEditTime = lastEditTime;
     }
 
-    private String validateNonEmpty(String value, String fieldName) {
-        if (value == null || value.trim().isEmpty()) {
-            throw new IllegalArgumentException(fieldName + " cannot be null or empty.");
-        }
-        return value;
+    public LinkedList<Integer> getParticipantList() {
+        return participantList;
     }
+
+    public void setParticipantList(LinkedList<Integer> participantList) {
+        this.participantList = participantList;
+    }
+
 
     @Override
     public String toString() {
-        return String.format("Event ID: %-10s | Name: %-20s | Address: %-30s | Start Date: %-15s | End Date: %-15s | Start Time: %-10s | End Time: %-10s | Description: %-50s | Organizer: %-20s | Email: %-20s | Phone: %-10s | Status: %-10s | Type: %-10s | Volunteers Needed: %-3d | Available Volunteers: %-3d",
+        return String.format("| %-10s | %-45s | %-45s | %-12s | %-12s | %-12s | %-12s | %-66s | %-30s | %-30s | %-15s | %-10s | %-15s | %-20s | %-20s |",
                 eventId, eventName, eventAddress, eventStartDate, eventEndDate, eventStartTime,
                 eventEndTime, eventDescription, eventOrganizerName, eventOrganizerEmail, eventOrganizerPhoneNo, eventStatus,
                 eventType, volunteerNeed, availableVolunteerNeeded);
@@ -238,13 +245,14 @@ public class Event implements Serializable {
                 && Objects.equals(eventOrganizerEmail, event.eventOrganizerEmail)
                 && Objects.equals(eventOrganizerPhoneNo, event.eventOrganizerPhoneNo)
                 && Objects.equals(eventStatus, event.eventStatus)
-                && eventType == event.eventType;
+                && eventType == event.eventType
+                && Objects.equals(participantList, event.participantList); // Include participant list
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(eventId, eventName, eventAddress, eventStartDate, eventEndDate,
                 eventStartTime, eventEndTime, eventDescription, eventOrganizerName, eventOrganizerEmail,
-                eventOrganizerPhoneNo, eventStatus, eventType, volunteerNeed, availableVolunteerNeeded);
+                eventOrganizerPhoneNo, eventStatus, eventType, volunteerNeed, availableVolunteerNeeded, participantList);
     }
 }

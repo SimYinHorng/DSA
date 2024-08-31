@@ -3,7 +3,7 @@ package adt;
 import java.io.Serializable;
 import java.util.Iterator;
 
-public class LinkedList<T> implements ListInterface<T>,Serializable {
+public class LinkedList<T> implements ListInterface<T>, Serializable {
 
     private Node firstNode;
     private int entryNum;
@@ -124,6 +124,20 @@ public class LinkedList<T> implements ListInterface<T>,Serializable {
         return entryNum;
     }
 
+    public int findPosition(T entry) {
+        Node currentNode = firstNode;
+        int position = 1;
+
+        while (currentNode != null) {
+            if (currentNode.data.equals(entry)) {
+                return position;
+            }
+            currentNode = currentNode.next;
+            position++;
+        }
+        return -1; // Return -1 if the entry is not found
+    }
+
     @Override
     public boolean isEmpty() {
         boolean result;
@@ -147,7 +161,7 @@ public class LinkedList<T> implements ListInterface<T>,Serializable {
         return outputStr;
     }
 
-    private class Node {
+    private class Node implements Serializable{
 
         private T data;
         private Node next;

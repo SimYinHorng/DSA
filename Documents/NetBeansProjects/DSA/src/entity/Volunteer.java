@@ -5,16 +5,18 @@
 package entity;
 
 import adt.ArrayList;
+import adt.LinkedList;
 import java.io.Serializable;
 import java.util.Objects;
 import utility.VolunteerCategory;
 import utility.VolunteerGender;
+
 /**
  *
  * @author user
  */
 public class Volunteer implements Serializable {
-    
+ private static final long serialVersionUID = 1L;
     private static int nextVolunteerId = 1000;
     private int volunteerId;
     private String name;
@@ -24,13 +26,14 @@ public class Volunteer implements Serializable {
     private String dateOfBirth;
     private VolunteerGender gender;
     private VolunteerCategory category;
-    private ArrayList<Volunteer> volunteerList;
-    
-    public Volunteer(){
+    private LinkedList<String> eventList;
+
+    public Volunteer() {
         this.volunteerId = nextVolunteerId++;
-        
+        this.eventList = new LinkedList<>(); // List to store event IDs
+
     }
-    
+
     public Volunteer(String name, String email, String phoneNo, String address, String dateOfBirth, VolunteerGender gender, VolunteerCategory category) {
         this.volunteerId = nextVolunteerId++;
         this.name = name;
@@ -40,10 +43,10 @@ public class Volunteer implements Serializable {
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.category = category;
-        this.volunteerList = new ArrayList<>();
-      
+        this.eventList = new LinkedList<>(); // List to store event IDs
+
     }
-    
+
     public static int getNextVolunteerId() {
         return nextVolunteerId;
     }
@@ -92,14 +95,14 @@ public class Volunteer implements Serializable {
         this.address = address;
     }
 
-    public String getDateOfBirth(){
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
-    
-    public void setDateOfBirth(String dateOfBirth){
+
+    public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
-    
+
     public VolunteerGender getGender() {
         return gender;
     }
@@ -115,14 +118,42 @@ public class Volunteer implements Serializable {
     public void setCategory(VolunteerCategory category) {
         this.category = category;
     }
-    
-    public void setVolunteerList(ArrayList<Volunteer> volunteerList){
-        this.volunteerList = volunteerList;
+
+    public LinkedList<String> getEventList() {
+        return eventList;
     }
 
+    public void setEventList(LinkedList<String> eventList) {
+        this.eventList = eventList;
+    }
+
+    public void addEvent(String eventId) {
+        if (eventList == null) {
+            eventList = new LinkedList<>();
+        }
+        eventList.add(eventId);
+    }
+    
+    public void removeEvent(String eventId) {
+    if (eventList == null) {
+        eventList = new LinkedList<>();
+    }
+
+    // Find the position of the eventId
+    int position = eventList.findPosition(eventId);
+
+    // Remove the event if it's found
+    if (position != -1) {
+        eventList.remove(position);
+    } else {
+        System.out.println("Event ID not found in the list.");
+    }
+}
+
+    
     @Override
     public String toString() {
-        return String.format("| %-14d | %-25s | %-30s | %-15s | %-80s | %-16s | %-11s | %-25s | %15d |", volunteerId, name, email, phoneNo, address, dateOfBirth,gender,category, (!volunteerList.isEmpty() ? volunteerList.getNumberOfEntries() : 0));
+        return String.format("| %-14d | %-25s | %-30s | %-15s | %-80s | %-16s | %-11s | %-25s | %15d |", volunteerId, name, email, phoneNo, address, dateOfBirth, gender, category, (!eventList.isEmpty() ? eventList.getNumberOfEntries() : 0));
     }
 
     @Override
@@ -134,21 +165,16 @@ public class Volunteer implements Serializable {
             return false;
         }
         Volunteer volunteer = (Volunteer) o;
-        return Objects.equals(volunteerId, volunteer.volunteerId) &&
-               Objects.equals(name, volunteer.name) &&
-               Objects.equals(email, volunteer.email) &&
-               Objects.equals(phoneNo, volunteer.phoneNo) &&
-               Objects.equals(address, volunteer.address) &&
-               Objects.equals(dateOfBirth, volunteer.dateOfBirth) &&
-               Objects.equals(gender, volunteer.gender) &&
-               Objects.equals(category, volunteer.category);
-        
+        return Objects.equals(volunteerId, volunteer.volunteerId)
+                && Objects.equals(name, volunteer.name)
+                && Objects.equals(email, volunteer.email)
+                && Objects.equals(phoneNo, volunteer.phoneNo)
+                && Objects.equals(address, volunteer.address)
+                && Objects.equals(dateOfBirth, volunteer.dateOfBirth)
+                && Objects.equals(gender, volunteer.gender)
+                && Objects.equals(category, volunteer.category)
+                && Objects.equals(eventList, volunteer.eventList);
+
     }
-    
-    
-    
-    
-    
-    
-    
+
 }

@@ -4,8 +4,8 @@ import adt.HashMap;
 import adt.ArrayList;
 import adt.LinkedList;
 import boundary.EventManagementUI;
+import boundary.VolunteerManagementUI;
 import control.VolunteerManagement;
-
 import dao.EventDAO;
 import dao.EventInitializer;
 import dao.VolunteerDAO;
@@ -14,6 +14,8 @@ import entity.Volunteer;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Iterator;
+import java.util.Scanner;
+import utility.EventStatus;
 import utility.EventType;
 import static utility.MessageUI.displayInvalidChoiceMessage;
 import static utility.MessageUI.clearScreen;
@@ -22,7 +24,7 @@ import static utility.MessageUI.enterToContinue;
 import static utility.MessageUI.line;
 
 public class EventManagement {
-
+//
     private HashMap<String, Event> eventMap = new HashMap<>();
     private HashMap<Integer, Volunteer> volunteerMap = new HashMap<>();
     private ArrayList<Event> eventList = new ArrayList<>();
@@ -31,9 +33,11 @@ public class EventManagement {
     private EventInitializer eventIni = new EventInitializer();
     private EventManagementUI eventUI = new EventManagementUI();
     private VolunteerManagement volunteer = new VolunteerManagement();
+    private VolunteerManagementUI volunteerUI = new VolunteerManagementUI();
 
     public EventManagement() {
 
+        volunteerMap = volunteerDAO.retrieveFromFile();
         eventMap = eventDAO.retrieveFromFile();
         // Initialize eventList if necessary
         // eventList = eventDAO.retrieveEventList();
@@ -72,6 +76,10 @@ public class EventManagement {
                 case 8:
                     generateSummaryReports();
                     break;
+                case 9:
+                    assignVolunteerToEvent();
+                    break;
+
                 default:
                     displayInvalidChoiceMessage();
             }
@@ -100,61 +108,273 @@ public class EventManagement {
         enterToContinue();
     }
 
-    private void removeEventFromVolunteer() {
+    public void removeEventFromVolunteer() {
         boolean continueRemoving = true;
 
         while (continueRemoving) {
+            clearScreen();
+
+            // 1. List all volunteers
+            volunteerUI.listAllVolunteer(volunteerMap);
+            System.out.println("Select Volunteer To Remove Event From (0 to exit):");
+
+            // 2. Receive User Input
+            String volunteerId = eventUI.inputVolunteerId(); // Method to input an integer ID
+
+            // 3. Validation for exit
+            if (volunteerId.equals("0")) {
+                System.out.println("Exiting removal process.");
+                continueRemoving = false;
+                continue;
+            }
+
             try {
-                clearScreen();
-                displayAllEvents();
-                System.out.println("Select Event To View The  (0 to exit):");
+                int volId = Integer.parseInt(volunteerId);
+                Volunteer volunteer = volunteerMap.get(volId);
 
-                String eventId = eventUI.inputEventId().toUpperCase();
+                if (volunteer != null) {
+                    // 4. Display Volunteer Details
+                    LinkedList<String> eventList = volunteer.getEventList();
 
-                if (eventId.equals("0")) {
-                    System.out.println("Exiting removal process.");
-                    break;
-                }
+                    displayEventList(eventList);
+                    System.out.println("Select Event To Remove (0 to exit):");
 
-                Event event = eventMap.get(eventId);
-                if (event != null) {
-                    eventUI.displayEventDetails(event);
-                    System.out.println("Are you sure you want to delete this event?");
+                    // 5. Receive Event ID
+                    String eventId = eventUI.inputEventId().toUpperCase(); // Method to input an event ID
 
-                    int confirmation = eventUI.confirmationMessage();
-                    if (confirmation == 1) {
-                        eventMap.remove(eventId);
-                        eventDAO.saveToFile(eventMap);
-                        System.out.println("Event removed successfully.");
-                        enterToContinue();
-                        break;
-                    } else if (confirmation == 2) {
-                        System.out.println("Event removal canceled.");
-                        continue;
-                    } else if (confirmation == 0) {
+                    // 6. Validation for exit
+                    if (eventId.equals("0")) {
                         System.out.println("Exiting removal process.");
-                        break;
+                        continueRemoving = false;
+                        continue;
+                    }
+
+                    // 7. Check if Event Exists in Volunteer’s List
+                    if (eventList.contains(eventId)) {
+
+                        System.out.println("Are you sure you want to remove this event from the volunteer?");
+                        int confirmation = eventUI.getConfirmation(); // Method to get user confirmation
+
+                        switch (confirmation) {
+                            case 1: // Confirm    int position = eventList.findPosition(eventId);
+                                int position = eventList.findPosition(eventId);
+
+                                eventList.remove(position); // Remove event from volunteer's event list
+                                Event event = eventMap.get(eventId); // Retrieve event
+                                if (event != null) {
+                                    LinkedList<Integer> participantList = event.getParticipantList();
+
+                                    participantList.remove(volId); // Remove volunteer from event
+                                    eventDAO.saveToFile(eventMap); // Save updated event data
+                                }
+                                volunteerDAO.saveToFile(volunteerMap); // Save updated volunteer data
+                                System.out.println("Event removed from volunteer successfully.");
+                                enterToContinue(); // Wait for user input to continue
+                                continueRemoving = false;
+                                break;
+                            case 2: // Cancel
+                                System.out.println("Event removal canceled.");
+                                enterToContinue(); // Wait for user input to continue
+                                continueRemoving = false;
+                                break;
+                            case 0: // Exit
+                                System.out.println("Exiting removal process.");
+                                continueRemoving = false;
+                                break;
+                            default:
+                                System.out.println("Invalid choice. Please try again.");
+                                break;
+                        }
+                    } else {
+                        System.out.println("Event not found in this volunteer's list.");
+                        int retryChoice = eventUI.getRetryChoice(); // Method to get user choice for retry or exit
+
+                        if (retryChoice == 0) {
+                            System.out.println("Exiting removal process.");
+                            continueRemoving = false;
+                        }
                     }
                 } else {
-                    System.out.println("Event not found with ID: " + eventId);
-                    System.out.println("Would you like to try again? (1-Yes, 0-Exit)");
+                    System.out.println("Volunteer not found with ID: " + volId);
+                    int retryChoice = eventUI.getRetryChoice(); // Method to get user choice for retry or exit
 
-                    int retryChoice = eventUI.confirmationMessage();
                     if (retryChoice == 0) {
                         System.out.println("Exiting removal process.");
-                        break;
+                        continueRemoving = false;
                     }
                 }
-            } catch (Exception e) {
-                System.out.println("An error occurred: " + e.getMessage());
-                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid Volunteer ID format. Please enter a numeric ID.");
+            }
+        }
+    }
+
+    public void displayEventList(LinkedList<String> eventList) {
+        clearScreen();
+        displayEventHeader();// Display the header for the event list
+
+        // Use an iterator to traverse through the LinkedList
+        Iterator<String> iterator = eventList.iterator();
+
+        // Use a LinkedList to hold events to display
+        LinkedList<Event> eventsToDisplay = new LinkedList<>();
+
+        // Retrieve events for each event ID in the eventList
+        while (iterator.hasNext()) {
+            String eventId = iterator.next();
+            Event event = eventMap.get(eventId); // Retrieve event from the event map
+
+            if (event != null) {
+                eventsToDisplay.add(event); // Add event to the list for display
+            } else {
+                System.out.println("Event not found with ID: " + eventId);
             }
         }
 
+        // Display events
+        displayEvents(eventsToDisplay);
+
+        enterToContinue(); // Wait for user input to continue
     }
 
-    private void listAllEventsForVolunteer() {
-        throw new UnsupportedOperationException("Not supported yet.");
+// Method to display a list of events
+    private void displayEvents(LinkedList<Event> events) {
+        Iterator<Event> eventIterator = events.iterator();
+
+        while (eventIterator.hasNext()) {
+            Event event = eventIterator.next();
+            eventUI.displayEventDetails(event); // Display the event details
+        }
+    }
+
+    public void assignVolunteerToEvent() {
+        clearScreen();
+
+        // 1. Display Events
+        displayAllEvents(); // Display all events
+
+        // 2. Input Event ID
+        System.out.println("Select Event ID to assign volunteers (0 to exit):");
+        String eventId = eventUI.inputEventId().toUpperCase(); // Input an event ID
+
+        // 3. Header Event
+        eventUI.filterHeader("Event ID: " + eventId);
+        eventUI.display(filterBy(1, eventId)); // Filter by Event ID
+
+        // 4. Validation if 0 then Exit
+        if (eventId.equals("0")) {
+            System.out.println("Exiting volunteer assignment process.");
+            return; // Exit method
+        }
+
+        // 5. Retrieve Event and Validate
+        Event event = eventMap.get(eventId);
+        if (event == null) {
+            System.out.println("Event not found with ID: " + eventId);
+            return;
+        }
+
+        // 6. Get the volunteer Need Value
+        int neededVolunteers = event.getVolunteerNeed();
+
+        // 7. Get the linked list from event to store a group of Volunteer ID
+        LinkedList<Integer> participantList = event.getParticipantList();
+
+        clearScreen();
+
+        // 8. Validation for make sure the volunteer still needed
+        while (neededVolunteers > 0) {
+
+            // 9. Display Volunteer
+            volunteer.listVolunteer(); // Display all volunteers
+
+            // 10. Get Input Volunteer ID
+            System.out.println("Select Volunteer ID to assign to event (0 to exit):");
+            String id = eventUI.inputVolunteerId();
+
+            // 11. Validation to Exit
+            if (id.equals("0")) {
+                System.out.println("Exiting volunteer assignment process.");
+                return; // Exit method
+            }
+
+            // 12. To make the id become integer 
+            try {
+                int volId = Integer.parseInt(id);
+                Volunteer volunteer = volunteerMap.get(volId);
+
+                if (volunteer == null) {
+                    System.out.println("Volunteer not found with ID: " + volId);
+                    System.out.println("Available IDs in map: " + volunteerMap.keySet());
+                } else if (participantList.contains(volId)) {
+                    System.out.println("Volunteer already assigned to this event.");
+                } else {
+                    // 13. Assign Volunteer to Event
+                    participantList.add(volId);
+                    LinkedList<String> eventList = volunteer.getEventList();
+
+                    eventList.add(eventId);
+                    neededVolunteers--;
+                    event.setVolunteerNeed(neededVolunteers);
+                    eventDAO.saveToFile(eventMap); // Save event data
+                    volunteerDAO.saveToFile(volunteerMap); // Save volunteer data
+
+                    System.out.println("Volunteer assigned successfully. Volunteers needed: " + neededVolunteers);
+                }
+
+                if (neededVolunteers == 0) {
+                    System.out.println("All required volunteers have been assigned.");
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid Volunteer ID format. Please enter a numeric ID.");
+            }
+        }
+
+        enterToContinue(); // Wait for user input to continue
+    }
+
+    public void listAllEventsForVolunteer() {
+        clearScreen();
+
+        displayAllEvents(); // Display all events
+        System.out.println("Select Event ID to view the participant volunteers (0 to exit):");
+        String eventId = eventUI.inputEventId().toUpperCase(); // Method to input an event ID
+
+        if (eventId.equals("0")) {
+            System.out.println("Exiting volunteer listing process.");
+            return; // Exit method
+        }
+
+        Event event = eventMap.get(eventId);
+
+        if (event == null) {
+            System.out.println("Event not found with ID: " + eventId);
+            enterToContinue();
+            return;
+        }
+
+        LinkedList<Integer> participantList = event.getParticipantList(); // Get participant list from event
+
+        if (participantList.isEmpty()) {
+            System.out.println("No volunteers have been assigned to this event.");
+        } else {
+            System.out.println("Volunteers participating in Event ID: " + eventId);
+            // Use an iterator to traverse through the LinkedList
+            Iterator<Integer> iterator = participantList.iterator();
+
+            while (iterator.hasNext()) {
+                int volunteerId = iterator.next();
+                Volunteer volunteer = volunteerMap.get(volunteerId); // Retrieve volunteer details from the map
+                if (volunteer != null) {
+                    System.out.println(volunteer); // Assuming Volunteer class has a proper toString() method
+                } else {
+                    System.out.println("Volunteer ID " + volunteerId + " not found.");
+                }
+            }
+        }
+
+        enterToContinue(); // Wait for user input to continue
     }
 
     private void generateSummaryReports() {
@@ -211,7 +431,7 @@ public class EventManagement {
                     break;
 
                 case 8:
-                    event.setEventStatus(eventUI.inputEventStatus());
+                    event.setEventStatus(eventUI.chooseEventStatus());
                     break;
                 case 9:
                     event.setEventOrganizerName(eventUI.inputEventOrganizerName());
@@ -279,41 +499,50 @@ public class EventManagement {
             displayAllEvents();
             System.out.println("Select Event To Delete (0 to exit):");
             String eventId = eventUI.inputEventId().toUpperCase();
+
             if (eventId.equals("0")) {
                 System.out.println("Exiting removal process.");
                 continueRemoving = false;
-            } else {
-                Event removeEventById = eventMap.get(eventId);
-                if (removeEventById != null) {
-                    eventUI.displayEventDetails(removeEventById);
-                    System.out.println("Are you sure you want to delete this event?");
-                    int confirmation = eventUI.confirmationMessage();
-                    if (confirmation == 1) {
+                continue;
+            }
+
+            Event eventToRemove = eventMap.get(eventId);
+
+            if (eventToRemove != null) {
+                eventUI.displayEventDetails(eventToRemove);
+                System.out.println("Are you sure you want to delete this event?");
+                int confirmation = eventUI.confirmationMessage();
+
+                switch (confirmation) {
+                    case 1: // Confirm
                         eventMap.remove(eventId);
                         eventDAO.saveToFile(eventMap);
                         System.out.println("Event removed successfully.");
                         enterToContinue();
+                        continueRemoving = false;
                         break;
-                    } else if (confirmation == 2) {
+                    case 2: // Cancel
                         System.out.println("Event removal canceled.");
                         enterToContinue();
+                        continueRemoving = false;
                         break;
-                    } else if (confirmation == 0) {
+                    case 0: // Exit
                         System.out.println("Exiting removal process.");
                         continueRemoving = false;
                         break;
-                    }
-                } else {
-                    System.out.println("Event not found with ID: " + eventId);
-
-                    int retryChoice = eventUI.confirmationEventMessage();
-                    if (retryChoice == 0) {
-                        System.out.println("Exiting removal process.");
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
                         break;
-                    } else if (retryChoice == 1) {
-                        removeEvent();
-                    }
                 }
+            } else {
+                System.out.println("Event not found with ID: " + eventId);
+                int retryChoice = eventUI.confirmationEventMessage();
+
+                if (retryChoice == 0) {
+                    System.out.println("Exiting removal process.");
+                    continueRemoving = false;
+                }
+                // No need to recursively call removeEvent(); the loop handles retry logic
             }
         }
     }
@@ -354,7 +583,7 @@ public class EventManagement {
                     eventUI.display(filterBy(6, startTime)); // Filter by Event Start Time
                     break;
                 case 7:
-                    String eventStatus = eventUI.inputEventStatus();
+                    EventStatus eventStatus = eventUI.chooseEventStatus();
                     eventUI.filterHeader("Event Status: " + eventStatus);
                     eventUI.display(filterBy(8, eventStatus)); // Filter by Event Status
                     break;
@@ -446,7 +675,7 @@ public class EventManagement {
                     break;
                 case 8: // Event Status
                     String eventStatus = (String) searchValue;
-                    if (event.getEventStatus().equalsIgnoreCase(eventStatus)) {
+                    if (event.getEventStatus().equals(eventStatus)) {
                         result.add(event);
                     }
                     break;
@@ -555,7 +784,7 @@ public class EventManagement {
 
         // Display header for events
         displayEventHeader();
-        line(305);
+        line(400);
 
         // Iterate over the keys of the HashMap
         Iterator<String> keyIterator = eventMap.keySet().getIterator();
@@ -564,13 +793,15 @@ public class EventManagement {
             Event event = eventMap.get(eventId);
             if (event != null) {  // Check for null events
                 System.out.println(event.toString());
+                line(400);
+
             } else {
                 System.out.println("Encountered null event.");
             }
+
         }
 
         // Print a line separator for clarity
-        line(305);
     }
 
     // Add a volunteer to an event
@@ -611,7 +842,7 @@ public class EventManagement {
         String eventOrganizerName = eventUI.inputEventOrganizerName();
         String eventOrganizerEmail = eventUI.inputEventOrganizerEmail();
         String eventOrganizerPhoneNo = eventUI.inputEventOrganizerPhoneNo();
-        String eventStatus = eventUI.inputEventStatus();
+        EventStatus eventStatus = eventUI.chooseEventStatus();
         EventType eventType = eventUI.inputEventType();
         int volunteerNeed = eventUI.inputVolunteerNeedForTheEvent();
         int availableVolunteerNeeded = eventUI.inputAvailableVolunteerNeeded(volunteerNeed);
@@ -622,4 +853,5 @@ public class EventManagement {
                 eventEndTime, eventDescription, eventOrganizerName, eventOrganizerEmail, eventOrganizerPhoneNo,
                 eventStatus, eventType, volunteerNeed, availableVolunteerNeeded);
     }
+
 }
