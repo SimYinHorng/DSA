@@ -31,7 +31,7 @@ public class Donor implements Serializable {
         this.donorId = nextDonorId++;
     }
 
-    public Donor(String name, String email, String phoneNo, String address, String dateOfBirth, DonorType type,DonorCategory category) {
+    public Donor(String name, String email, String phoneNo, String address, DonorType type,DonorCategory category) {
         this.donorId = nextDonorId++;
         this.name = name;
         this.email = email;
@@ -42,7 +42,7 @@ public class Donor implements Serializable {
         this.donationList = new LinkedList<>();
     }
 
-    public Donor(String name, String email, String phoneNo, String address, String dateOfBirth, DonorType type, DonorCategory category,LinkedList<Donation> donationList) {
+    public Donor(String name, String email, String phoneNo, String address, DonorType type, DonorCategory category,LinkedList<Donation> donationList) {
         this.donorId = nextDonorId++;
         this.name = name;
         this.email = email;
