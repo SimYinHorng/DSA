@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package adt;
 
 import java.io.Serializable;
@@ -94,9 +91,9 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
         while (node != null) {
             if (node.key.equals(key)) {
                 if (prev == null) {
-                    buckets[index] = node.next; // Remove first node in the bucket
+                    buckets[index] = node.next; 
                 } else {
-                    prev.next = node.next; // Remove node in the middle or end
+                    prev.next = node.next; 
                 }
                 size--;
                 return;
