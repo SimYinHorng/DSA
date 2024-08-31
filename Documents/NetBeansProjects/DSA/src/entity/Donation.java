@@ -1,86 +1,40 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Objects;
+import adt.ArrayList;  // Import your custom ArrayList
 
-/**
- * Represents a Donation entity
- */
 public class Donation implements Serializable {
-
-    private static int nextDonationId = 1;
+    private static final long serialVersionUID = 1L;
+    private static int nextDonationId = 1000;
     private int donationId;
-    private String donorId;
-    private String doneeId;
-    private double amount;
-    private String description;
+    private Donor donor;
     private LocalDate donationDate;
+    private ArrayList<DonationItem> items; // Use your custom ArrayList
 
-    public Donation() {
+    public Donation(Donor donor, LocalDate donationDate) {
         this.donationId = nextDonationId++;
-    }
-
-    public Donation(String donorId, String doneeId, double amount, String description, LocalDate donationDate) {
-        this.donationId = nextDonationId++;
-        this.donorId = donorId;
-        this.doneeId = doneeId;
-        this.amount = amount;
-        this.description = description;
+        this.donor = donor;
         this.donationDate = donationDate;
+        this.items = new ArrayList<>();
     }
 
-    public static int getNextDonationId() {
-        return nextDonationId;
-    }
-
-    public static void setNextDonationId(int nextDonationId) {
-        Donation.nextDonationId = nextDonationId;
-    }
-
+    // Getter for donationId
     public int getDonationId() {
         return donationId;
     }
 
+    // Setter for donationId
     public void setDonationId(int donationId) {
         this.donationId = donationId;
     }
 
-    public String getDonorId() {
-        return donorId;
+    public Donor getDonor() {
+        return donor;
     }
 
-    public void setDonorId(String donorId) {
-        this.donorId = donorId;
-    }
-
-    public String getDoneeId() {
-        return doneeId;
-    }
-
-    public void setDoneeId(String doneeId) {
-        this.doneeId = doneeId;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDonor(Donor donor) {
+        this.donor = donor;
     }
 
     public LocalDate getDonationDate() {
@@ -91,28 +45,38 @@ public class Donation implements Serializable {
         this.donationDate = donationDate;
     }
 
+    public ArrayList<DonationItem> getItems() {
+        return items;
+    }
+
+    public void setItems(ArrayList<DonationItem> items) {
+        this.items = items;
+    }
+    
+    public void addItem(DonationItem item) {
+        items.add(item);
+    }
+    
+    public void removeItem(DonationItem item) {
+        for (int i = 1; i <= items.getNumberOfEntries(); i++) { // Iterate using 1-based index
+            if (items.getEntry(i).equals(item)) {
+                items.remove(i);
+                break;
+            }
+        }
+    }
+
+    public double getTotalValue() {
+        double total = 0;
+        for (int i = 1; i <= items.getNumberOfEntries(); i++) { // Use 1-based index
+            total += items.getEntry(i).getValue(); // Ensure getValue() method is implemented in DonationItem
+        }
+        return total;
+    }
+
     @Override
     public String toString() {
-        return String.format("|%-10d|%-15s|%-15s|%-10.2f|%-30s|%-15s|", 
-                donationId, donorId, doneeId, amount, description, 
-                donationDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Donation donation = (Donation) o;
-        return donationId == donation.donationId &&
-                Double.compare(donation.amount, amount) == 0 &&
-                Objects.equals(donorId, donation.donorId) &&
-                Objects.equals(doneeId, donation.doneeId) &&
-                Objects.equals(description, donation.description) &&
-                Objects.equals(donationDate, donation.donationDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(donationId, donorId, doneeId, amount, description, donationDate);
+        return String.format("Donation ID: %d, Donor: %s, Date: %s, Total Value: %.2f", 
+                             donationId, donor.getName(), donationDate, getTotalValue());
     }
 }
