@@ -133,7 +133,6 @@ public class DonorManagement {
         boolean exit = false;
         do {
             donorUI.listAllDonors(donorMap);
-            
             exit = deleteFunction();
 
         } while (!exit);
@@ -144,72 +143,8 @@ public class DonorManagement {
         boolean exit = false;
         do {
             donorUI.listAllDonors(donorMap);
-            System.out.println("Select Donor To Edit (0 to exit)");
-            int editId = donorUI.inputDonorID();
-            if (editId == 0) {
-                exit = true;
-            } else {
-                Donor editDonor = donorMap.get(editId);
-                boolean stopEdit = false;
-                boolean edited = false;
-                while (!stopEdit) {
-                    donorUI.displayDonorDetails(editDonor);
-                    int edit = donorUI.getEditMenu();
-                    switch (edit) {
-                        case 1:
-                            String name = donorUI.inputDonorName();
-                            editDonor.setName(name);
-                            edited = true;
-                            break;
-                        case 2:
-                            String email = donorUI.inputDonorEmail();
-                            editDonor.setEmail(email);
-                            edited = true;
-                            break;
-                        case 3:
-                            String phoneNo = donorUI.inputDonorPhoneNo();
-                            editDonor.setPhoneNo(phoneNo);
-                            edited = true;
-                            break;
-                        case 4:
-                            String address = donorUI.inputDonorAddress();
-                            editDonor.setAddress(address);
-                            edited = true;
-                            break;
-                        case 5:
-                            DonorType type = donorUI.inputDonorType();
-                            editDonor.setType(type);
-                            edited = true;
-                            break;
-                        case 6:
-                            DonorCategory cat = donorUI.inputDonorCat();
-                            editDonor.setCategory(cat);
-                            edited = true;
-                            break;
-                        case 0:
-                            stopEdit = true;
-                            break;
-                    }
+            exit = updateFunction();
 
-                }
-                if (edited) {
-                    donorUI.displayDonorDetails(editDonor);
-                    System.out.println("Are the details correct?");
-                    int confirm = donorUI.confirmationMessage();
-                    switch (confirm) {
-                        case 1:
-                            donorMap.put(editDonor.getDonorId(), editDonor);
-                            donorDAO.saveToFile(donorMap);
-                            exit = true;
-                            break;
-                        case 2:
-                            break;
-                        case 0:
-                            exit = true;
-                            break;
-                    }
-                }
-            }
         } while (!exit);
     }
 
@@ -253,7 +188,7 @@ public class DonorManagement {
                     break;
             }
             if (!exit) {
-                enterToContinue();
+                subMenu();
             }
 
         } while (!exit);
@@ -263,22 +198,7 @@ public class DonorManagement {
         boolean exit = false;
         do {
             donorUI.listAllDonors(donorMap);
-            System.out.println("Select Donor To List its Donation (0 to exit)");
-            int listId = donorUI.inputDonorID();
-            if (listId == 0) {
-                exit = true;
-            } else {
-                Donor listDonor = donorMap.get(listId);
-                if (listDonor != null) {
-                    donorUI.displayDonorDetails(listDonor);
-                    donorUI.displayDonorDonations(listDonor.getDonationList());
-
-                } else {
-                    System.out.println("Invalid Donor Id!!!");
-                    enterToContinue();
-                }
-            }
-
+            exit = listFunction();
         } while (!exit);
     }
 
@@ -331,7 +251,7 @@ public class DonorManagement {
                     break;
             }
             if (!exit) {
-                enterToContinue();
+                subMenu();
             }
 
         } while (!exit);
@@ -388,7 +308,7 @@ public class DonorManagement {
                     break;
             }
             if (!exit) {
-                enterToContinue();
+                subMenu();
             }
 
         } while (!exit);
@@ -558,7 +478,7 @@ public class DonorManagement {
 
     public void subMenu() {
         int choice;
-        
+
         do {
             choice = donorUI.getSubMenu();
             switch (choice) {
@@ -568,12 +488,11 @@ public class DonorManagement {
                     deleteFunction();
                     break;
                 case 2:
-
+                    updateFunction();
                     break;
                 case 3:
-
+                    listFunction();
                     break;
-
                 default:
                     displayInvalidChoiceMessage();
                     break;
@@ -604,6 +523,106 @@ public class DonorManagement {
                         exit = true;
                         break;
                 }
+            } else {
+                System.out.println("Invalid Donor Id!!!");
+                enterToContinue();
+            }
+        }
+        return exit;
+    }
+
+    public boolean updateFunction() {
+        boolean exit = false;
+        System.out.println("Select Donor To Edit (0 to exit)");
+        int editId = donorUI.inputDonorID();
+        if (editId == 0) {
+            exit = true;
+        } else {
+
+            Donor editDonor = donorMap.get(editId);
+            Donor oldDonor = clone(editDonor);
+            System.out.println(oldDonor.toString());
+            if (editDonor == null) {
+                displayInvalidChoiceMessage();
+            } else {
+                boolean stopEdit = false;
+                boolean edited = false;
+                while (!stopEdit) {
+                    donorUI.displayDonorDetails(editDonor);
+                    int edit = donorUI.getEditMenu();
+                    switch (edit) {
+                        case 1:
+                            String name = donorUI.inputDonorName();
+                            editDonor.setName(name);
+                            edited = true;
+                            break;
+                        case 2:
+                            String email = donorUI.inputDonorEmail();
+                            editDonor.setEmail(email);
+                            edited = true;
+                            break;
+                        case 3:
+                            String phoneNo = donorUI.inputDonorPhoneNo();
+                            editDonor.setPhoneNo(phoneNo);
+                            edited = true;
+                            break;
+                        case 4:
+                            String address = donorUI.inputDonorAddress();
+                            editDonor.setAddress(address);
+                            edited = true;
+                            break;
+                        case 5:
+                            DonorType type = donorUI.inputDonorType();
+                            editDonor.setType(type);
+                            edited = true;
+                            break;
+                        case 6:
+                            DonorCategory cat = donorUI.inputDonorCat();
+                            editDonor.setCategory(cat);
+                            edited = true;
+                            break;
+                        case 0:
+                            stopEdit = true;
+                            break;
+                    }
+                    if (edited) {
+                        donorUI.displayDonorDetails(editDonor);
+                        System.out.println("Are the details correct?");
+                        int confirm = donorUI.confirmationMessage();
+                        switch (confirm) {
+                            case 1:
+                                donorMap.put(editDonor.getDonorId(), editDonor);
+                                donorDAO.saveToFile(donorMap);
+                                exit = true;
+                                break;
+                            case 2:
+                                editDonor = clone(oldDonor);
+                                stopEdit = false;
+                                break;
+                            case 0:
+                                exit = true;
+                                break;
+                        }
+                    }
+                }
+            }
+
+        }
+        return exit;
+    }
+
+    public boolean listFunction() {
+        boolean exit = false;
+        System.out.println("Select Donor To List its Donation (0 to exit)");
+        int listId = donorUI.inputDonorID();
+        if (listId == 0) {
+            exit = true;
+        } else {
+            Donor listDonor = donorMap.get(listId);
+            if (listDonor != null) {
+                donorUI.displayDonorDetails(listDonor);
+                donorUI.displayDonorDonations(listDonor.getDonationList());
+                enterToContinue();
             } else {
                 System.out.println("Invalid Donor Id!!!");
                 enterToContinue();
@@ -747,4 +766,25 @@ public class DonorManagement {
         }
         return result;
     }
+
+    public Donor clone(Donor oldDonor) {
+        Donor clonedDonor = new Donor();
+        clonedDonor.setDonorId(oldDonor.getDonorId());
+        clonedDonor.setName(oldDonor.getName());
+        clonedDonor.setEmail(oldDonor.getEmail());
+        clonedDonor.setPhoneNo(oldDonor.getPhoneNo());
+        clonedDonor.setAddress(oldDonor.getAddress());
+        clonedDonor.setType(oldDonor.getType());
+        clonedDonor.setCategory(oldDonor.getCategory());
+        LinkedList<Donation> newList = new LinkedList<>();
+        Iterator listIt = oldDonor.getDonationList().iterator();
+        while (listIt.hasNext()) {
+            Donation donation = (Donation) listIt.next();
+            newList.add(donation);
+        }
+
+        clonedDonor.setDonationList(newList);
+        return clonedDonor;
+    }
+
 }

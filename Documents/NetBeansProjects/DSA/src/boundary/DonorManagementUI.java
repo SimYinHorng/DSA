@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.Scanner;
 import utility.DonorType;
-import static utility.MessageUI.displayDonorHeader;     
+import static utility.MessageUI.displayDonorHeader;
 import java.util.InputMismatchException;
 import utility.DonorCategory;
 import utility.MessageUI;
@@ -143,10 +143,10 @@ public class DonorManagementUI {
             System.out.print("Enter choice: ");
             choice = validateInt();
             System.out.println("");
-            if (choice >= 0 && choice <= 3) {   
+            if (choice >= 0 && choice <= 3) {
                 validInput = true;
             } else {
-                displayInvalidChoiceMessage();  
+                displayInvalidChoiceMessage();
             }
 
         } while (!validInput);
@@ -215,10 +215,15 @@ public class DonorManagementUI {
 
     public void listAllDonors(HashMap<Integer, Donor> donorMap) {
         Iterator keyIt = donorMap.keySet().getIterator();
-
         displayDonorHeader();
-        while (keyIt.hasNext()) {
-            System.out.println(donorMap.get((Integer) keyIt.next()).toString());
+        if (donorMap.isEmpty()) {
+            System.out.printf("| %-202s|\n", "No Record Found ...");
+        } else {
+
+            while (keyIt.hasNext()) {
+                System.out.println(donorMap.get((Integer) keyIt.next()).toString());
+            }
+
         }
         line(205);
     }
@@ -227,7 +232,7 @@ public class DonorManagementUI {
         Iterator linkedIt = donorList.iterator();
         displayDonorHeader();
         if (donorList.isEmpty()) {
-            System.out.printf("| %-202s|\n", "No Record Found");
+            System.out.printf("| %-202s|\n", "No Record Found ...");
         } else {
             while (linkedIt.hasNext()) {
                 System.out.println(linkedIt.next().toString());
@@ -414,10 +419,10 @@ public class DonorManagementUI {
         DonorCategory donorCategory = inputDonorCat();
         switch (donorCategory) {
             case INDIVIDUAL:
-                return new Donor(donorName, donorEmail, donorPhoneNo, donorAddress, donorEmail, DonorType.PRIVATE, donorCategory);
+                return new Donor(donorName, donorEmail, donorPhoneNo, donorAddress, DonorType.PRIVATE, donorCategory);
             case ORGANIZATION:
                 DonorType donorType = inputDonorType();
-                return new Donor(donorName, donorEmail, donorPhoneNo, donorAddress, donorEmail, donorType, donorCategory);
+                return new Donor(donorName, donorEmail, donorPhoneNo, donorAddress, donorType, donorCategory);
         }
         return new Donor();
     }
