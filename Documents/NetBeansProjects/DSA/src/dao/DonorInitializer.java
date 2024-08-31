@@ -15,7 +15,7 @@ import utility.DonorType;
 
 /**
  *
- * @author user
+ * @author Sim Yin Horng
  */
 //delete the donor.dat and donorId.dat then use run this initializer
 public class DonorInitializer {

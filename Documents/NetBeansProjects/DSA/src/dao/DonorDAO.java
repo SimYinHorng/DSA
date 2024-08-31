@@ -17,7 +17,7 @@ import java.io.ObjectOutputStream;
 
 /**
  *
- * @author user
+ * @author Sim Yin Horng
  */
 public class DonorDAO {
 

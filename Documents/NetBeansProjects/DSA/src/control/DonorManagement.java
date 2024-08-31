@@ -22,7 +22,7 @@ import static utility.MessageUI.enterToContinue;
 
 /**
  *
- * @author user
+ * @author Sim Yin Horng
  */
 public class DonorManagement {
 
@@ -152,43 +152,52 @@ public class DonorManagement {
     public void SearchDonor() {
         boolean exit = false;
         do {
+            LinkedList<Donor> displayList = new LinkedList<>();
+            boolean recordFound = false;
             int search = donorUI.getSearchMenu();
             switch (search) {
                 case 1:
                     String name = donorUI.inputDonorName();
                     donorUI.filterHeader(name);
-                    donorUI.display(filterBy(search, name));
+                    displayList = filterBy(search, name);
+                    donorUI.display(displayList);
                     break;
                 case 2:
                     String email = donorUI.inputSearchEmail();
                     donorUI.filterHeader(email);
-                    donorUI.display(filterBy(search, email));
+                    displayList = filterBy(search, email);
+                    donorUI.display(displayList);
                     break;
                 case 3:
                     String phoneNo = donorUI.inputSearchPhoneNo();
                     donorUI.filterHeader(phoneNo);
-                    donorUI.display(filterBy(search, phoneNo));
+                    displayList = filterBy(search, phoneNo);
+                    donorUI.display(displayList);
                     break;
                 case 4:
                     String address = donorUI.inputDonorAddress();
                     donorUI.filterHeader(address);
-                    donorUI.display(filterBy(search, address));
+                    displayList = filterBy(search, address);
+                    donorUI.display(displayList);
                     break;
                 case 5:
                     DonorType type = donorUI.inputDonorType();
                     donorUI.filterHeader(type.toString());
-                    donorUI.display(filterBy(search, type));
+                    displayList = filterBy(search, type);
+                    donorUI.display(displayList);
                     break;
                 case 6:
                     DonorCategory cat = donorUI.inputDonorCat();
                     donorUI.filterHeader(cat.toString());
-                    donorUI.display(filterBy(search, cat));
+                    displayList= filterBy(search, cat);
+                    donorUI.display(displayList);
                     break;
                 case 0:
                     exit = true;
                     break;
             }
-            if (!exit) {
+            recordFound = !displayList.isEmpty();
+            if (!exit && recordFound) {
                 subMenu();
             }
 
@@ -206,12 +215,15 @@ public class DonorManagement {
     public void FilterDonor() {
         boolean exit = false;
         do {
+            LinkedList<Donor> displayList = new LinkedList<>();
+            boolean recordFound = false;
             int filter = donorUI.getFilterMenu();
             switch (filter) {
                 case 1:
                     String emailDomain = donorUI.inputEmailDomain();
                     donorUI.filterHeader(emailDomain);
-                    donorUI.display(filterByEmailDomain(emailDomain));
+                    displayList = filterByEmailDomain(emailDomain);
+                    donorUI.display(displayList);
                     break;
                 case 2:
                     int slc = donorUI.donationFilterMenu();
@@ -219,24 +231,28 @@ public class DonorManagement {
                         case 1:
                             int above = donorUI.inputQty();
                             donorUI.filterHeader("Donation Above " + above);
-                            donorUI.display(filterByDonation("ABOVE", above));
+                            displayList = filterByDonation("ABOVE", above);
+                            donorUI.display(displayList);
                             break;
                         case 2:
                             System.out.println("Enter First Number");
                             int first = donorUI.inputQty();
                             System.out.println("Enter Second Number");
                             int second = donorUI.inputQty();
-                            donorUI.display(filterBetween(first, second));
+                            displayList = filterBetween(first, second);
+                            donorUI.display(displayList);
                             break;
                         case 3:
                             int below = donorUI.inputQty();
                             donorUI.filterHeader("Donation below " + below);
-                            donorUI.display(filterByDonation("BELOW", below));
+                            displayList = filterByDonation("BELOW", below);
+                            donorUI.display(displayList);
                             break;
                         case 4:
                             int equal = donorUI.inputQty();
                             donorUI.filterHeader("Donation below " + equal);
-                            donorUI.display(filterByDonation("EQUAL", equal));
+                            displayList = filterByDonation("EQUAL", equal);
+                            donorUI.display(displayList);
                             break;
                         case 0:
                             break;
@@ -245,13 +261,15 @@ public class DonorManagement {
                 case 3:
                     DonorType type = donorUI.inputDonorType();
                     donorUI.filterHeader("excluding " + type.toString());
-                    donorUI.display(excludeCategory(type));
+                    displayList = excludeCategory(type);
+                    donorUI.display(displayList);
                     break;
                 case 0:
                     exit = true;
                     break;
             }
-            if (!exit) {
+            recordFound = !displayList.isEmpty();
+            if (!exit && recordFound) {
                 subMenu();
             }
 
@@ -288,6 +306,7 @@ public class DonorManagement {
         boolean exit = false;
         DonorType type = null;
         do {
+            boolean recordFound = false;
             int cat = donorUI.getCategorizeMenu();
             switch (cat) {
                 case 1:
@@ -295,20 +314,23 @@ public class DonorManagement {
                     double percentage = (double) govDonor.getNumberOfEntries() / donorMap.size() * 100;
                     donorUI.categorizeHeader(govDonor.getNumberOfEntries(), percentage, DonorType.GOVERNMENT.toString());
                     donorUI.display(govDonor);
+                    recordFound = !govDonor.isEmpty();
                     break;
                 case 2:
                     type = DonorType.PUBLIC;
                     donorUI.display(publicDonor);
+                    recordFound = !publicDonor.isEmpty();
                     break;
                 case 3:
                     type = DonorType.PRIVATE;
                     donorUI.display(privateDonor);
+                    recordFound = !privateDonor.isEmpty();
                     break;
                 case 0:
                     exit = true;
                     break;
             }
-            if (!exit) {
+            if (!exit && recordFound) {
                 subMenu();
             }
 
@@ -622,7 +644,7 @@ public class DonorManagement {
             if (listDonor != null) {
                 donorUI.displayDonorDetails(listDonor);
                 donorUI.displayDonorDonations(listDonor.getDonationList());
-                enterToContinue();
+//                choice = donorUI.getSubMenu();
             } else {
                 System.out.println("Invalid Donor Id!!!");
                 enterToContinue();

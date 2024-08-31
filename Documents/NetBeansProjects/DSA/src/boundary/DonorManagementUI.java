@@ -22,7 +22,7 @@ import static utility.MessageUI.line;
 
 /**
  *
- * @author user
+ * @author Sim Yin Horng
  */
 public class DonorManagementUI {
 

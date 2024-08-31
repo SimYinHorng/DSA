@@ -6,7 +6,7 @@ package adt;
 
 /**
  *
- * @author user
+ * @author Sim Yin Horng
  * @param <K>
  * @param <V>
  */

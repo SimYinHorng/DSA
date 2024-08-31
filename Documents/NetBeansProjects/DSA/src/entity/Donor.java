@@ -13,7 +13,7 @@ import utility.DonorType;
 
 /**
  *
- * @author user
+ * @author Sim Yin Horng
  */
 public class Donor implements Serializable {
 
