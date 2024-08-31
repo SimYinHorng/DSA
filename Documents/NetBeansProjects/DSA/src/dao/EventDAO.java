@@ -4,6 +4,11 @@ import adt.HashMap;
 import entity.Event;
 import java.io.*;
 
+/**
+ *
+ * @author Terence Goh Poh Xian
+ */
+
 public class EventDAO {
 
     private static final String FILE_NAME = "src/data/event.dat";

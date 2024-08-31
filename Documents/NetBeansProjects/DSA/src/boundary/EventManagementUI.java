@@ -13,6 +13,11 @@ import utility.EventStatus;
 import utility.EventType;
 import static utility.MessageUI.*;
 
+/**
+ *
+ * @author Terence Goh Poh Xian
+ */
+
 public class EventManagementUI {
 
     private static final Scanner scanner = new Scanner(System.in);

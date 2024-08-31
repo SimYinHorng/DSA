@@ -10,10 +10,10 @@ import utility.EventStatus;
 import utility.EventType;
 
 /**
- * Represents an event in the charity event management system.
  *
- * Author: Terence
+ * @author Terence Goh Poh Xian
  */
+
 public class Event implements Serializable {
  private static final long serialVersionUID = 1L;
     private static int nextEventId = 1;

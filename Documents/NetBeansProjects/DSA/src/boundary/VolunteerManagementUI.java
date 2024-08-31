@@ -6,12 +6,11 @@ package boundary;
 
 import adt.HashMap;
 import adt.LinkedList;
-import entity.Donor;
+import control.EventManagement;
 import entity.Volunteer;
 import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Scanner;
-import static utility.MessageUI.displayDonorHeader;
 import utility.VolunteerCategory;
 import static utility.VolunteerCategory.HAVE_WORKING_EXPERIENCE;
 import static utility.VolunteerCategory.NO_WORKING_EXPERIENCE;
@@ -132,6 +131,35 @@ public class VolunteerManagementUI {
         return choice;
     }
     
+    public int inputQty() {
+        int qty;
+        boolean validInt = false;
+        do {
+            System.out.print("Enter a Number : ");
+            qty = validateInt();
+            if (qty < 0) {
+                displayInvalidChoiceMessage();
+            } else {
+                validInt = true;
+            }
+        } while (!validInt);
+        return qty;
+    }
+
+    public void display(LinkedList<Volunteer> volunteerList) {
+        Iterator linkedIt = volunteerList.iterator();
+        displayVolunteerHeader();
+        if (volunteerList.isEmpty()) {
+            System.out.printf("| %-202s|\n", "No Record Found ...");
+        } else {
+            while (linkedIt.hasNext()) {
+                System.out.println(linkedIt.next().toString());
+            }
+
+        }
+        line(205);
+    }
+    
     public void filterHeader(String search) {
         line(205);
         System.out.printf("|Search Result Of : %-184s|\n", search);
@@ -202,7 +230,7 @@ public class VolunteerManagementUI {
             if (name.matches(regex)) {
                 validName = true;
             } else {
-                System.out.println("Invalid Name or Company Name !!!");
+                System.out.println("Invalid Name. Plese re-enter !!!");
                 enterToContinue();
             }
         } while (!validName);
@@ -228,7 +256,7 @@ public class VolunteerManagementUI {
 
     public String enterVolunteerPhoneNo() {
         String phoneNo;
-        String regex = "^(0\\d-\\d{8}|01\\d-\\d{8})$";
+        String regex = "^(0\\d-\\d{7,8}|01\\d-\\d{7,8})$";
         do {
             System.out.print("Enter Volunteer Phone No: ");
             phoneNo = scanner.nextLine();
@@ -328,6 +356,24 @@ public class VolunteerManagementUI {
         VolunteerCategory volunteerCategory = enterVolunteerCategory();
    
         return new Volunteer(volunteerName, volunteerEmail, volunteerPhoneNo, volunteerAddress, volunteerDateOfBirth, volunteerGender, volunteerCategory);
+    }
+    
+    public int enterVolunteerId() {
+        boolean validInput = false;
+        int id = -1;
+        do {
+            System.out.print("Volunteer Id: ");
+
+            id = validateInt();
+            if (id != -1) {
+                validInput = true;
+            } else {
+                System.out.println("Please Enter Integer");
+            }
+
+        } while (!validInput);
+
+        return id;
     }
 
     public static void displayExitMessage() {

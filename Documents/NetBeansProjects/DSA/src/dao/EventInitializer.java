@@ -1,14 +1,16 @@
 package dao;
 
 import adt.HashMap;
-import adt.LinkedList;
 import entity.Event;
-import entity.Volunteer;
-import java.util.Iterator;
 import utility.EventStatus;
 import utility.EventType;
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+/**
+ *
+ * @author Terence Goh Poh Xian
+ */
 
 public class EventInitializer {
 

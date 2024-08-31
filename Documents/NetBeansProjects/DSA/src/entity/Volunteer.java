@@ -4,7 +4,6 @@
  */
 package entity;
 
-import adt.ArrayList;
 import adt.LinkedList;
 import java.io.Serializable;
 import java.util.Objects;
