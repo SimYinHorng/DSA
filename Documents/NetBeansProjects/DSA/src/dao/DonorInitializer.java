@@ -5,7 +5,10 @@
 package dao;
 
 import adt.HashMap;
+import adt.LinkedList;
+import entity.Donation;
 import entity.Donor;
+import java.time.LocalDate;
 import java.util.Iterator;
 import utility.DonorCategory;
 import utility.DonorType;
@@ -19,6 +22,9 @@ public class DonorInitializer {
 
     public HashMap<Integer, Donor> initializeDonor() {
         HashMap<Integer, Donor> donorMap = new HashMap<>();
+        
+        LinkedList<Donation> donationList = new LinkedList<>();
+        
         Donor donor1 = new Donor("Lucas Ooi", "lucasooi@gmail.com", "016-4561234", "Damansara Heights, Off Jalan Semantan, Kuala Lumpur Wilayah Persekutuan, 50630", DonorType.PRIVATE, DonorCategory.INDIVIDUAL);
 
         Donor donor2 = new Donor("Amelia Tan", "ameliatan@yahoo.com", "017-9876543", "Taman Tun Dr Ismail, Kuala Lumpur, 60000", DonorType.PRIVATE, DonorCategory.INDIVIDUAL);

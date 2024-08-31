@@ -308,7 +308,6 @@ public class DonorManagementUI {
 
             if (!email.matches(regex)) {
                 System.out.println("Invalid Email!!!");
-                enterToContinue();
             }
         } while (!email.matches(regex));
 
@@ -330,7 +329,6 @@ public class DonorManagementUI {
             phoneNo = scanner.nextLine();
             if (!phoneNo.matches(regex)) {
                 System.out.println("Invalid Phone Number!!!");
-                enterToContinue();
             }
         } while (!phoneNo.matches(regex));
 

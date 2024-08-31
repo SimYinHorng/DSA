@@ -32,6 +32,7 @@ public class DonorManagement {
 
     public DonorManagement() {
         donorMap = donorDAO.retrieveFromFile();
+        
     }
 
     public void runDonorManagement() {
@@ -422,7 +423,6 @@ public class DonorManagement {
 
         for (int i = 1; i < sortedDonor.getNumberOfEntries() + 1; i++) {
             Donor donor = sortedDonor.getEntry(i);
-            System.out.println("Donor " + (i + 1) + ": " + donor.getName() + " - Donations: " + donor.getDonationList().getNumberOfEntries());
             topDonor.enqueue(donor);
             botDonor.push(donor);
         }
