@@ -53,7 +53,7 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
                 }
                 node = node.next;
             }
-            node.next = new Node<>(key, value); // Add new node if key not found
+            node.next = new Node<>(key, value);
             size++;
         }
 
