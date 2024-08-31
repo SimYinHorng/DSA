@@ -10,5 +10,9 @@ package utility;
  */
 public enum VolunteerGender {
     MALE,
-    FEMALE
+    FEMALE;
+
+    public Object toLowerCase() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
