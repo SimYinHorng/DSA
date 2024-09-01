@@ -531,7 +531,7 @@ public class DoneeManagementUI {
                         break;
 
                     case 9:
-                        System.out.print("Enter Description: ");
+                        System.out.print("Enter Needs Description: ");
                         String description = scanner.nextLine();
                         MessageUI.displayDoneeHeader();
                         resultList = searchByDescription(description);
@@ -875,5 +875,9 @@ public class DoneeManagementUI {
         return choice;
         
     }
+    
+    
+    
+    
 
 }
