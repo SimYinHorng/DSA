@@ -12,7 +12,6 @@ import dao.EventDAO;
 import dao.VolunteerDAO;
 import entity.Event;
 import entity.Volunteer;
-import java.util.Collection;
 import java.util.Iterator;
 import static utility.MessageUI.displayInvalidChoiceMessage;
 import utility.VolunteerCategory;
@@ -25,7 +24,7 @@ import static utility.MessageUI.line;
 
 /**
  *
- * @author user
+ * @author Goh Wei Xian
  */
 public class VolunteerManagement {
 
@@ -61,7 +60,7 @@ public class VolunteerManagement {
                     searchVolunteer();
                     break;
                 case 4:
-                    assignVolunteer();
+                    assignVolunteerToEvent();
                     break;
                 case 5:
                     searchEventUnderVolunteer();
@@ -73,7 +72,7 @@ public class VolunteerManagement {
                     filterVolunteer();
                     break;
                 case 8:
-                    //generateReport();
+                    generateReport();
                     break;
                 default:
                     displayInvalidChoiceMessage();
@@ -92,7 +91,9 @@ public class VolunteerManagement {
                 case 1:
                     volunteerMap.put(newVolunteer.getVolunteerId(), newVolunteer);
                     volunteerDAO.saveToFile(volunteerMap);
-                    System.out.println("Volunteer added successfullt!!\n");
+                    System.out.println("\n==============================");
+                    System.out.println("Volunteer added successfully!!");
+                    System.out.println("==============================");
                     exit = true;
                     break;
                 case 2:
@@ -137,7 +138,7 @@ public class VolunteerManagement {
         } while (!exit);
     }
 
-    private void removeVolunteer() {
+    public void removeVolunteer() {
         boolean continueRemoving = true;
 
         while (continueRemoving) {
@@ -157,7 +158,9 @@ public class VolunteerManagement {
                     if (confirmation.equals("y")) {
                         volunteerMap.remove(volunteerId);
                         volunteerDAO.saveToFile(volunteerMap);
-                        System.out.println("Volunteer removed successfully.\n");
+                        System.out.println("\n===============================");
+                        System.out.println("Volunteer removed successfully.");
+                        System.out.println("===============================");
                         break; // Exit inner loop after successful removal
                     } else {
                         System.out.println("Operation cancelled. No volunteer was removed.\n");
@@ -175,7 +178,7 @@ public class VolunteerManagement {
         }
     }
 
-    private void searchVolunteer() {
+    public void searchVolunteer() {
         boolean exit = false;
         do {
             int choice = volunteerUI.getSearchMenu();
@@ -190,11 +193,11 @@ public class VolunteerManagement {
                         volunteerUI.filterHeader(idToString);
                         volunteerUI.displayOutput(filterBy(choice, idToString));
                     } else {
-                        line(205);
-                        System.out.printf("|Search Result Of : %-184s|\n", id);
+                        line(239);
+                        System.out.printf("|Search Result Of : %-239s|\n", id);
                         displayVolunteerHeader();
                         System.out.printf("| %-202s|\n", "No Record Found");
-                        line(205);
+                        line(239);
                     }
 
                     break;
@@ -227,6 +230,7 @@ public class VolunteerManagement {
                     VolunteerCategory category = volunteerUI.enterVolunteerCategory();
                     volunteerUI.filterHeader(category.toString());
                     volunteerUI.displayOutput(filterBy(choice, category));
+                    break;
                 case 0:
                     exit = true;
                     break;
@@ -290,30 +294,6 @@ public class VolunteerManagement {
 
         }
         return result;
-    }
-
-    //search by id
-    private void searchById() {
-        boolean continueSearching = true;
-
-        while (continueSearching) {
-            System.out.print("\nEnter Volunteer ID: ");
-            int id = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
-            if (volunteerMap.containsKey(id)) {
-                Volunteer volunteer = volunteerMap.get(id);
-                volunteerUI.displayVolunteerDetails(volunteer);
-            } else {
-                System.out.println("No volunteer found with the given ID.\n");
-            }
-
-            System.out.print("Do you want to search by another ID? (Y/N): ");
-            String response = scanner.nextLine().trim().toLowerCase();
-            if (!response.equals("y")) {
-                continueSearching = false;
-            }
-        }
     }
 
     public void assignVolunteerToEvent() {
@@ -403,12 +383,41 @@ public class VolunteerManagement {
         enterToContinue(); // Wait for user input to continue
     }
 
-    private void assignVolunteer() {
-        assignVolunteerToEvent();
-    }
+    public void searchEventUnderVolunteer() {
+        boolean continueSearch = true;
 
-    private void searchEventUnderVolunteer() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        while (continueSearch) {
+            clearScreen();
+
+            // 1. List all volunteers
+            volunteerUI.listAllVolunteer(volunteerMap);
+            System.out.println("Select Volunteer To Search (0 to exit):");
+
+            // 2. Receive User Input
+            String volunteerId = eventUI.inputVolunteerId(); // Method to input an integer ID
+            volunteerUI.filterHeader(volunteerId);
+
+            // 3. Validation for exit
+            if (volunteerId.equals("0")) {
+                System.out.println("Exiting search process.");
+                continueSearch = false;
+                continue;
+            }
+
+            try {
+                int volId = Integer.parseInt(volunteerId);
+                Volunteer volunteer = volunteerMap.get(volId);
+
+                if (volunteer != null) {
+                    // 4. Display Volunteer Details
+                    LinkedList<String> eventList = volunteer.getEventList();
+
+                    event.displayEventList(eventList);  
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid Volunteer ID format. Please enter a numeric ID.");
+            }
+        }
     }
 
     public void listVolunteer() {
@@ -416,41 +425,103 @@ public class VolunteerManagement {
         enterToContinue();
     }
 
-    //waiting for participant list
     public void filterVolunteer() {
-//        boolean exit = false;
-//        do {
-//            int slc = volunteerUI.eventVounteerFilterMenu();
-//            switch (slc) {
-//                case 1:
-//                    int above = volunteerUI.inputQty();
-//                    volunteerUI.filterHeader("Volunteer Consists Of Event Above " + above);
-//                    volunteerUI.display(filterByEvent("ABOVE", above));
-//                    break;
-//                case 2:
-//                    System.out.println("Enter First Number");
-//                    int first = volunteerUI.inputQty();
-//                    System.out.println("Enter Second Number");
-//                    int second = volunteerUI.inputQty();
-//                    volunteerUI.display(filterBetween(first, second));
-//                    break;
-//                case 3:
-//                    int below = volunteerUI.inputQty();
-//                    volunteerUI.filterHeader("Volunteer Consists Of Event Below" + below);
-//                    volunteerUI.display(filterByEvent("BELOW", below));
-//                    break;
-//                case 4:
-//                    int equal = volunteerUI.inputQty();
-//                    volunteerUI.filterHeader("Volunteer Consists OF Event Equal To" + equal);
-//                    volunteerUI.display(filterByEvent("EQUAL", equal));
-//                case 0:
-//                    break;
-//            }
-//            break;
-//        } while (!exit);
+        boolean exit = false;
+        do {
+            LinkedList<Volunteer> displayList = new LinkedList<>();
+            int slc = volunteerUI.eventVounteerFilterMenu();
+            switch (slc) {
+                case 1:
+                    int above = volunteerUI.inputQty();
+                    volunteerUI.filterHeader("Volunteer Consists Of Event Above " + above);
+                    displayList = filterByEvent("ABOVE", above);
+                    volunteerUI.display(filterByEvent("ABOVE", above));
+                    break;
+                case 2:
+                    System.out.println("Enter First Number");
+                    int first = volunteerUI.inputQty();
+                    System.out.println("Enter Second Number");
+                    int second = volunteerUI.inputQty();
+                    volunteerUI.display(filterBetween(first, second));
+                    break;
+                case 3:
+                    int below = volunteerUI.inputQty();
+                    volunteerUI.filterHeader("Volunteer Consists Of Event Below " + below);
+                    displayList = filterByEvent("BELOW", below);
+                    volunteerUI.display(filterByEvent("BELOW", below));
+                    break;
+                case 4:
+                    int equal = volunteerUI.inputQty();
+                    volunteerUI.filterHeader("Volunteer Consists Of Event Equal To " + equal);
+                    displayList = filterByEvent("EQUAL", equal);
+                    volunteerUI.display(filterByEvent("EQUAL", equal));
+                    break;
+                case 0:
+                    exit = true;
+                    break;
+            }
+            if(!exit){
+                enterToContinue();
+            }
+        } while (!exit);
     }
-//waiting to solve the problem
+    
+    public LinkedList<Volunteer> filterByEvent(String condition, int qty) {
+        LinkedList<Volunteer> result = new LinkedList<>();
+        Iterator keyIt = volunteerMap.keySet().getIterator();
 
+        while (keyIt.hasNext()) {
+            Integer key = (Integer) keyIt.next();
+            Volunteer volunteer = volunteerMap.get(key);
+            switch (condition) {
+                case "ABOVE":
+                    if (volunteer.getEventList().getNumberOfEntries() >= qty) {
+                        result.add(volunteer);
+                        
+                    }
+                    break;
+                case "BELOW":
+                    if (volunteer.getEventList().getNumberOfEntries() <= qty) {
+                        result.add(volunteer);
+                    }
+                    break;
+                case "EQUAL":
+                    if (volunteer.getEventList().getNumberOfEntries() == qty) {
+                        result.add(volunteer);
+                    }
+                    break;
+            }
+
+        }
+        return result;
+    }
+
+    public LinkedList<Volunteer> filterBetween(int firstNum, int secondNum) {
+        LinkedList<Volunteer> result = new LinkedList<>();
+        Iterator keyIt = volunteerMap.keySet().getIterator();
+
+        int largerNum;
+        int smallerNum;
+
+        if (firstNum > secondNum) {
+            largerNum = firstNum;
+            smallerNum = secondNum;
+        } else {
+            largerNum = secondNum;
+            smallerNum = firstNum;
+        }
+
+        while (keyIt.hasNext()) {
+            Integer key = (Integer) keyIt.next();
+            Volunteer volunteer = volunteerMap.get(key);
+
+            if (volunteer.getEventList().getNumberOfEntries() < largerNum && volunteer.getEventList().getNumberOfEntries() > smallerNum) {
+                result.add(volunteer);
+            }
+        }
+        return result;
+    }
+    
     public void generateReport() {
         LinkedList<Volunteer> maleVolunteer = new LinkedList<>();
         LinkedList<Volunteer> femaleVolunteer = new LinkedList<>();
@@ -461,9 +532,12 @@ public class VolunteerManagement {
         int countHaveExperience = 0, countNoExperience = 0;
         int ageUnder16 = 0, age17to30 = 0, age31to45 = 0, ageAbove45 = 0;
 
-        Collection<Volunteer> volunteers = (Collection<Volunteer>) volunteerMap.values();
+        LinkedList<Volunteer> volunteers = new LinkedList<>();
 
-        for (Volunteer volunteer : volunteers) {
+        Iterator<Volunteer> iterator = volunteers.iterator();
+        while (iterator.hasNext()) {
+            Volunteer volunteer = iterator.next();
+            
             // Gender categorization
             if (volunteer.getGender() == VolunteerGender.MALE) {
                 maleVolunteer.add(volunteer);
@@ -509,46 +583,47 @@ public class VolunteerManagement {
         System.out.println("---------------------------------------------------------------------------------------------------------");
         System.out.println("|                                       Volunteer Summary Report                                        |");
         System.out.println("---------------------------------------------------------------------------------------------------------");
-        System.out.println("| Generated on : " + java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "                                                |");
+        System.out.println("| Generated on : " + java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "                                                                    |");
         System.out.println("---------------------------------------------------------------------------------------------------------");
         System.out.println("|                                                                                                       |");
-        System.out.printf("| Total Number of Volunteer : %-69d |\n", totalVolunteers);
+        System.out.printf("| Total Number of Volunteer : %-73d |\n", totalVolunteers);
         System.out.println("---------------------------------------------------------------------------------------------------------");
         System.out.println("| Volunteer Gender         | Number Of Volunteer                | Percentage (%)                        |");
         System.out.println("---------------------------------------------------------------------------------------------------------");
-        System.out.printf("| MALE                     | %-35d | %-31.2f%% |\n", countMale, malePercentage);
-        System.out.printf("| FEMALE                   | %-35d | %-31.2f%% |\n", countFemale, femalePercentage);
+        System.out.printf("| MALE                     | %-34d | %-36.2f%% |\n", maleVolunteer.getNumberOfEntries(), malePercentage);
+        System.out.printf("| FEMALE                   | %-34d | %-36.2f%% |\n", countFemale, femalePercentage);
         System.out.println("---------------------------------------------------------------------------------------------------------");
-        System.out.printf("| Total                    | %-35d | 100%%                                  |\n", totalVolunteers);
+        System.out.printf("| Total                    | %-34d | 100%%                                  |\n", totalVolunteers);
         System.out.println("---------------------------------------------------------------------------------------------------------");
         System.out.println("|                                                                                                       |");
-        System.out.printf("| Summary By Volunteer Category : %-64d |\n", totalVolunteers);
+        System.out.printf("| Summary By Volunteer Category : %-69d |\n", totalVolunteers);
         System.out.println("---------------------------------------------------------------------------------------------------------");
-        System.out.println("| Volunteer Category        | Number Of Volunteer                | Percentage (%)                        |");
+        System.out.println("| Volunteer Category       | Number Of Volunteer                | Percentage (%)                        |");
         System.out.println("---------------------------------------------------------------------------------------------------------");
-        System.out.printf("| HAVE_WORKING_EXPERIENCE   | %-35d | %-31.2f%% |\n", countHaveExperience, haveExperiencePercentage);
-        System.out.printf("| NO_WORKING_EXPERIENCE     | %-35d | %-31.2f%% |\n", countNoExperience, noExperiencePercentage);
+        System.out.printf("| HAVE_WORKING_EXPERIENCE  | %-34d | %-36.2f%% |\n", countHaveExperience, haveExperiencePercentage);
+        System.out.printf("| NO_WORKING_EXPERIENCE    | %-34d | %-36.2f%% |\n", countNoExperience, noExperiencePercentage);
         System.out.println("---------------------------------------------------------------------------------------------------------");
-        System.out.printf("| Total                    | %-35d | 100%%                                  |\n", totalVolunteers);
+        System.out.printf("| Total                    | %-34d | 100%%                                  |\n", totalVolunteers);
         System.out.println("---------------------------------------------------------------------------------------------------------");
         System.out.println("|                                                                                                       |");
         System.out.println("| Average Age of Volunteer                                                                              |");
         System.out.println("---------------------------------------------------------------------------------------------------------");
         System.out.println("| Volunteer Age            | Number Of Volunteer                | Percentage (%)                        |");
         System.out.println("---------------------------------------------------------------------------------------------------------");
-        System.out.printf("| ( 0 - 16)  years old     | %-35d | %-31.2f%% |\n", ageUnder16, ageUnder16Percentage);
-        System.out.printf("| (17 - 30)  years old     | %-35d | %-31.2f%% |\n", age17to30, age17to30Percentage);
-        System.out.printf("| (31 - 45)  years old     | %-35d | %-31.2f%% |\n", age31to45, age31to45Percentage);
-        System.out.printf("| (Above 45) years old     | %-35d | %-31.2f%% |\n", ageAbove45, ageAbove45Percentage);
+        System.out.printf("| ( 0 - 16)  years old     | %-34d | %-36.2f%% |\n", ageUnder16, ageUnder16Percentage);
+        System.out.printf("| (17 - 30)  years old     | %-34d | %-36.2f%% |\n", age17to30, age17to30Percentage);
+        System.out.printf("| (31 - 45)  years old     | %-34d | %-36.2f%% |\n", age31to45, age31to45Percentage);
+        System.out.printf("| (Above 45) years old     | %-34d | %-36.2f%% |\n", ageAbove45, ageAbove45Percentage);
         System.out.println("---------------------------------------------------------------------------------------------------------");
-        System.out.printf("| Total                    | %-35d | 100%%                                  |\n", totalVolunteers);
+        System.out.printf("| Total                    | %-34d | 100%%                                  |\n", totalVolunteers);
         System.out.println("---------------------------------------------------------------------------------------------------------");
         System.out.println("---------------------------------------------------------------------------------------------------------");
         System.out.println("|              This report is for staff use only. Please handle the information with care.              |");
         System.out.println("---------------------------------------------------------------------------------------------------------");
+        enterToContinue();
     }
 
-    private int calculateAge(String dateOfBirth) {
+    public int calculateAge(String dateOfBirth) {
         java.time.LocalDate birthDate = java.time.LocalDate.parse(dateOfBirth);
         java.time.LocalDate currentDate = java.time.LocalDate.now();
         return java.time.Period.between(birthDate, currentDate).getYears();
@@ -558,61 +633,5 @@ public class VolunteerManagement {
         VolunteerManagement productMaintenance = new VolunteerManagement();
         productMaintenance.runVolunteerManagement();
     }
-//waiting for participant list
-
-    public LinkedList<Event> filterByEvent(String condition, int qty) {
-        LinkedList<Event> result = new LinkedList<>();
-        Iterator keyIt = eventMap.keySet().getIterator();
-
-        while (keyIt.hasNext()) {
-            Integer key = (Integer) keyIt.next();
-            Event volunteer = eventMap.get(Integer.toString(key));
-            switch (condition) {
-                case "ABOVE":
-                    if (volunteer.getParticipantList().getNumberOfEntries() >= qty) {
-                        result.add(volunteer);
-                    }
-                    break;
-                case "BELOW":
-                    if (volunteer.getParticipantList().getNumberOfEntries() <= qty) {
-                        result.add(volunteer);
-                    }
-                    break;
-                case "EQUAL":
-                    if (volunteer.getParticipantList().getNumberOfEntries() == qty) {
-                        result.add(volunteer);
-                    }
-                    break;
-            }
-
-        }
-        return result;
-    }
-
-    //waiting for participant list
-    public LinkedList<Event> filterBetween(int firstNum, int secondNum) {
-        LinkedList<Event> result = new LinkedList<>();
-        Iterator keyIt = eventMap.keySet().getIterator();
-
-        int largerNum;
-        int smallerNum;
-
-        if (firstNum > secondNum) {
-            largerNum = firstNum;
-            smallerNum = secondNum;
-        } else {
-            largerNum = secondNum;
-            smallerNum = firstNum;
-        }
-
-        while (keyIt.hasNext()) {
-            Integer key = (Integer) keyIt.next();
-            Event event = eventMap.get(Integer.toString(key));
-
-            if (event.getParticipantList().getNumberOfEntries() < largerNum && event.getParticipantList().getNumberOfEntries() > smallerNum) {
-                result.add(event);
-            }
-        }
-        return result;
-    }
+   
 }
