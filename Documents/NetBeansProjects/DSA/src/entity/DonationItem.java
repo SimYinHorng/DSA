@@ -16,12 +16,12 @@ public class DonationItem implements Serializable {
         this.isCash = isCash;
     }
     
-    // Getter for value
+    
     public double getValue() {
         return value;
     }
 
-    // Getters for other fields
+    
     public String getName() {
         return name;
     }
@@ -34,7 +34,7 @@ public class DonationItem implements Serializable {
         return isCash;
     }
 
-    // Setters for all fields
+    
     public void setName(String name) {
         this.name = name;
     }

@@ -7,7 +7,7 @@ import java.io.*;
 public class DonationDAO {
     private static final String FILE_NAME = "donations.ser";
 
-    // Method to save donations to a file
+    
     public void saveDonations(ArrayList<Donation> donations) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
             oos.writeObject(donations);
@@ -16,7 +16,7 @@ public class DonationDAO {
         }
     }
 
-    // Method to load donations from a file
+    
     public ArrayList<Donation> loadDonations() {
         ArrayList<Donation> donations = new ArrayList<>();
         File file = new File(FILE_NAME);
@@ -30,3 +30,4 @@ public class DonationDAO {
         return donations;
     }
 }
+

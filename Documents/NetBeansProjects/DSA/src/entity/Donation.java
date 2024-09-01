@@ -2,7 +2,7 @@ package entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import adt.ArrayList;  // Import your custom ArrayList
+import adt.ArrayList;  
 
 public class Donation implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -10,7 +10,7 @@ public class Donation implements Serializable {
     private int donationId;
     private Donor donor;
     private LocalDate donationDate;
-    private ArrayList<DonationItem> items; // Use your custom ArrayList
+    private ArrayList<DonationItem> items; 
 
     public Donation(Donor donor, LocalDate donationDate) {
         this.donationId = nextDonationId++;
@@ -19,12 +19,12 @@ public class Donation implements Serializable {
         this.items = new ArrayList<>();
     }
 
-    // Getter for donationId
+    
     public int getDonationId() {
         return donationId;
     }
 
-    // Setter for donationId
+    
     public void setDonationId(int donationId) {
         this.donationId = donationId;
     }
@@ -58,7 +58,7 @@ public class Donation implements Serializable {
     }
     
     public void removeItem(DonationItem item) {
-        for (int i = 1; i <= items.getNumberOfEntries(); i++) { // Iterate using 1-based index
+        for (int i = 1; i <= items.getNumberOfEntries(); i++) { 
             if (items.getEntry(i).equals(item)) {
                 items.remove(i);
                 break;
@@ -68,8 +68,8 @@ public class Donation implements Serializable {
 
     public double getTotalValue() {
         double total = 0;
-        for (int i = 1; i <= items.getNumberOfEntries(); i++) { // Use 1-based index
-            total += items.getEntry(i).getValue(); // Ensure getValue() method is implemented in DonationItem
+        for (int i = 1; i <= items.getNumberOfEntries(); i++) { 
+            total += items.getEntry(i).getValue(); 
         }
         return total;
     }

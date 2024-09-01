@@ -190,7 +190,6 @@ public class DonationManagementUI {
         String email = getStringInput("Email: ");
         String phoneNo = getStringInput("Phone number: ");
         String address = getStringInput("Address: ");
-        // Note: You might want to add input for DonorType and DonorCategory here
         return new Donor(name, email, phoneNo, address, null, null);
     }
 
