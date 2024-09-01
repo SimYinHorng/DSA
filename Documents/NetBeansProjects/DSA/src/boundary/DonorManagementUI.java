@@ -32,6 +32,7 @@ public class DonorManagementUI {
         boolean correctInput = false;
         int choice;
         do {
+            System.out.println("");
             line(15);
             System.out.println("DONOR MAIN MENU");
             line(15);
@@ -250,6 +251,7 @@ public class DonorManagementUI {
     }
 
     public void displayDonorDetails(Donor donor) {
+        System.out.println("");
         MessageUI.line(15);
         System.out.println("Donor Details");
         MessageUI.line(15);
@@ -265,19 +267,21 @@ public class DonorManagementUI {
 
     public void displayDonorDonations(LinkedList<Donation> donationList) {
         Iterator it = donationList.iterator();
-        line(86);
-        System.out.printf("| %-10s| %-9s| %-7s| %-30s| %-14s|\n", "Donation ID", "Donee Id", "Amount (RM)", "Description", "Donation Date");
-        line(86);
+        line(51);
+        System.out.printf("| %-11s | %-16s | %-14s |\n", "Donation ID", "Total Value (RM)", "Donation Date");
+        line(51);
         if (donationList.isEmpty()) {
-            System.out.printf("|%50s%34s|\n", "No Record Found", "");
+            System.out.printf("|%32s%17s|\n", "No Record Found", "");
         }
         while (it.hasNext()) {
             Donation donation = (Donation) it.next();
-            System.out.printf("|%-10d|%-15s|%-10.2f|%-30s|%-14s|",
-                    donation.getDonationId(), donation.getDoneeId(), donation.getAmount(), donation.getDescription(),
-                    donation.getDonationDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+            if (donation != null) {
+                System.out.printf("| %-11d | %-16.2f | %-14s |\n",donation.getDonationId(), donation.getTotalValue(), 
+                        donation.getDonationDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+            }
+
         }
-        line(86);
+        line(51);
     }
 
     public String inputDonorName() {
@@ -356,7 +360,7 @@ public class DonorManagementUI {
             System.out.println("1. Public");
             System.out.println("2. Private ");
             System.out.println("3. Government ");
-            System.out.print("Enter Donor Type: ");
+            System.out.print("Enter Choice: ");
             input = scanner.nextInt();
 
             switch (input) {
@@ -389,7 +393,7 @@ public class DonorManagementUI {
         do {
             System.out.println("1. Individual");
             System.out.println("2. Organization ");
-            System.out.print("Enter Donor Category: ");
+            System.out.print("Enter Choice: ");
             input = scanner.nextInt();
 
             switch (input) {

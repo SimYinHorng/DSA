@@ -4,13 +4,16 @@
  */
 package control;
 
+import adt.ArrayList;
 import adt.CircularLinkedQueue;
 import adt.HashMap;
 import adt.LinkedList;
 import adt.LinkedStack;
 import boundary.DonorManagementUI;
+import dao.DonationDAO;
 import dao.DonorDAO;
 import entity.Donation;
+import entity.DonationItem;
 import entity.Donor;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,7 +35,21 @@ public class DonorManagement {
 
     public DonorManagement() {
         donorMap = donorDAO.retrieveFromFile();
-        
+        DonationDAO donationDAO = new DonationDAO();
+        ArrayList<Donation> donationList = donationDAO.loadDonations();
+
+        for (int i = 0; i < donationList.getNumberOfEntries(); i++) {
+            Donation donation = donationList.getEntry(i);
+            if (donation != null) {
+                int donorID = donation.getDonor().getDonorId();
+                if (donorMap.containsKey(donorID)) {
+                    Donor donor = donorMap.get(donorID);
+                    donor.getDonationList().add(donation);
+                }
+
+            }
+        }
+
     }
 
     public void runDonorManagement() {
@@ -189,7 +206,7 @@ public class DonorManagement {
                 case 6:
                     DonorCategory cat = donorUI.inputDonorCat();
                     donorUI.filterHeader(cat.toString());
-                    displayList= filterBy(search, cat);
+                    displayList = filterBy(search, cat);
                     donorUI.display(displayList);
                     break;
                 case 0:
@@ -259,6 +276,7 @@ public class DonorManagement {
                     }
                     break;
                 case 3:
+                    System.out.println("Select a Category to exclude");
                     DonorType type = donorUI.inputDonorType();
                     donorUI.filterHeader("excluding " + type.toString());
                     displayList = excludeCategory(type);
@@ -370,8 +388,11 @@ public class DonorManagement {
                     Iterator govIt = donor.getDonationList().iterator();
                     while (govIt.hasNext()) {
                         Donation donation = (Donation) govIt.next();
-                        govTtlDonationAmt += donation.getAmount();
-                        govDonationQty++;
+                        if (donation != null) {
+                            govTtlDonationAmt += donation.getTotalValue();
+                            govDonationQty++;
+                        }
+
                     }
                     break;
                 case PRIVATE:
@@ -379,8 +400,11 @@ public class DonorManagement {
                     Iterator privateIt = donor.getDonationList().iterator();
                     while (privateIt.hasNext()) {
                         Donation donation = (Donation) privateIt.next();
-                        privateTtlDonationAmt += donation.getAmount();
-                        privateDonationQty++;
+                        if (donation != null) {
+                            privateTtlDonationAmt += donation.getTotalValue();
+                            privateDonationQty++;
+                        }
+
                     }
                     break;
                 case PUBLIC:
@@ -388,8 +412,11 @@ public class DonorManagement {
                     Iterator publicIt = donor.getDonationList().iterator();
                     while (publicIt.hasNext()) {
                         Donation donation = (Donation) publicIt.next();
-                        publicTtlDonationAmt += donation.getAmount();
-                        publicDonationQty++;
+                        if (donation != null) {
+                            publicTtlDonationAmt += donation.getTotalValue();
+                            publicDonationQty++;
+                        }
+
                     }
                     break;
                 default:
@@ -402,8 +429,11 @@ public class DonorManagement {
                     Iterator indiIt = donor.getDonationList().iterator();
                     while (indiIt.hasNext()) {
                         Donation donation = (Donation) indiIt.next();
-                        indiTtlDonationAmt += donation.getAmount();
-                        indiDonationQty++;
+                        if (donation != null) {
+                            indiTtlDonationAmt += donation.getTotalValue();
+                            indiDonationQty++;
+                        }
+
                     }
                     break;
                 case ORGANIZATION:
@@ -411,8 +441,11 @@ public class DonorManagement {
                     Iterator orgIt = donor.getDonationList().iterator();
                     while (orgIt.hasNext()) {
                         Donation donation = (Donation) orgIt.next();
-                        orgTtlDonationAmt += donation.getAmount();
-                        orgDonationQty++;
+                        if (donation != null) {
+                            orgTtlDonationAmt += donation.getTotalValue();
+                            orgDonationQty++;
+                        }
+
                     }
                     break;
             }
@@ -473,7 +506,7 @@ public class DonorManagement {
                 Iterator amtIt = donor.getDonationList().iterator();
                 while (amtIt.hasNext()) {
                     Donation donation = (Donation) amtIt.next();
-                    amount += donation.getAmount();
+                    amount += donation.getTotalValue();
                 }
 
                 System.out.printf("| %-5d| %-27s| %-15s| %-26d| %-21.2f|\n", i, donor.getName(), donor.getCategory().toString(), donor.getDonationList().getNumberOfEntries(), amount);
@@ -488,7 +521,7 @@ public class DonorManagement {
                 Iterator amtIt = donor.getDonationList().iterator();
                 while (amtIt.hasNext()) {
                     Donation donation = (Donation) amtIt.next();
-                    amount += donation.getAmount();
+                    amount += donation.getTotalValue();
                 }
 
                 System.out.printf("| %-5d| %-27s| %-15s| %-26d| %-21.2f|\n", i, donor.getName(), donor.getCategory().toString(), donor.getDonationList().getNumberOfEntries(), amount);
@@ -496,6 +529,7 @@ public class DonorManagement {
 
         }
         donorUI.reportFooter();
+        enterToContinue();
     }
 
     public void subMenu() {
@@ -644,7 +678,7 @@ public class DonorManagement {
             if (listDonor != null) {
                 donorUI.displayDonorDetails(listDonor);
                 donorUI.displayDonorDonations(listDonor.getDonationList());
-//                choice = donorUI.getSubMenu();
+                enterToContinue();
             } else {
                 System.out.println("Invalid Donor Id!!!");
                 enterToContinue();
