@@ -2,11 +2,16 @@ package control;
 
 import adt.ArrayList;
 import adt.HashMap;
+import adt.LinkedList;
 import boundary.DoneeManagementUI;
 import boundary.DonorManagementUI;
 import dao.DoneeDAO;
 import dao.DonorDAO;
+import entity.Donation;
 import entity.Donee;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
 import java.util.Scanner;
 import utility.DoneeCategory;
 import static utility.MessageUI.displayInvalidChoiceMessage;
@@ -52,9 +57,9 @@ public class DoneeManagement {
                 break;
 
             case 4:
-                //filterDonee();
+                filterDonee();
                 break;
-                
+
             case 5:
                 //generateReport();
                 break;
@@ -105,6 +110,7 @@ public class DoneeManagement {
 
     public void listDonee() {
         doneeUI.listAllDonees(doneeMap);
+        doneeDAO.saveToFile(doneeMap);
         enterToContinue();
 
     }
@@ -142,15 +148,15 @@ public class DoneeManagement {
     public void removeDonee(Donee donee) {
         if (donee != null && doneeMap.containsKey(donee.getDoneeId())) {
             doneeUI.displayDoneeDetails(donee);
-            
+
             System.out.println("Are you sure you want to remove the donee with ID " + donee.getDoneeId() + "?");
             int confirmation = doneeUI.confirmationMessage();
 
-            if (confirmation == 1) { 
+            if (confirmation == 1) {
                 doneeMap.remove(donee.getDoneeId());
                 doneeDAO.saveToFile(doneeMap);
                 System.out.println("Donee with ID " + donee.getDoneeId() + " has been successfully removed.");
-            } else if (confirmation == 2) { 
+            } else if (confirmation == 2) {
                 System.out.println("Operation canceled. Donee was not removed.");
             } else {
                 System.out.println("Exiting removal process.");
@@ -161,9 +167,21 @@ public class DoneeManagement {
         enterToContinue();
     }
 
-    public void viewAllDonations(Donee donee) {
+    public void filterDonee() {
 
     }
+
+    public boolean viewAllDonations(Donee donee) {
+        boolean exit = false;
+
+        doneeUI.displayDoneeDetails(donee);
+        doneeUI.displayDoneeDonations(donee.getDonationList());
+        enterToContinue();
+
+        return exit;
+    }
+
+   
 
     public Donee selectDoneeFromResults(ArrayList<Donee> doneeList) {
         if (doneeList.isEmpty()) {

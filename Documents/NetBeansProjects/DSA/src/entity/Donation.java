@@ -8,6 +8,7 @@ public class Donation implements Serializable {
     private static final long serialVersionUID = 1L;
     private static int nextDonationId = 1000;
     private int donationId;
+    private Donee donee;
     private Donor donor;
     private LocalDate donationDate;
     private ArrayList<DonationItem> items; 
@@ -19,6 +20,14 @@ public class Donation implements Serializable {
         this.items = new ArrayList<>();
     }
 
+    public Donation(Donee donee, LocalDate donationDate){
+        this.donationId = nextDonationId++;
+        this.donee = donee;
+        this.donationDate = donationDate;
+        this.items = new ArrayList<>();
+        
+    }
+    
     
     public int getDonationId() {
         return donationId;
@@ -37,6 +46,15 @@ public class Donation implements Serializable {
         this.donor = donor;
     }
 
+     public Donee getDonee() {
+        return donee;
+    }
+
+    public void setDonee(Donee donee) {
+        this.donee = donee;
+    }
+    
+    
     public LocalDate getDonationDate() {
         return donationDate;
     }

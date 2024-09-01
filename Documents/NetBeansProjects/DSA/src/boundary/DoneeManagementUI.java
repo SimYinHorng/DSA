@@ -2,6 +2,8 @@ package boundary;
 
 import adt.ArrayList;
 import adt.HashMap;
+import adt.LinkedList;
+import entity.Donation;
 import entity.Donee;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -350,7 +352,15 @@ public class DoneeManagementUI {
 
         MessageUI.displayDoneeHeader();
         while (keyIt.hasNext()) {
-            System.out.println(doneeMap.get((Integer) keyIt.next()).toString());
+            Donee testDonee = doneeMap.get((Integer) keyIt.next());
+            LocalDate latestDate = testDonee.updateLastAssistanceDate(testDonee);
+            //testDonee.setLastAssistanceDate(latestDate);
+            //doneeMap.put(testDonee.getDoneeId(), testDonee);
+
+            //Donee donee = (Donee) doneeMap.get((Integer) keyIt.next());
+            testDonee.setLastAssistanceDate(latestDate);
+
+            System.out.println(testDonee.toString());
         }
         line(205);
     }
@@ -723,6 +733,25 @@ public class DoneeManagementUI {
         } while (!flag);
 
         return selectInput;
+    }
+
+    public void displayDoneeDonations(LinkedList<Donation> donationList) {
+        Iterator it = donationList.iterator();
+        line(51);
+        System.out.printf("| %-11s | %-16s | %-14s |\n", "Donation ID", "Total Value (RM)", "Donation Date");
+        line(51);
+        if (donationList.isEmpty()) {
+            System.out.printf("|%32s%17s|\n", "No Record Found", "");
+        }
+        while (it.hasNext()) {
+            Donation donation = (Donation) it.next();
+            if (donation != null) {
+                System.out.printf("| %-11d | %-16.2f | %-14s |\n", donation.getDonationId(), donation.getTotalValue(),
+                        donation.getDonationDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+            }
+
+        }
+        line(51);
     }
 
 }
