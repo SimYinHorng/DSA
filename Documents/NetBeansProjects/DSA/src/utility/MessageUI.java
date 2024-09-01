@@ -72,8 +72,7 @@ public class MessageUI {
 
     public static void clearScreen() {
         //this not working
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     }
 
 }

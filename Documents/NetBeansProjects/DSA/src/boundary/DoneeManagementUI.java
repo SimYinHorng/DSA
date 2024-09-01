@@ -41,7 +41,7 @@ public class DoneeManagementUI {
             scanner.nextLine();
             System.out.println();
 
-            if (choice >= 0 && choice <= 4) {
+            if (choice >= 0 && choice <= 5) {
                 flag = true;
             } else {
                 displayInvalidChoiceMessage();
@@ -354,10 +354,6 @@ public class DoneeManagementUI {
         while (keyIt.hasNext()) {
             Donee testDonee = doneeMap.get((Integer) keyIt.next());
             LocalDate latestDate = testDonee.updateLastAssistanceDate(testDonee);
-            //testDonee.setLastAssistanceDate(latestDate);
-            //doneeMap.put(testDonee.getDoneeId(), testDonee);
-
-            //Donee donee = (Donee) doneeMap.get((Integer) keyIt.next());
             testDonee.setLastAssistanceDate(latestDate);
 
             System.out.println(testDonee.toString());
@@ -365,9 +361,24 @@ public class DoneeManagementUI {
         line(205);
     }
 
-    public ArrayList<Donee> showDoneeSearchMenu(HashMap<Integer, Donee> doneeMap) {
+    public void listAllDonees(LinkedList<Donee> doneeList) {
+        if (doneeList == null || doneeList.isEmpty()) {
+            System.out.println("No donees available to display.");
+            return;
+        }
+
+        MessageUI.displayDoneeHeader();
+        Iterator<Donee> iterator = doneeList.iterator();
+        while (iterator.hasNext()) {
+            Donee donee = iterator.next();
+            System.out.println(donee);
+        }
+
+    }
+
+    public LinkedList<Donee> showDoneeSearchMenu(HashMap<Integer, Donee> doneeMap) {
         this.doneeMap = doneeMap;
-        ArrayList<Donee> resultList = null;
+        LinkedList<Donee> resultList = null;
 
         boolean flag = false;
 
@@ -540,8 +551,8 @@ public class DoneeManagementUI {
         return resultList;
     }
 
-    private ArrayList<Donee> searchById(int doneeId) {
-        ArrayList<Donee> resultList = new ArrayList<>();
+    private LinkedList<Donee> searchById(int doneeId) {
+        LinkedList<Donee> resultList = new LinkedList<>();
         Donee donee = doneeMap.get(doneeId);
         if (donee != null) {
             System.out.println("1. " + donee.toString());
@@ -552,15 +563,15 @@ public class DoneeManagementUI {
         return resultList;
     }
 
-    private ArrayList<Donee> searchByName(String name) {
-        ArrayList<Donee> resultList = new ArrayList<>();
+    private LinkedList<Donee> searchByName(String name) {
+        LinkedList<Donee> resultList = new LinkedList<>();
         int index = 1;
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
-            if (donee.getName().equalsIgnoreCase(name)) {
+            if (donee.getName().toLowerCase().contains(name.toLowerCase())) {
                 System.out.println(index++ + ". " + donee.toString());
                 resultList.add(donee);
                 foundCount++;
@@ -571,15 +582,15 @@ public class DoneeManagementUI {
         return resultList;
     }
 
-    private ArrayList<Donee> searchByEmail(String email) {
-        ArrayList<Donee> resultList = new ArrayList<>();
+    private LinkedList<Donee> searchByEmail(String email) {
+        LinkedList<Donee> resultList = new LinkedList<>();
         int index = 1;
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
-            if (donee.getEmail().equalsIgnoreCase(email)) {
+            if (donee.getEmail().toLowerCase().contains(email.toLowerCase())) {
                 System.out.println(index++ + ". " + donee.toString());
                 resultList.add(donee);
                 foundCount++;
@@ -590,15 +601,15 @@ public class DoneeManagementUI {
         return resultList;
     }
 
-    private ArrayList<Donee> searchByPhoneNo(String phoneNo) {
-        ArrayList<Donee> resultList = new ArrayList<>();
+    private LinkedList<Donee> searchByPhoneNo(String phoneNo) {
+        LinkedList<Donee> resultList = new LinkedList<>();
         int index = 1;
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
-            if (donee.getPhoneNo().equalsIgnoreCase(phoneNo)) {
+            if (donee.getPhoneNo().contains(phoneNo)) {
                 System.out.println(index++ + ". " + donee.toString());
                 resultList.add(donee);
                 foundCount++;
@@ -609,15 +620,15 @@ public class DoneeManagementUI {
         return resultList;
     }
 
-    private ArrayList<Donee> searchByAddress(String address) {
-        ArrayList<Donee> resultList = new ArrayList<>();
+    private LinkedList<Donee> searchByAddress(String address) {
+        LinkedList<Donee> resultList = new LinkedList<>();
         int index = 1;
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
-            if (donee.getAddress().contains(address)) {
+            if (donee.getAddress().toLowerCase().contains(address.toLowerCase())) {
                 System.out.println(index++ + ". " + donee.toString());
                 resultList.add(donee);
                 foundCount++;
@@ -628,8 +639,8 @@ public class DoneeManagementUI {
         return resultList;
     }
 
-    private ArrayList<Donee> searchByCategory(String category) {
-        ArrayList<Donee> resultList = new ArrayList<>();
+    private LinkedList<Donee> searchByCategory(String category) {
+        LinkedList<Donee> resultList = new LinkedList<>();
         int index = 1;
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
@@ -647,8 +658,8 @@ public class DoneeManagementUI {
         return resultList;
     }
 
-    private ArrayList<Donee> searchByStatus(String status) {
-        ArrayList<Donee> resultList = new ArrayList<>();
+    private LinkedList<Donee> searchByStatus(String status) {
+        LinkedList<Donee> resultList = new LinkedList<>();
         int index = 1;
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
@@ -666,8 +677,8 @@ public class DoneeManagementUI {
         return resultList;
     }
 
-    private ArrayList<Donee> searchByAge(int age) {
-        ArrayList<Donee> resultList = new ArrayList<>();
+    private LinkedList<Donee> searchByAge(int age) {
+        LinkedList<Donee> resultList = new LinkedList<>();
         int index = 1;
         int foundCount = 0;
         LocalDate today = LocalDate.now();
@@ -687,15 +698,15 @@ public class DoneeManagementUI {
         return resultList;
     }
 
-    private ArrayList<Donee> searchByDescription(String description) {
-        ArrayList<Donee> resultList = new ArrayList<>();
+    private LinkedList<Donee> searchByDescription(String description) {
+        LinkedList<Donee> resultList = new LinkedList<>();
         int index = 1;
         int foundCount = 0;
         Iterator<Integer> keyIt = doneeMap.keySet().getIterator();
 
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
-            if (donee.getNeedsDescription().contains(description)) {
+            if (donee.getNeedsDescription().toLowerCase().contains(description.toLowerCase())) {
                 System.out.println(index++ + ". " + donee.toString());
                 resultList.add(donee);
                 foundCount++;
@@ -752,6 +763,117 @@ public class DoneeManagementUI {
 
         }
         line(51);
+    }
+
+    public int filterDoneeMenu() {
+        boolean flag = false;
+        int choice = -1;
+
+        do {
+            System.out.println("Select a filter option:");
+            System.out.println("1. Filter by Age Group");
+            System.out.println("2. Filter by Registration Date");
+            System.out.println("3. Filter by Donation Count");
+            System.out.println("0. Exit");
+
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+
+                if (choice >= 0 && choice <= 3) {
+                    scanner.nextLine();
+                    flag = true;
+
+                } else {
+                    displayInvalidChoiceMessage();
+                }
+
+            } else {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();
+            }
+        } while (!flag);
+
+        return choice;
+    }
+
+    public void displayDonees(LinkedList<Donee> donees) {
+        if (donees.isEmpty()) {
+            System.out.println("No donees found with the given criteria.");
+        } else {
+            System.out.println("Filtered Donees:");
+            Iterator<Donee> iterator = donees.iterator();
+            int index = 1;
+            
+            while(iterator.hasNext()){
+                Donee donee = iterator.next();
+                System.out.println(index++ + ". " + donee.toString());
+                
+            }
+        }
+    }
+
+    public int showDoneeReportMenu() {
+        boolean flag = false;
+        int choice = -1;
+
+        do {
+            System.out.println("Select a report option:");
+            System.out.println("1. Registration Report");
+            System.out.println("2. Status Report");
+            System.out.println("3. Needs Report");
+            System.out.println("0. Exit");
+
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+
+                if (choice >= 0 && choice <= 3) {
+                    scanner.nextLine();
+                    flag = true;
+
+                } else {
+                    displayInvalidChoiceMessage();
+                }
+
+            } else {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();
+            }
+        } while (!flag);
+
+        return choice;
+        
+    }
+
+    public int showRegistrationReportMenu() {
+        boolean flag = false;
+        int choice = -1;
+
+        do {
+            System.out.println("Please enter the type of registration report:");
+            System.out.println("1. Daily");
+            System.out.println("2. Monthly");
+            System.out.println("3. Yearly");
+            System.out.println("0. Exit");
+
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+
+                if (choice >= 0 && choice <= 3) {
+                    scanner.nextLine();
+                    flag = true;
+
+                } else {
+                    displayInvalidChoiceMessage();
+                }
+
+            } else {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();
+            }
+        } while (!flag);
+
+        return choice;
+        
     }
 
 }
