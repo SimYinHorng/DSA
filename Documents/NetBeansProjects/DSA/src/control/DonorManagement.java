@@ -336,11 +336,15 @@ public class DonorManagement {
                     break;
                 case 2:
                     type = DonorType.PUBLIC;
+                    double percentagePublic = (double) publicDonor.getNumberOfEntries() / donorMap.size() * 100;
+                    donorUI.categorizeHeader(publicDonor.getNumberOfEntries(), percentagePublic, DonorType.PUBLIC.toString());
                     donorUI.display(publicDonor);
                     recordFound = !publicDonor.isEmpty();
                     break;
                 case 3:
                     type = DonorType.PRIVATE;
+                    double percentagePrivate = (double) privateDonor.getNumberOfEntries() / donorMap.size() * 100;
+                    donorUI.categorizeHeader(privateDonor.getNumberOfEntries(), percentagePrivate, DonorType.PRIVATE.toString());
                     donorUI.display(privateDonor);
                     recordFound = !privateDonor.isEmpty();
                     break;
