@@ -601,7 +601,6 @@ public class DonorManagement {
 
             Donor editDonor = donorMap.get(editId);
             Donor oldDonor = clone(editDonor);
-            System.out.println(oldDonor.toString());
             if (editDonor == null) {
                 displayInvalidChoiceMessage();
             } else {
