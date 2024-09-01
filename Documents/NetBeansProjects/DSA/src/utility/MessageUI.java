@@ -57,10 +57,10 @@ public class MessageUI {
     }
 
     public static void displayVolunteerHeader() {
-        line(259);
-        System.out.printf("| %-14s | %-25s | %-30s | %-15s | %-80s | %-16s | %-11s | %-25s | %15s |\n",
+        line(239);
+        System.out.printf("| %-14s | %-25s | %-30s | %-15s | %-60s | %-16s | %-11s | %-25s | %15s |\n",
                 "Volunteer Id", "Volunteer Name", "Volunteer Email", "Phone No.", "Address", "Date Of Birth", "Gender", "Category", "Volunteer List");
-        line(259);
+        line(239);
     }
 
     public static void line(int n) {

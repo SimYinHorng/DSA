@@ -6,14 +6,12 @@ package boundary;
 
 import adt.HashMap;
 import adt.LinkedList;
-import control.EventManagement;
+import entity.Event;
 import entity.Volunteer;
 import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Scanner;
 import utility.VolunteerCategory;
-import static utility.VolunteerCategory.HAVE_WORKING_EXPERIENCE;
-import static utility.VolunteerCategory.NO_WORKING_EXPERIENCE;
 import utility.VolunteerGender;
 import static utility.MessageUI.displayVolunteerHeader;
 import static utility.MessageUI.displayInvalidChoiceMessage;
@@ -29,9 +27,9 @@ public class VolunteerManagementUI {
     Scanner scanner = new Scanner(System.in);
     
     public int getMenuChoice(){
-        System.out.println("\n-------------------");
+        System.out.println("\n===================");
         System.out.println("VOLUNTEER MAIN MENU");
-        System.out.println("-------------------");
+        System.out.println("===================");
         System.out.println("1. Add new Volunteer");
         System.out.println("2. Remove a Volunteer");
         System.out.println("3. Search Volunteer");
@@ -49,17 +47,13 @@ public class VolunteerManagementUI {
         
     }
     
-    /**
-     *
-     * @return
-     */
     public int getEditMenu() {
         boolean correctInput = false;
         int choice;
         do {
-            System.out.println("\n-----------------------");
+            System.out.println("\n=======================");
             System.out.println("Which Part Need to Edit");
-            System.out.println("-----------------------");
+            System.out.println("=======================");
             System.out.println("1. Volunteer Name");
             System.out.println("2. Volunteer Email");
             System.out.println("3. Volunteer Phone No");
@@ -67,7 +61,7 @@ public class VolunteerManagementUI {
             System.out.println("5. Volunteer Date Of Birth");
             System.out.println("6. Volunteer Gender ");
             System.out.println("7. Volunteer Category");
-            System.out.println("0. Quit");
+            System.out.println("0. Back");
             System.out.print("Enter choice: ");
             choice = scanner.nextInt();
             scanner.nextLine();
@@ -90,13 +84,13 @@ public class VolunteerManagementUI {
         while (keyIt.hasNext()) {
             System.out.println(volunteerMap.get((Integer) keyIt.next()).toString());
         }
-        line(259);
+        line(239);
     }
     
     public void displayVolunteerDetails(Volunteer volunteer) {
-        System.out.println("--------------------------------------------------------------");
+        System.out.println("==============================================================");
         System.out.println("Volunteer Details");
-        System.out.println("--------------------------------------------------------------");
+        System.out.println("==============================================================");
         System.out.println("Volunteer ID            : " + volunteer.getVolunteerId());
         System.out.println("Volunteer Name          : " + volunteer.getName());
         System.out.println("Volunteer Email         : " + volunteer.getEmail());
@@ -105,19 +99,21 @@ public class VolunteerManagementUI {
         System.out.println("Volunteer Date Of Birth : " + volunteer.getDateOfBirth());
         System.out.println("Volunteer Gender        : " + volunteer.getGender());
         System.out.println("Volunteer Category      : " + volunteer.getCategory());
-        System.out.println("--------------------------------------------------------------\n");
+        System.out.println("==============================================================\n");
     }
     
     public int eventVounteerFilterMenu() {
         boolean correctInput = false;
         int choice;
         do {
+            System.out.println("\n====================================");
             System.out.println("Number of events assign to Volunteer");
+            System.out.println("====================================");
             System.out.println("1. Above or Equal x quantity");
             System.out.println("2. Between x & y quantity");
             System.out.println("3. Below or Equal x quantity");
             System.out.println("4. Equal to x quantity");
-            System.out.println("0. Quit");
+            System.out.println("0. Back to Main Menu");
             System.out.print("Enter choice: ");
             choice = validateInt();
             System.out.println("");
@@ -150,42 +146,41 @@ public class VolunteerManagementUI {
         Iterator linkedIt = volunteerList.iterator();
         displayVolunteerHeader();
         if (volunteerList.isEmpty()) {
-            System.out.printf("| %-202s|\n", "No Record Found ...");
+            System.out.printf("| %-239s|\n", "No Record Found ...");
         } else {
             while (linkedIt.hasNext()) {
                 System.out.println(linkedIt.next().toString());
             }
 
         }
-        line(205);
+        line(239);
     }
     
     public void filterHeader(String search) {
-        line(205);
-        System.out.printf("|Search Result Of : %-184s|\n", search);
+        line(239);
+        System.out.printf("|Search Result Of : %-239s|\n", search);
     }
     
     public void displayOutput(LinkedList<Volunteer> volunteerList) {
         Iterator linkedIt = volunteerList.iterator();
         displayVolunteerHeader();
         if (volunteerList.isEmpty()) {
-            System.out.printf("| %-202s|\n", "No Record Found");
+            System.out.printf("| %-239s|\n", "No Record Found");
         } else {
             while (linkedIt.hasNext()) {
                 System.out.println(linkedIt.next().toString());
             }
-
         }
-        line(205);
+        line(239);
     }
     
     public int getSearchMenu() {
         boolean correctInput = false;
         int choice;
         do {
-            System.out.println("\n----------------");
+            System.out.println("\n================");
             System.out.println("Search Volunteer");
-            System.out.println("----------------");
+            System.out.println("================");
             System.out.println("1. Search by ID");
             System.out.println("2. Search by Name");
             System.out.println("3. Search by Email");
@@ -295,6 +290,9 @@ public class VolunteerManagementUI {
         int input;
         VolunteerGender gender = null;
         do {
+            System.out.println("\n================");
+            System.out.println("VOLUNTEER GENDER");
+            System.out.println("================");
             System.out.println("1. Male");
             System.out.println("2. Female");
             System.out.print("Enter Volunteer Gender: ");
@@ -324,6 +322,9 @@ public class VolunteerManagementUI {
         int input;
         VolunteerCategory category = null;
         do {
+            System.out.println("\n==================");
+            System.out.println("VOLUNTEER CATEGORY");
+            System.out.println("==================");
             System.out.println("1. Have working experience ");
             System.out.println("2. No working experience ");
             System.out.print("Enter Volunteer Category: ");
@@ -377,14 +378,18 @@ public class VolunteerManagementUI {
     }
 
     public static void displayExitMessage() {
+        System.out.println("\n=====================================");
         System.out.println("Exit From Volunteer Management System");
+        System.out.println("=====================================");
     }
 
     public int confirmationMessage() {
         boolean correctInput = false;
         int input;
         do {
-            System.out.println("1-Yes 2-No 0-Exit");
+            System.out.println("==================");
+            System.out.println("1-Yes 2-No 0-Back");
+            System.out.println("=================");
             System.out.print("Enter No:");
             input = scanner.nextInt();
             if (input >= 0 && input <= 2) {
