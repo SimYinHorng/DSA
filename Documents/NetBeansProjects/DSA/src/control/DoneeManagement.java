@@ -651,7 +651,7 @@ public class DoneeManagement {
 
             System.out.printf("\n\n\n\n\n%-12s %-10s\n", "Report for", needsDescription.toUpperCase());
             System.out.println("--------------------------------------------------------------");
-            System.out.printf("%-4s %-11s %-20s %-17s\n", "No", "Donee ID", "Name", "Status");
+            System.out.printf("%-4s %-11s %-20s %-20s\n", "No", "Donee ID", "Name", "Description");
             System.out.println("--------------------------------------------------------------");
 
             Iterator<Donee> resultIt = resultList.iterator();
@@ -659,7 +659,7 @@ public class DoneeManagement {
             while (resultIt.hasNext()) {
 
                 Donee donee = resultIt.next();
-                System.out.printf("%-4d %-11d %-20s %-17s\n", index++, donee.getDoneeId(), donee.getName(), donee.getStatus());
+                System.out.printf("%-4d %-11d %-20s %-20s\n", index++, donee.getDoneeId(), donee.getName(), donee.getNeedsDescription());
             }
             System.out.println("--------------------------------------------------------------");
 

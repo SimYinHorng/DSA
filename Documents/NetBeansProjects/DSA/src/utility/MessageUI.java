@@ -38,7 +38,7 @@ public class MessageUI {
 
     public static void displayDoneeHeader() {
         line(290);
-        System.out.printf("|%-8s|%-15s|%-25s|%-15s|%-60s|%-12s|%-15s|%-50s|%-15s|%-17s|%-15s|%15s|\n",
+        System.out.printf("%-4s|%-8s|%-15s|%-25s|%-15s|%-60s|%-12s|%-15s|%-50s|%-15s|%-17s|%-15s|%15s|\n","No",
                 "Donee Id", "Name", "Email", "Phone No.", "Address", "Category", "Date of Birth",
                 "Needs Description", "Reg. Date", "Last Assist. Date", "Status", "No. of Donations");
         line(290);
