@@ -6,7 +6,7 @@ package utility;
 
 /**
  *
- * @author user
+ * @author Sim Yin Horng
  */
 public enum DonorCategory {
     INDIVIDUAL,
