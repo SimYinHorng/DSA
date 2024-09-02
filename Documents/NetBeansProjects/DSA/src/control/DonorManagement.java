@@ -143,8 +143,8 @@ public class DonorManagement {
     }
 
     public static void main(String[] args) {
-        DonorManagement productMaintenance = new DonorManagement();
-        productMaintenance.runDonorManagement();
+        DonorManagement donorManagement = new DonorManagement();
+        donorManagement.runDonorManagement();
     }
 
     public void removeDonor() {
