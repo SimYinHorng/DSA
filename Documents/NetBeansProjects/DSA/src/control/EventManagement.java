@@ -32,6 +32,7 @@ import static utility.MessageUI.line;
 import utility.VolunteerCategory;
 import static utility.VolunteerCategory.HAVE_WORKING_EXPERIENCE;
 import static utility.VolunteerCategory.NO_WORKING_EXPERIENCE;
+import utility.VolunteerGender;
 
 /**
  *
@@ -248,12 +249,12 @@ public class EventManagement {
                 case 4:
                     String eventDescription = eventUI.inputEventDescription();
                     eventUI.filterHeader("Event Description: " + eventDescription);
-                    eventUI.display(filterBy(15, eventDescription)); // Filter by Event Description
+                    eventUI.display(filterBy(4, eventDescription)); // Filter by Event Description
                     break;
                 case 5:
                     LocalDate startDate = eventUI.inputEventStartDate();
                     eventUI.filterHeader("Start Date: " + startDate);
-                    eventUI.display(filterBy(4, startDate)); // Filter by Event Start Date
+                    eventUI.display(filterBy(5, startDate)); // Filter by Event Start Date
                     break;
                 case 6:
                     LocalTime startTime = eventUI.inputEventStartTime();
@@ -263,32 +264,32 @@ public class EventManagement {
                 case 7:
                     EventStatus eventStatus = eventUI.chooseEventStatus();
                     eventUI.filterHeader("Event Status: " + eventStatus);
-                    eventUI.display(filterBy(8, eventStatus)); // Filter by Event Status
+                    eventUI.display(filterBy(7, eventStatus)); // Filter by Event Status
                     break;
                 case 8:
                     String organizerName = eventUI.inputEventOrganizerName();
                     eventUI.filterHeader("Organizer Name: " + organizerName);
-                    eventUI.display(filterBy(9, organizerName)); // Filter by Organizer Name
+                    eventUI.display(filterBy(8, organizerName)); // Filter by Organizer Name
                     break;
                 case 9:
                     String organizerEmail = eventUI.inputEventOrganizerEmail();
                     eventUI.filterHeader("Organizer Email: " + organizerEmail);
-                    eventUI.display(filterBy(10, organizerEmail)); // Filter by Organizer Email
+                    eventUI.display(filterBy(9, organizerEmail)); // Filter by Organizer Email
                     break;
                 case 10:
                     String organizerPhoneNo = eventUI.inputEventOrganizerPhoneNo();
                     eventUI.filterHeader("Organizer Phone No: " + organizerPhoneNo);
-                    eventUI.display(filterBy(11, organizerPhoneNo)); // Filter by Organizer Phone Number
+                    eventUI.display(filterBy(10, organizerPhoneNo)); // Filter by Organizer Phone Number
                     break;
                 case 11:
                     EventType eventType = eventUI.inputEventType();
                     eventUI.filterHeader("Event Type: " + eventType);
-                    eventUI.display(filterBy(12, eventType)); // Filter by Event Type
+                    eventUI.display(filterBy(11, eventType)); // Filter by Event Type
                     break;
                 case 12:
                     int volunteerNeed = eventUI.inputVolunteerNeedForTheEvent();
                     eventUI.filterHeader("Volunteer Need: " + volunteerNeed);
-                    eventUI.display(filterBy(13, volunteerNeed)); // Filter by Volunteer Need
+                    eventUI.display(filterBy(12, volunteerNeed)); // Filter by Volunteer Need
                     break;
                 case 0:
                     exit = true; // Exit the search loop
@@ -327,15 +328,15 @@ public class EventManagement {
                         result.add(event);
                     }
                     break;
-                case 4: // Event Start Date
-                    LocalDate startDate = (LocalDate) searchValue;
-                    if (event.getEventStartDate().equals(startDate)) {
+                case 4: // Event Description
+                    String eventDescription = (String) searchValue;
+                    if (event.getEventDescription().toLowerCase().contains(eventDescription.toLowerCase())) {
                         result.add(event);
                     }
                     break;
-                case 5: // Event End Date
-                    LocalDate endDate = (LocalDate) searchValue;
-                    if (event.getEventEndDate().equals(endDate)) {
+                case 5: // Event Start Date
+                    LocalDate startDate = (LocalDate) searchValue;
+                    if (event.getEventStartDate().equals(startDate)) {
                         result.add(event);
                     }
                     break;
@@ -345,57 +346,39 @@ public class EventManagement {
                         result.add(event);
                     }
                     break;
-                case 7: // Event End Time
-                    LocalTime endTime = (LocalTime) searchValue;
-                    if (event.getEventEndTime().equals(endTime)) {
-                        result.add(event);
-                    }
-                    break;
-                case 8: // Event Status
-                    String eventStatus = (String) searchValue;
+                case 7: // Event Status
+                    EventStatus eventStatus = (EventStatus) searchValue;
                     if (event.getEventStatus().equals(eventStatus)) {
                         result.add(event);
                     }
                     break;
-                case 9: // Organizer Name
+                case 8: // Organizer Name
                     String organizerName = (String) searchValue;
                     if (event.getEventOrganizerName().toLowerCase().contains(organizerName.toLowerCase())) {
                         result.add(event);
                     }
                     break;
-                case 10: // Organizer Email
+                case 9: // Organizer Email
                     String organizerEmail = (String) searchValue;
                     if (event.getEventOrganizerEmail().toLowerCase().contains(organizerEmail.toLowerCase())) {
                         result.add(event);
                     }
                     break;
-                case 11: // Organizer Phone No
+                case 10: // Organizer Phone No
                     String organizerPhoneNo = (String) searchValue;
                     if (event.getEventOrganizerPhoneNo().contains(organizerPhoneNo)) {
                         result.add(event);
                     }
                     break;
-                case 12: // Event Type
+                case 11: // Event Type
                     EventType eventType = (EventType) searchValue;
                     if (event.getEventType().equals(eventType)) {
                         result.add(event);
                     }
                     break;
-                case 13: // Volunteer Need
-                    int volunteerNeed = (int) searchValue;
-                    if (event.getVolunteerNeed() == volunteerNeed) {
-                        result.add(event);
-                    }
-                    break;
-                case 14: // Available Volunteer Needed
+                case 12: // Available Volunteer Needed
                     int availableVolunteers = (int) searchValue;
                     if (event.getAvailableVolunteerNeeded() == availableVolunteers) {
-                        result.add(event);
-                    }
-                    break;
-                case 15: // Event Description
-                    String eventDescription = (String) searchValue;
-                    if (event.getEventDescription().toLowerCase().contains(eventDescription.toLowerCase())) {
                         result.add(event);
                     }
                     break;
@@ -875,34 +858,22 @@ public class EventManagement {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = now.format(formatter);
 
+        // Print the report
         line(124);
         System.out.println("|" + centerText(reportTitle, 122) + "|");
         line(124);
         System.out.println("| Generated on : " + formattedDateTime + spacePadding(87) + "|");
-
+        line(124);
+/////////////////////////////////////////////////////////////////////////////////////////////////////
         // 2. Categorize Events Data:
-        LinkedList<Event> plannedEvents = new LinkedList<>();
-        LinkedList<Event> completedEvents = new LinkedList<>();
-
-        LinkedList<Event> fundraiserEvents = new LinkedList<>();
-        LinkedList<Event> awarenessEvents = new LinkedList<>();
-        LinkedList<Event> volunteerDriveEvents = new LinkedList<>();
-        LinkedList<Event> donationDriveEvents = new LinkedList<>();
 
         // Initialize lists and variables for sorting and reporting
-        LinkedList<Volunteer> sortedVolunteers = new LinkedList<>();
-        LinkedStack<Volunteer> bottomVolunteers = new LinkedStack<>();
-        CircularLinkedQueue<Volunteer> topVolunteers = new CircularLinkedQueue<>();
-
         // Initialize counters
         int totalEvents = 0;
         int fundraiserCount = 0;
         int awarenessCount = 0;
         int volunteerDriveCount = 0;
         int donationDriveCount = 0;
-
-        int plannedCount = 0;
-        int completedCount = 0;
 
         int fundraiserVolunteersNeeded = 0;
         int awarenessVolunteersNeeded = 0;
@@ -913,17 +884,21 @@ public class EventManagement {
         int awarenessVolunteersAssigned = 0;
         int volunteerDriveVolunteersAssigned = 0;
         int donationDriveVolunteersAssigned = 0;
+////////////////////////////////////////////////////////////////
+        int plannedCount = 0;
+        int completedCount = 0;
 
-        // Initialize volunteer statistics
-        int totalVolunteers = 0;
-        int menWithExperience = 0;
-        int menWithoutExperience = 0;
-        int womenWithExperience = 0;
-        int womenWithoutExperience = 0;
+        int plannedVolunteersNeeded = 0;
+        int comVolunteersNeeded = 0;
 
-        int totalEventsInvolved = 0;
+        int plannedVolunteersAssigned = 0;
+        int comVolunteersAssigned = 0;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Iterator<String> eventkeyIt = eventMap.keySet().getIterator();
-        Iterator<Integer> volkeyIt = volunteerMap.keySet().getIterator();
+
+        LinkedList<Event> plannedEvents = new LinkedList<>();
+        LinkedList<Event> completedEvents = new LinkedList<>();
 
         // Process events
         while (eventkeyIt.hasNext()) {
@@ -961,69 +936,20 @@ public class EventManagement {
                 case PLANNED:
                     plannedCount++;
                     plannedEvents.add(event);
+                    plannedVolunteersNeeded += event.getVolunteerNeed();
+                    plannedVolunteersAssigned += event.getParticipantList().getNumberOfEntries();
+
                     break;
                 case COMPLETED:
                     completedCount++;
                     completedEvents.add(event);
+                    comVolunteersNeeded += event.getVolunteerNeed();
+                    comVolunteersAssigned += event.getParticipantList().getNumberOfEntries();
+
                     break;
             }
         }
-
-        while (volkeyIt.hasNext()) {
-            Integer key = volkeyIt.next();
-            Volunteer volunteer = volunteerMap.get(key);
-            totalEventsInvolved += volunteer.getEventList().getNumberOfEntries();
-            totalVolunteers++;
-
-            // Ensure volunteer data is valid
-            if (volunteer != null && volunteer.getEventList() != null) {
-                totalEventsInvolved += volunteer.getEventList().getNumberOfEntries();
-                totalVolunteers++;
-
-                // Update category counts
-                if ("MALE".equals(volunteer.getGender())) {
-                    if (volunteer.getCategory() == VolunteerCategory.HAVE_WORKING_EXPERIENCE) {
-                        menWithExperience++;
-                    } else if (volunteer.getCategory() == VolunteerCategory.NO_WORKING_EXPERIENCE) {
-                        menWithoutExperience++;
-                    }
-                } else if ("FEMALE".equals(volunteer.getGender())) {
-                    if (volunteer.getCategory() == VolunteerCategory.HAVE_WORKING_EXPERIENCE) {
-                        womenWithExperience++;
-                    } else if (volunteer.getCategory() == VolunteerCategory.NO_WORKING_EXPERIENCE) {
-                        womenWithoutExperience++;
-                    }
-                }
-            }
-        }
-
-        // Bubble sort volunteers by the number of events they are involved in (descending)
-        int n = sortedVolunteers.getNumberOfEntries();
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-                Volunteer v1 = sortedVolunteers.getEntry(j);
-                Volunteer v2 = sortedVolunteers.getEntry(j + 1);
-                if (v1 != null && v2 != null && v1.getEventList() != null && v2.getEventList() != null) {
-                    if (v1.getEventList().getNumberOfEntries() < v2.getEventList().getNumberOfEntries()) {
-                        // Swap v1 and v2
-                        sortedVolunteers.replace(j, v2);
-                        sortedVolunteers.replace(j + 1, v1);
-                    }
-                }
-            }
-        }
-
-        // Populate top and bottom volunteer lists
-        for (int i = 0; i < sortedVolunteers.getNumberOfEntries(); i++) {
-            Volunteer volunteer = sortedVolunteers.getEntry(i);
-            if (volunteer != null) {
-                if (i < 5) {
-                    topVolunteers.enqueue(volunteer);
-                }
-                bottomVolunteers.push(volunteer);
-            }
-        }
-        // Calculate percentages
+        //////////////////////////////////////////////////////////////////////
         double totalFundraiserEvents = (double) fundraiserCount / totalEvents * 100;
         double totalAwarenessEvents = (double) awarenessCount / totalEvents * 100;
         double totalVolunteerDriveEvents = (double) volunteerDriveCount / totalEvents * 100;
@@ -1034,96 +960,232 @@ public class EventManagement {
         double percentageVolunteerDriveFilled = (volunteerDriveVolunteersNeeded > 0) ? (double) volunteerDriveVolunteersAssigned / volunteerDriveVolunteersNeeded * 100 : 0;
         double percentageDonationDriveFilled = (donationDriveVolunteersNeeded > 0) ? (double) donationDriveVolunteersAssigned / donationDriveVolunteersNeeded * 100 : 0;
 
-        double plannedPercentage = (totalEvents > 0) ? (double) plannedCount / totalEvents * 100 : 0;
-        double completedPercentage = (totalEvents > 0) ? (double) completedCount / totalEvents * 100 : 0;
-        // Calculate average events per volunteer
-        double averageEventsPerVolunteer = (totalVolunteers > 0) ? (double) totalEventsInvolved / totalVolunteers : 0;
-
-        // Print the report
-        line(124);
         System.out.println("|" + centerText("Summary By Event Category ", 122) + "|");
         line(124);
-        System.out.println("| Event Category   | Number Of Events | Percentage (%) | Total Number of Volunteers Needed | Percentage Filled | Completed |");
+        System.out.println("| Event Category  | Number Of Events | Percentage (%) | Total Number of Volunteers Needed | Percentage Filled | Completed  |");
         line(124);
-        System.out.printf("| %-17s| %-17d| %-15.2f| %-34d| %-18.2f| %-9s |\n",
+
+        System.out.printf("| %-16s| %-17d| %-15.2f| %-34d| %-18.2f| %-10s |\n",
                 "FUNDRAISER", fundraiserCount, totalFundraiserEvents,
                 fundraiserVolunteersNeeded, percentageFundraiserFilled,
                 String.format("%d/%d (%.0f%%)", fundraiserVolunteersAssigned, fundraiserVolunteersNeeded, percentageFundraiserFilled));
-        System.out.printf("| %-17s| %-17d| %-15.2f| %-34d| %-18.2f| %-9s |\n",
+
+        System.out.printf("| %-16s| %-17d| %-15.2f| %-34d| %-18.2f| %-10s |\n",
                 "AWARENESS", awarenessCount, totalAwarenessEvents,
                 awarenessVolunteersNeeded, percentageAwarenessFilled,
                 String.format("%d/%d (%.0f%%)", awarenessVolunteersAssigned, awarenessVolunteersNeeded, percentageAwarenessFilled));
-        System.out.printf("| %-17s| %-17d| %-15.2f| %-34d| %-18.2f| %-9s |\n",
+
+        System.out.printf("| %-16s| %-17d| %-15.2f| %-34d| %-18.2f| %-10s |\n",
                 "VOLUNTEER DRIVE", volunteerDriveCount, totalVolunteerDriveEvents,
                 volunteerDriveVolunteersNeeded, percentageVolunteerDriveFilled,
                 String.format("%d/%d (%.0f%%)", volunteerDriveVolunteersAssigned, volunteerDriveVolunteersNeeded, percentageVolunteerDriveFilled));
-        System.out.printf("| %-17s| %-17d| %-15.2f| %-34d| %-18.2f| %-9s |\n",
+
+        System.out.printf("| %-16s| %-17d| %-15.2f| %-34d| %-18.2f| %-10s |\n",
                 "DONATION DRIVE", donationDriveCount, totalDonationDriveEvents,
                 donationDriveVolunteersNeeded, percentageDonationDriveFilled,
                 String.format("%d/%d (%.0f%%)", donationDriveVolunteersAssigned, donationDriveVolunteersNeeded, percentageDonationDriveFilled));
         line(124);
 
+/////////////////////////////////////////////////////////////////////////
+        double plannedPercentage = (totalEvents > 0) ? (double) plannedCount / totalEvents * 100 : 0;
+        double completedPercentage = (totalEvents > 0) ? (double) completedCount / totalEvents * 100 : 0;
+
+        double percentageComVolInvolve = (comVolunteersNeeded > 0) ? (double) comVolunteersAssigned / comVolunteersNeeded * 100 : 0;
+        double percentagePlanVolInvolve = (plannedVolunteersNeeded > 0) ? (double) plannedVolunteersAssigned / plannedVolunteersNeeded * 100 : 0;
+
         System.out.println("|" + centerText("Event Status", 122) + "|");
         line(124);
-        System.out.println("| Rank | Event Status   | Percentage (%) | Total Number of Events   | Total Volunteers Involved |");
+        System.out.println("| Event Status | Number Of Events | Percentage (%) | Total Number of Volunteers Needed | Percentage Filled | Completed     |");
         line(124);
-        System.out.printf("| %-5d| %-15s| %-15.2f| %-25d| %-27d |\n", 1, "Planned", plannedPercentage, plannedCount, plannedCount * 10); // Update based on actual data
-        System.out.printf("| %-5d| %-15s| %-15.2f| %-25d| %-27d |\n", 2, "Completed", completedPercentage, completedCount, completedCount * 10); // Update based on actual data
+        System.out.printf("| %-13s| %-17d| %-15.2f| %-34d| %-18.2f| %-13s |\n",
+                "Planned", plannedEvents.getNumberOfEntries(), plannedPercentage,
+                plannedVolunteersNeeded, percentagePlanVolInvolve,
+                String.format("%d/%d (%.0f%%)", plannedVolunteersAssigned, plannedVolunteersNeeded, percentagePlanVolInvolve)); // Update based on actual data
+
+        System.out.printf("| %-13s| %-17d| %-15.2f| %-34d| %-18.2f| %-13s |\n",
+                "Completed", completedEvents.getNumberOfEntries(), completedPercentage,
+                comVolunteersNeeded, percentageComVolInvolve,
+                String.format("%d/%d (%.0f%%)", comVolunteersAssigned, comVolunteersNeeded, percentageComVolInvolve)); // Update based on actual data
         line(124);
 
-        System.out.println("| Total Number of Volunteers : " + totalVolunteers);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        LinkedList<Volunteer> maleVolunteerHaveWorkingExp = new LinkedList<>();
+        LinkedList<Volunteer> maleVolunteerNoWorkingExp = new LinkedList<>();
+        LinkedList<Volunteer> femaleVolunteerHaveWorkingExp = new LinkedList<>();
+        LinkedList<Volunteer> femaleVolunteerNoWorkingExp = new LinkedList<>();
+
+        int totalVolunteers = 0;
+
+        int menWithExperience = 0;
+        int menWithoutExperience = 0;
+        int womenWithExperience = 0;
+        int womenWithoutExperience = 0;
+
+        int totalEventMenExp = 0;
+        int totalEventMenNoExp = 0;
+        int totalEventWomenExp = 0;
+        int totalEventWomenNoExp = 0;
+
+        int totalEventsInvolved = 0;
+
+        Iterator<Integer> volkeyIt = volunteerMap.keySet().getIterator();
+
+        while (volkeyIt.hasNext()) {
+            Integer key = volkeyIt.next();
+            Volunteer volunteer = volunteerMap.get(key);
+            totalVolunteers++;
+
+            // Ensure volunteer data is valid
+            if (volunteer != null && volunteer.getEventList() != null) {
+                totalEventsInvolved += volunteer.getEventList().getNumberOfEntries();
+
+                // Update category counts
+                if (volunteer.getGender() == VolunteerGender.MALE) {
+                    if (volunteer.getCategory() == VolunteerCategory.HAVE_WORKING_EXPERIENCE) {
+                        maleVolunteerHaveWorkingExp.add(volunteer);
+                        totalEventMenExp += volunteer.getEventList().getNumberOfEntries();
+
+                        menWithExperience++;
+                    } else if (volunteer.getCategory() == VolunteerCategory.NO_WORKING_EXPERIENCE) {
+                        maleVolunteerNoWorkingExp.add(volunteer);
+                        totalEventMenNoExp += volunteer.getEventList().getNumberOfEntries();
+
+                        menWithoutExperience++;
+                    }
+
+                } else if (volunteer.getGender() == VolunteerGender.FEMALE) {
+                    if (volunteer.getCategory() == VolunteerCategory.HAVE_WORKING_EXPERIENCE) {
+                        femaleVolunteerHaveWorkingExp.add(volunteer);
+                        totalEventWomenExp += volunteer.getEventList().getNumberOfEntries();
+
+                        womenWithExperience++;
+                    } else if (volunteer.getCategory() == VolunteerCategory.NO_WORKING_EXPERIENCE) {
+                        femaleVolunteerNoWorkingExp.add(volunteer);
+                        totalEventWomenNoExp += volunteer.getEventList().getNumberOfEntries();
+
+                        womenWithoutExperience++;
+                    }
+                }
+            }
+        }
+
+        // Calculate average events per volunteer
+        double maleWithExp = (totalVolunteers > 0) ? (double) menWithExperience / totalVolunteers * 100 : 0;
+        double maleWithNoExp = (totalVolunteers > 0) ? (double) menWithoutExperience / totalVolunteers * 100 : 0;
+        double femaleWithExp = (totalVolunteers > 0) ? (double) womenWithExperience / totalVolunteers * 100 : 0;
+        double femaleWithNoExp = (totalVolunteers > 0) ? (double) womenWithoutExperience / totalVolunteers * 100 : 0;
+
+        double eMaleWithExp = (totalEventsInvolved > 0) ? (double) totalEventMenExp / totalEventsInvolved * 100 : 0;
+        double eMaleWithNoExp = (totalEventsInvolved > 0) ? (double) totalEventMenNoExp / totalEventsInvolved * 100 : 0;
+        double eFemaleWithExp = (totalEventsInvolved > 0) ? (double) totalEventWomenExp / totalEventsInvolved * 100 : 0;
+        double eFemaleWithNoExp = (totalEventsInvolved > 0) ? (double) totalEventWomenNoExp / totalEventsInvolved * 100 : 0;
+
+        System.out.println("| Total Number of Volunteers : " + totalVolunteers + " \tTotal Events Involved : " + totalEventsInvolved + "\t\t\t\t\t\t\t   |");
         line(124);
-        System.out.println("| Volunteer Category and Gender    | Number Of Volunteers | Percentage (%) | Total Number of Events Involved | Avg. Events |");
+        System.out.println("| Volunteer Category and Gender    | Number Of Volunteers | Percentage (%) | Total Number of Events Involved | % of Events |");
         line(124);
         System.out.printf("| %-33s| %-21d| %-15.2f| %-32d| %-11.2f |\n",
-                "Men with working experience", menWithExperience,
-                (totalVolunteers > 0) ? (double) menWithExperience / totalVolunteers * 100 : 0,
-                totalEventsInvolved, averageEventsPerVolunteer);
+                "Men with working experience",
+                maleVolunteerHaveWorkingExp.getNumberOfEntries(), maleWithExp, totalEventMenExp, eMaleWithExp);
+
         System.out.printf("| %-33s| %-21d| %-15.2f| %-32d| %-11.2f |\n",
-                "Men without working experience", menWithoutExperience,
-                (totalVolunteers > 0) ? (double) menWithoutExperience / totalVolunteers * 100 : 0,
-                totalEventsInvolved, averageEventsPerVolunteer);
+                "Men without working experience",
+                maleVolunteerNoWorkingExp.getNumberOfEntries(), maleWithNoExp, totalEventMenNoExp, eMaleWithNoExp);
+
         System.out.printf("| %-33s| %-21d| %-15.2f| %-32d| %-11.2f |\n",
-                "Women with working experience", womenWithExperience,
-                (totalVolunteers > 0) ? (double) womenWithExperience / totalVolunteers * 100 : 0,
-                totalEventsInvolved, averageEventsPerVolunteer);
+                "Women with working experience",
+                femaleVolunteerHaveWorkingExp.getNumberOfEntries(), femaleWithExp, totalEventWomenExp, eFemaleWithExp);
+
         System.out.printf("| %-33s| %-21d| %-15.2f| %-32d| %-11.2f |\n",
-                "Women without working experience", womenWithoutExperience,
-                (totalVolunteers > 0) ? (double) womenWithoutExperience / totalVolunteers * 100 : 0,
-                totalEventsInvolved, averageEventsPerVolunteer);
+                "Women without working experience",
+                femaleVolunteerNoWorkingExp.getNumberOfEntries(), femaleWithNoExp, totalEventWomenNoExp, eFemaleWithNoExp);
         line(124);
-        
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Bubble sort volunteers by the number of events they are involved in (descending)
+        volkeyIt = volunteerMap.keySet().getIterator();
+        LinkedList<Volunteer> sortedVolunteers = new LinkedList<>();
+        LinkedStack<Volunteer> bottomVolunteers = new LinkedStack<>();
+        CircularLinkedQueue<Volunteer> topVolunteers = new CircularLinkedQueue<>();
+
+        while (volkeyIt.hasNext()) {
+            Integer key = volkeyIt.next();
+            Volunteer volunteer = volunteerMap.get(key);
+            sortedVolunteers.add(volunteer);
+        }
+
+        int n = sortedVolunteers.getNumberOfEntries();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                Volunteer v1 = sortedVolunteers.getEntry(j + 1);
+                Volunteer v2 = sortedVolunteers.getEntry(j + 2);
+                if (v1 != null && v2 != null && v1.getEventList() != null && v2.getEventList() != null) {
+                    if (v1.getEventList().getNumberOfEntries() < v2.getEventList().getNumberOfEntries()) {
+                        // Swap v1 and v2
+                        sortedVolunteers.replace(j + 1, v2);
+                        sortedVolunteers.replace(j + 2, v1);
+                    }
+                }
+            }
+        }
+
         // Print Top 5 Volunteers
         System.out.println("|" + centerText("Top 5 Volunteers", 122) + "|");
         line(124);
-        System.out.println("| Rank | Volunteer ID   | Name           | Total Number of Events |");
-        line(124);
-        int rank = 1;
-        while (!topVolunteers.isEmpty() && rank <= 5) {
-            Volunteer volunteer = topVolunteers.dequeue();
-            if (volunteer != null) {
-                System.out.printf("| %-5d| %-15d| %-17s| %-22d |\n", rank++, volunteer.getVolunteerId(), volunteer.getName(), volunteer.getEventList().getNumberOfEntries());
-            }
-        }
+        System.out.println("| Rank | Volunteer ID | Name             | Gender    | Phone No.   | Email                    | Count Of Events | Rate     |");
+
         line(124);
 
+        for (int i = 1; i < sortedVolunteers.getNumberOfEntries() + 1; i++) {
+            Volunteer volunteer = sortedVolunteers.getEntry(i);
+            if (volunteer != null) {
+                if (i < 6) {
+                    topVolunteers.enqueue(volunteer);
+                }
+                bottomVolunteers.push(volunteer);
+            }
+        }
+        int rank = 1;
+
+        int countTop = 1;
+        while (!topVolunteers.isEmpty() && countTop <= 5) {
+            Volunteer volunteer = topVolunteers.dequeue();
+
+            if (volunteer != null) {
+                int totalEventCount = volunteer.getEventList().getNumberOfEntries();
+                double volunteerParticipantRate = (totalEvents > 0) ? (double) totalEventCount / totalEvents : 0;
+                System.out.printf("| %-5d| %-13d| %-17s| %-10s| %-12s| %-25s| %-15d | %-8.2f |\n",
+                        countTop++, volunteer.getVolunteerId(), volunteer.getName(), volunteer.getGender(),
+                        volunteer.getPhoneNo(), volunteer.getEmail(), totalEventCount, volunteerParticipantRate);
+            }
+        }
+
         // Print Bottom 5 Volunteers
-        System.out.println("|" + centerText("Bottom 5 Volunteers", 122) + "|");
         line(124);
-        System.out.println("| Rank | Volunteer ID   | Name           | Total Number of Events |");
+        System.out.println(
+                "|" + centerText("Bottom 5 Volunteers", 122) + " |");
         line(124);
+        System.out.println("| Rank | Volunteer ID | Name             | Gender    | Phone No.   | Email                    | Count Of Events | Rate     |");
+        line(124);
+
         int counting = 1;
         while (!bottomVolunteers.isEmpty() && counting <= 5) {
             Volunteer volunteer = bottomVolunteers.pop();
+
             if (volunteer != null) {
-                System.out.printf("| %-5d| %-15d| %-17s| %-22d |\n", counting++, volunteer.getVolunteerId(), volunteer.getName(), volunteer.getEventList().getNumberOfEntries());
+                int totalEventCount = volunteer.getEventList().getNumberOfEntries();
+                double volunteerParticipantRate = (totalEvents > 0) ? (double) totalEventCount / totalEvents : 0;
+                System.out.printf("| %-5d| %-13d| %-17s| %-10s| %-12s| %-25s| %-15d | %-8.2f |\n",
+                        counting++, volunteer.getVolunteerId(), volunteer.getName(), volunteer.getGender(),
+                        volunteer.getPhoneNo(), volunteer.getEmail(), totalEventCount, volunteerParticipantRate);
             }
         }
-        line(124);
 
-        // Report Footer
-        System.out.println("|" + centerText("FOR STAFF USE ONLY", 122) + "|");
         line(124);
+        // Report Footer
+        System.out.println("|" + centerText("This report is for staff use only. Please handle the information with care.",122) + " |");
+        line(124);
+        enterToContinue();
     }
 
     private String centerText(String text, int width) {
