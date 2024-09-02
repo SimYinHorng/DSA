@@ -58,8 +58,10 @@ public class EventManagementUI {
     }
 
     public String inputEventName() {
-        System.out.print("\nEnter Event Name: ");
+        System.out.print("Enter Event Name: ");
         String eventName = scanner.nextLine();
+        System.out.print("\n ");
+      
         while (eventName.isEmpty()) {
             System.out.print("\nEvent Name cannot be empty. \nEnter Event Name: ");
             eventName = scanner.nextLine();
