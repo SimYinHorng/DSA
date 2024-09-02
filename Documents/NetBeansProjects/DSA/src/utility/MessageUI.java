@@ -38,7 +38,7 @@ public class MessageUI {
 
     public static void displayDoneeHeader() {
         line(290);
-        System.out.printf("%-4s|%-8s|%-15s|%-25s|%-15s|%-60s|%-12s|%-15s|%-50s|%-15s|%-17s|%-15s|%15s|\n","No",
+        System.out.printf("%-4s|%-8s|%-15s|%-25s|%-15s|%-60s|%-12s|%-15s|%-50s|%-15s|%-17s|%-15s|%15s|\n", "No",
                 "Donee Id", "Name", "Email", "Phone No.", "Address", "Category", "Date of Birth",
                 "Needs Description", "Reg. Date", "Last Assist. Date", "Status", "No. of Donations");
         line(290);
@@ -57,9 +57,9 @@ public class MessageUI {
     }
 
     public static void displayVolunteerHeader() {
-        line(239); 
-            System.out.printf("| %-14s | %-25s | %-30s | %-15s | %-60s | %-16s | %-11s | %-25s | %15s |\n",
-                      "Volunteer Id", "Volunteer Name", "Volunteer Email", "Phone No.", "Address", "Date Of Birth", "Gender", "Category", "No Event Assign");
+        line(239);
+        System.out.printf("| %-14s | %-25s | %-30s | %-15s | %-60s | %-16s | %-11s | %-25s | %15s |\n",
+                "Volunteer Id", "Volunteer Name", "Volunteer Email", "Phone No.", "Address", "Date Of Birth", "Gender", "Category", "No Event Assign");
         line(239);
     }
 
