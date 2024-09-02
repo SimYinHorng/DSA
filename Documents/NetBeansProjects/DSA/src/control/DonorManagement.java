@@ -510,7 +510,10 @@ public class DonorManagement {
                 Iterator amtIt = donor.getDonationList().iterator();
                 while (amtIt.hasNext()) {
                     Donation donation = (Donation) amtIt.next();
-                    amount += donation.getTotalValue();
+                    if (donation != null) {
+                        amount += donation.getTotalValue();
+                    }
+
                 }
 
                 System.out.printf("| %-5d| %-27s| %-15s| %-26d| %-21.2f|\n", i, donor.getName(), donor.getCategory().toString(), donor.getDonationList().getNumberOfEntries(), amount);
@@ -525,7 +528,10 @@ public class DonorManagement {
                 Iterator amtIt = donor.getDonationList().iterator();
                 while (amtIt.hasNext()) {
                     Donation donation = (Donation) amtIt.next();
-                    amount += donation.getTotalValue();
+                    if (donation != null) {
+                        amount += donation.getTotalValue();
+                    }
+
                 }
 
                 System.out.printf("| %-5d| %-27s| %-15s| %-26d| %-21.2f|\n", i, donor.getName(), donor.getCategory().toString(), donor.getDonationList().getNumberOfEntries(), amount);
