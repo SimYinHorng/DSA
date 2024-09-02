@@ -215,7 +215,7 @@ public class VolunteerManagement {
                     volunteerUI.displayOutput(filterBy(choice, phoneNo));
                     break;
                 case 5:
-                    String address = volunteerUI.enterVolunteerName();
+                    String address = volunteerUI.enterVolunteerAddress();
                     volunteerUI.filterHeader(address);
                     volunteerUI.displayOutput(filterBy(choice, address));
                     break;

@@ -3,12 +3,17 @@ package entity;
 import adt.ArrayList;
 import adt.LinkedList;
 import java.io.Serializable;
-import java.time.LocalDate; // Import LocalDate for handling date-related fields
+import java.time.LocalDate; 
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.Objects;
 import utility.DoneeCategory;
 import utility.DoneeStatus;
+
+/**
+ *
+ * @author Chew Wei Seng
+ */
 
 public class Donee implements Serializable {
 

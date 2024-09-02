@@ -18,6 +18,11 @@ import static utility.MessageUI.displayInvalidChoiceMessage;
 import static utility.MessageUI.enterToContinue;
 import static utility.MessageUI.line;
 
+/**
+ *
+ * @author Chew Wei Seng
+ */
+
 public class DoneeManagementUI {
 
     Scanner scanner = new Scanner(System.in);
@@ -350,7 +355,7 @@ public class DoneeManagementUI {
     public void listAllDonees(HashMap<Integer, Donee> doneeMap) {
         Iterator keyIt = doneeMap.keySet().getIterator();
 
-        MessageUI.displayDoneeHeader();
+        MessageUI.displayDoneeHeaderForList();
         while (keyIt.hasNext()) {
             Donee testDonee = doneeMap.get((Integer) keyIt.next());
             LocalDate latestDate = testDonee.updateLastAssistanceDate(testDonee);
@@ -555,7 +560,7 @@ public class DoneeManagementUI {
         LinkedList<Donee> resultList = new LinkedList<>();
         Donee donee = doneeMap.get(doneeId);
         if (donee != null) {
-            System.out.printf("%-3d %s",1, donee.toString());
+            System.out.printf("\n%-3d %s",1, donee.toString());
             resultList.add(donee);
         } else {
             System.out.println("No donee found with ID: " + doneeId);
@@ -572,7 +577,7 @@ public class DoneeManagementUI {
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getName().toLowerCase().contains(name.toLowerCase())) {
-                System.out.printf("%-3d %s",index++, donee.toString());
+                System.out.printf("\n%-3d %s",index++, donee.toString());
                 resultList.add(donee);
                 foundCount++;
             }
@@ -592,7 +597,7 @@ public class DoneeManagementUI {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getEmail().toLowerCase().contains(email.toLowerCase())) {
                 
-                System.out.printf("%-3d %s",index++, donee.toString());
+                System.out.printf("\n%-3d %s",index++, donee.toString());
                 System.out.println(index++ + ". " + donee.toString());
                 resultList.add(donee);
                 foundCount++;
@@ -612,7 +617,7 @@ public class DoneeManagementUI {
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getPhoneNo().contains(phoneNo)) {
-                System.out.printf("%-3d %s",index++, donee.toString());
+                System.out.printf("\n%-3d %s",index++, donee.toString());
                 resultList.add(donee);
                 foundCount++;
             }
@@ -631,7 +636,7 @@ public class DoneeManagementUI {
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getAddress().toLowerCase().contains(address.toLowerCase())) {
-                System.out.printf("%-3d %s",index++, donee.toString());
+                System.out.printf("\n%-3d %s",index++, donee.toString());
                 resultList.add(donee);
                 foundCount++;
             }
@@ -650,7 +655,7 @@ public class DoneeManagementUI {
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getCategory().toString().equalsIgnoreCase(category)) {
-                System.out.printf("%-3d %s",index++, donee.toString());
+                System.out.printf("\n%-3d %s",index++, donee.toString());
                 resultList.add(donee);
                 foundCount++;
             }
@@ -669,7 +674,7 @@ public class DoneeManagementUI {
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getStatus().toString().equalsIgnoreCase(status)) {
-                System.out.printf("%-3d %s",index++, donee.toString());
+                System.out.printf("\n%-3d %s",index++, donee.toString());
                 resultList.add(donee);
                 foundCount++;
             }
@@ -690,7 +695,7 @@ public class DoneeManagementUI {
             Donee donee = doneeMap.get(keyIt.next());
             int doneeAge = today.getYear() - donee.getDateOfBirth().getYear();
             if (doneeAge == age) {
-                System.out.printf("%-3d %s",index++, donee.toString());
+                System.out.printf("\n%-3d %s",index++, donee.toString());
                 resultList.add(donee);
                 foundCount++;
             }
@@ -709,7 +714,7 @@ public class DoneeManagementUI {
         while (keyIt.hasNext()) {
             Donee donee = doneeMap.get(keyIt.next());
             if (donee.getNeedsDescription().toLowerCase().contains(description.toLowerCase())) {
-                System.out.printf("%-3d %s",index++, donee.toString());
+                System.out.printf("\n%-3d %s",index++, donee.toString());
                 resultList.add(donee);
                 foundCount++;
             }
@@ -724,7 +729,7 @@ public class DoneeManagementUI {
         boolean flag = false;
 
         do {
-            System.out.println("What would you like to do?");
+            System.out.println("\nWhat would you like to do?");
             System.out.println("1. Edit");
             System.out.println("2. Remove");
             System.out.println("3. View Donations Made");
