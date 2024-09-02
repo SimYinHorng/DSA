@@ -32,7 +32,7 @@ public class MessageUI {
 
     public static void displayDonorHeader() {
         line(205);
-        System.out.printf("|%8s|%-25s|%-30s|%-15s|%-80s|%-11s|%-12s|%-15s|", "Donor Id", "Donor Name", "Donor Email", "Phone No.", "Address", "TYPE", "CATEGORY", "No. of Donation");
+        System.out.printf("|%8s|%-25s|%-30s|%-15s|%-80s|%-11s|%-12s|%-15s|\n", "Donor Id", "Donor Name", "Donor Email", "Phone No.", "Address", "TYPE", "CATEGORY", "No. of Donation");
         line(205);
     }
 
