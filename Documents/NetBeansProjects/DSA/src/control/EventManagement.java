@@ -30,6 +30,8 @@ import static utility.MessageUI.displayVolunteerHeader;
 import static utility.MessageUI.enterToContinue;
 import static utility.MessageUI.line;
 import utility.VolunteerCategory;
+import static utility.VolunteerCategory.HAVE_WORKING_EXPERIENCE;
+import static utility.VolunteerCategory.NO_WORKING_EXPERIENCE;
 import utility.VolunteerGender;
 
 /**
@@ -121,7 +123,6 @@ public class EventManagement {
     public void displayAllEvents() {
         clearScreen();
         listAllEvents(eventMap);
-        enterToContinue();
     }
 
     public void removeEventVolunteer() {
@@ -140,466 +141,367 @@ public class EventManagement {
     }
 
     public void addEvent() {
-        // Initialize exit flag to control the loop
         boolean exit = false;
+        Event newEvent = inputEventDetails();
 
-        // Gather event details from the user and create a new Event object
-        Event newEvent = inputEventDetails();  // ADT: Event
-
-        // Loop until the exit flag is set to true
-        do {
-            // Display the entered event details for user review
-            eventUI.displayEventDetails(newEvent);  // ADT: Event
-
-            // Prompt user to confirm if the event details are correct
+        while (!exit) {
+            eventUI.displayEventDetails(newEvent);
             System.out.println("Are the event details correct?");
-
-            // Get user input for confirmation
-            int input = eventUI.confirmationMessage();  // ADT: User Input
-
-            // Process user input based on the choice
+            int input = eventUI.confirmationMessage();
             switch (input) {
-                case 1: // User confirms the event details
-                    // Add the new event to the event map
-                    eventMap.put(newEvent.getEventId(), newEvent);  // ADT: HashMap
-                    // Save the updated event map to a file
-                    eventDAO.saveToFile(eventMap);  // ADT: HashMap, File
-                    // Inform the user that the event has been added successfully
+                case 1:
+                    eventMap.put(newEvent.getEventId(), newEvent);
+                    eventDAO.saveToFile(eventMap);
                     System.out.println("Event added successfully.");
-                    // Set exit flag to true to end the loop
+                    exit = true;
+                    break;
+                case 2:
+                    amendEventDetails(newEvent);
+                    break;
+                case 0:
+                    Event.setNextEventId(Event.getNextEventId() - 1);
                     exit = true;
                     break;
 
-                case 2: // User wants to amend the event details
-                    // Allow the user to amend the event details
-                    amendEventDetails(newEvent);  // ADT: Event
-                    break;
-
-                case 0: // User chooses to cancel the operation
-                    // Decrement the next event ID to avoid reuse
-                    Event.setNextEventId(Event.getNextEventId() - 1);  // ADT: Event
-                    // Set exit flag to true to end the loop
-                    exit = true;
-                    break;
-
-                default: // Handle invalid user input
-                    // Notify the user of invalid choice
-                    eventUI.handleInvalidChoice();  // ADT: User Input
+                default:
+                    eventUI.handleInvalidChoice();
             }
-            // Continue looping until exit flag is set to true
-        } while (!exit);
+        }
     }
 
     public void removeEvent() {
-        // Initialize flag to control the loop for removing events
         boolean continueRemoving = true;
 
-        // Loop until continueRemoving is set to false
-        do {
-            clearScreen();  // Utility method to clear the screen
-            displayAllEvents();  // ADT: Display of all events (HashMap or similar)
+        while (continueRemoving) {
+            clearScreen();
+            displayAllEvents();
             System.out.println("Select Event To Delete (0 to exit):");
-            String eventId = eventUI.inputEventId();  // ADT: User Input
+            String eventId = eventUI.inputEventId().toUpperCase();
 
-            if (eventId.equals("0")) {  // User chooses to exit
+            if (eventId.equals("0")) {
                 System.out.println("Exiting removal process.");
-                continueRemoving = false;  // End the loop
-            } else {
-                // Retrieve the event to remove from the event map
-                Event eventToRemove = eventMap.get(eventId);  // ADT: HashMap
-
-                if (eventToRemove != null) {  // Event exists in the map
-                    eventUI.displayEventDetails(eventToRemove);  // ADT: Event
-                    System.out.println("Are you sure you want to delete this event?");
-                    int confirmation = eventUI.confirmationMessage();  // ADT: User Input
-
-                    switch (confirmation) {
-                        case 1: // Confirm deletion
-                            // Remove the event from the event map
-                            eventMap.remove(eventId);  // ADT: HashMap
-                            // Save the updated event map to a file
-                            eventDAO.saveToFile(eventMap);  // ADT: HashMap, File
-                            System.out.println("Event removed successfully.");
-                            continueRemoving = false;  // End the loop
-                            break;
-
-                        case 2: // Cancel deletion
-                            System.out.println("Event removal canceled, back to removal selection.");
-                            removeEvent();  // Recursive call to handle cancellation
-                            continueRemoving = false;  // End the current loop iteration
-                            break;
-
-                        case 0: // Exit
-                            System.out.println("Exiting removal process.");
-                            continueRemoving = false;  // End the loop
-                            break;
-
-                        default: // Handle invalid user input
-                            System.out.println("Invalid choice. Please try again.");
-                            break;
-                    }
-
-                } else {  // Event not found in the map
-                    System.out.println("\nEvent not found with ID (1: Yes for Retry. 0: For Exit): " + eventId);
-
-                    int retryChoice = eventUI.confirmationEventMessage();  // ADT: User Input
-
-                    if (retryChoice == 0) {  // User chooses to exit
-                        System.out.println("Exiting removal process.");
-                        continueRemoving = false;  // End the loop
-                    }
-                    // No need to recursively call removeEvent(); the loop handles retry logic
-                }
+                continueRemoving = false;
+                continue;
             }
-            // Continue looping until continueRemoving is set to false
-        } while (continueRemoving);
+
+            Event eventToRemove = eventMap.get(eventId);
+
+            if (eventToRemove != null) {
+                eventUI.displayEventDetails(eventToRemove);
+                System.out.println("Are you sure you want to delete this event?");
+                int confirmation = eventUI.confirmationMessage();
+
+                switch (confirmation) {
+                    case 1: // Confirm
+                        eventMap.remove(eventId);
+                        eventDAO.saveToFile(eventMap);
+                        System.out.println("Event removed successfully.");
+                        continueRemoving = false;
+                        break;
+                    case 2: // Cancel
+                        System.out.println("Event removal canceled, back to removal selection.");
+                        removeEvent();
+                        continueRemoving = false;
+                        break;
+                    case 0: // Exit
+                        System.out.println("Exiting removal process.");
+                        continueRemoving = false;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                        break;
+                }
+
+            } else {
+                System.out.println("\nEvent not found with ID (1: Yes for Retry. 0: For Exit): " + eventId);
+
+                int retryChoice = eventUI.confirmationEventMessage();
+
+                if (retryChoice == 0) {
+                    System.out.println("Exiting removal process.");
+                    continueRemoving = false;
+                }
+                // No need to recursively call removeEvent(); the loop handles retry logic
+            }
+        }
     }
 
     public void searchEvent() {
-        // Initialize exit flag to control the loop
         boolean exit = false;
-
-        // Loop until exit flag is set to true
         do {
-            // Display the search menu to the user
-            int search = eventUI.displaySearchMenu(); // ADT: User Input
-
-            // Process user choice for searching events
+            int search = eventUI.displaySearchMenu(); // Display the search menu to the user
             switch (search) {
                 case 1:
-                    // Filter by Event ID
-                    String eventId = eventUI.inputEventId(); // ADT: User Input
+                    String eventId = eventUI.inputEventId();
                     eventUI.filterHeader("Event ID: " + eventId);
-                    eventUI.display(filterBy(1, eventId)); // ADT: Filter by Event ID
+                    eventUI.display(filterBy(1, eventId)); // Filter by Event ID
                     break;
-
                 case 2:
-                    // Filter by Event Name
-                    String eventName = eventUI.inputEventName(); // ADT: User Input
+                    String eventName = eventUI.inputEventName();
                     eventUI.filterHeader("Event Name: " + eventName);
-                    eventUI.display(filterBy(2, eventName)); // ADT: Filter by Event Name
+                    eventUI.display(filterBy(2, eventName)); // Filter by Event Name
                     break;
-
                 case 3:
-                    // Filter by Event Address
-                    String eventAddress = eventUI.inputEventAddress(); // ADT: User Input
+                    String eventAddress = eventUI.inputEventAddress();
                     eventUI.filterHeader("Event Address: " + eventAddress);
-                    eventUI.display(filterBy(3, eventAddress)); // ADT: Filter by Event Address
+                    eventUI.display(filterBy(3, eventAddress)); // Filter by Event Address
                     break;
-
                 case 4:
-                    // Filter by Event Description
-                    String eventDescription = eventUI.inputEventDescription(); // ADT: User Input
+                    String eventDescription = eventUI.inputEventDescription();
                     eventUI.filterHeader("Event Description: " + eventDescription);
-                    eventUI.display(filterBy(4, eventDescription)); // ADT: Filter by Event Description
+                    eventUI.display(filterBy(4, eventDescription)); // Filter by Event Description
                     break;
-
                 case 5:
-                    // Filter by Event Start Date
-                    LocalDate startDate = eventUI.inputEventStartDate(); // ADT: User Input
+                    LocalDate startDate = eventUI.inputEventStartDate();
                     eventUI.filterHeader("Start Date: " + startDate);
-                    eventUI.display(filterBy(5, startDate)); // ADT: Filter by Event Start Date
+                    eventUI.display(filterBy(5, startDate)); // Filter by Event Start Date
                     break;
-
                 case 6:
-                    // Filter by Event Start Time
-                    LocalTime startTime = eventUI.inputEventStartTime(); // ADT: User Input
+                    LocalTime startTime = eventUI.inputEventStartTime();
                     eventUI.filterHeader("Start Time: " + startTime);
-                    eventUI.display(filterBy(6, startTime)); // ADT: Filter by Event Start Time
+                    eventUI.display(filterBy(6, startTime)); // Filter by Event Start Time
                     break;
-
                 case 7:
-                    // Filter by Event Status
-                    EventStatus eventStatus = eventUI.chooseEventStatus(); // ADT: User Input
+                    EventStatus eventStatus = eventUI.chooseEventStatus();
                     eventUI.filterHeader("Event Status: " + eventStatus);
-                    eventUI.display(filterBy(7, eventStatus)); // ADT: Filter by Event Status
+                    eventUI.display(filterBy(7, eventStatus)); // Filter by Event Status
                     break;
-
                 case 8:
-                    // Filter by Organizer Name
-                    String organizerName = eventUI.inputEventOrganizerName(); // ADT: User Input
+                    String organizerName = eventUI.inputEventOrganizerName();
                     eventUI.filterHeader("Organizer Name: " + organizerName);
-                    eventUI.display(filterBy(8, organizerName)); // ADT: Filter by Organizer Name
+                    eventUI.display(filterBy(8, organizerName)); // Filter by Organizer Name
                     break;
-
                 case 9:
-                    // Filter by Organizer Email
-                    String organizerEmail = eventUI.inputEventOrganizerEmail(); // ADT: User Input
+                    String organizerEmail = eventUI.inputEventOrganizerEmail();
                     eventUI.filterHeader("Organizer Email: " + organizerEmail);
-                    eventUI.display(filterBy(9, organizerEmail)); // ADT: Filter by Organizer Email
+                    eventUI.display(filterBy(9, organizerEmail)); // Filter by Organizer Email
                     break;
-
                 case 10:
-                    // Filter by Organizer Phone Number
-                    String organizerPhoneNo = eventUI.inputEventOrganizerPhoneNo(); // ADT: User Input
+                    String organizerPhoneNo = eventUI.inputEventOrganizerPhoneNo();
                     eventUI.filterHeader("Organizer Phone No: " + organizerPhoneNo);
-                    eventUI.display(filterBy(10, organizerPhoneNo)); // ADT: Filter by Organizer Phone Number
+                    eventUI.display(filterBy(10, organizerPhoneNo)); // Filter by Organizer Phone Number
                     break;
-
                 case 11:
-                    // Filter by Event Type
-                    EventType eventType = eventUI.inputEventType(); // ADT: User Input
+                    EventType eventType = eventUI.inputEventType();
                     eventUI.filterHeader("Event Type: " + eventType);
-                    eventUI.display(filterBy(11, eventType)); // ADT: Filter by Event Type
+                    eventUI.display(filterBy(11, eventType)); // Filter by Event Type
                     break;
-
                 case 12:
-                    // Filter by Volunteer Need
-                    int volunteerNeed = eventUI.inputVolunteerNeedForTheEvent(); // ADT: User Input
+                    int volunteerNeed = eventUI.inputVolunteerNeedForTheEvent();
                     eventUI.filterHeader("Volunteer Need: " + volunteerNeed);
-                    eventUI.display(filterBy(12, volunteerNeed)); // ADT: Filter by Volunteer Need
+                    eventUI.display(filterBy(12, volunteerNeed)); // Filter by Volunteer Need
                     break;
-
                 case 0:
-                    // Exit the search loop
-                    exit = true; // End the loop
+                    exit = true; // Exit the search loop
                     break;
             }
-
-            // Pause for user input before continuing
             if (!exit) {
-                enterToContinue(); // Utility method to wait for user input
+                enterToContinue(); // Pause for user input before continuing
             }
-            // Continue looping until exit flag is set to true
         } while (!exit);
     }
 
     public LinkedList<Event> filterBy(int criteria, Object searchValue) {
-        // Initialize a LinkedList to store the filtered results
-        LinkedList<Event> result = new LinkedList<>(); // ADT: LinkedList
+        LinkedList<Event> result = new LinkedList<>();
+        Iterator keyIt = eventMap.keySet().getIterator();
 
-        // Obtain an iterator over the keys of the eventMap
-        Iterator keyIt = eventMap.keySet().getIterator(); // ADT: Iterator, HashMap
-
-        // Iterate through each key in the eventMap
         while (keyIt.hasNext()) {
-            // Retrieve the event associated with the current key
-            String key = (String) keyIt.next(); // ADT: String (Key)
-            Event event = eventMap.get(key); // ADT: HashMap, Event
+            String key = (String) keyIt.next();
+            Event event = eventMap.get(key);
 
-            // Filter events based on the specified criteria
             switch (criteria) {
-                case 1: // Filter by Event ID
-                    String eventId = (String) searchValue; // ADT: String
+                case 1: // Event ID
+                    String eventId = (String) searchValue;
                     if (event.getEventId().equalsIgnoreCase(eventId)) {
-                        result.add(event); // ADT: LinkedList
+                        result.add(event);
                     }
                     break;
-
-                case 2: // Filter by Event Name
-                    String eventName = (String) searchValue; // ADT: String
+                case 2: // Event Name
+                    String eventName = (String) searchValue;
                     if (event.getEventName().toLowerCase().contains(eventName.toLowerCase())) {
-                        result.add(event); // ADT: LinkedList
+                        result.add(event);
                     }
                     break;
-
-                case 3: // Filter by Event Address
-                    String eventAddress = (String) searchValue; // ADT: String
+                case 3: // Event Address
+                    String eventAddress = (String) searchValue;
                     if (event.getEventAddress().toLowerCase().contains(eventAddress.toLowerCase())) {
-                        result.add(event); // ADT: LinkedList
+                        result.add(event);
                     }
                     break;
-
-                case 4: // Filter by Event Description
-                    String eventDescription = (String) searchValue; // ADT: String
+                case 4: // Event Description
+                    String eventDescription = (String) searchValue;
                     if (event.getEventDescription().toLowerCase().contains(eventDescription.toLowerCase())) {
-                        result.add(event); // ADT: LinkedList
+                        result.add(event);
                     }
                     break;
-
-                case 5: // Filter by Event Start Date
-                    LocalDate startDate = (LocalDate) searchValue; // ADT: LocalDate
+                case 5: // Event Start Date
+                    LocalDate startDate = (LocalDate) searchValue;
                     if (event.getEventStartDate().equals(startDate)) {
-                        result.add(event); // ADT: LinkedList
+                        result.add(event);
                     }
                     break;
-
-                case 6: // Filter by Event Start Time
-                    LocalTime startTime = (LocalTime) searchValue; // ADT: LocalTime
+                case 6: // Event Start Time
+                    LocalTime startTime = (LocalTime) searchValue;
                     if (event.getEventStartTime().equals(startTime)) {
-                        result.add(event); // ADT: LinkedList
+                        result.add(event);
                     }
                     break;
-
-                case 7: // Filter by Event Status
-                    EventStatus eventStatus = (EventStatus) searchValue; // ADT: EventStatus
+                case 7: // Event Status
+                    EventStatus eventStatus = (EventStatus) searchValue;
                     if (event.getEventStatus().equals(eventStatus)) {
-                        result.add(event); // ADT: LinkedList
+                        result.add(event);
                     }
                     break;
-
-                case 8: // Filter by Organizer Name
-                    String organizerName = (String) searchValue; // ADT: String
+                case 8: // Organizer Name
+                    String organizerName = (String) searchValue;
                     if (event.getEventOrganizerName().toLowerCase().contains(organizerName.toLowerCase())) {
-                        result.add(event); // ADT: LinkedList
+                        result.add(event);
                     }
                     break;
-
-                case 9: // Filter by Organizer Email
-                    String organizerEmail = (String) searchValue; // ADT: String
+                case 9: // Organizer Email
+                    String organizerEmail = (String) searchValue;
                     if (event.getEventOrganizerEmail().toLowerCase().contains(organizerEmail.toLowerCase())) {
-                        result.add(event); // ADT: LinkedList
+                        result.add(event);
                     }
                     break;
-
-                case 10: // Filter by Organizer Phone Number
-                    String organizerPhoneNo = (String) searchValue; // ADT: String
+                case 10: // Organizer Phone No
+                    String organizerPhoneNo = (String) searchValue;
                     if (event.getEventOrganizerPhoneNo().contains(organizerPhoneNo)) {
-                        result.add(event); // ADT: LinkedList
+                        result.add(event);
                     }
                     break;
-
-                case 11: // Filter by Event Type
-                    EventType eventType = (EventType) searchValue; // ADT: EventType
+                case 11: // Event Type
+                    EventType eventType = (EventType) searchValue;
                     if (event.getEventType().equals(eventType)) {
-                        result.add(event); // ADT: LinkedList
+                        result.add(event);
                     }
                     break;
-
-                case 12: // Filter by Volunteer Need
-                    int availableVolunteers = (int) searchValue; // ADT: int
+                case 12: // Available Volunteer Needed
+                    int availableVolunteers = (int) searchValue;
                     if (event.getAvailableVolunteerNeeded() == availableVolunteers) {
-                        result.add(event); // ADT: LinkedList
+                        result.add(event);
                     }
                     break;
             }
         }
-        // Return the list of events that match the filter criteria
-        return result; // ADT: LinkedList
+        return result;
     }
 
     public void editEvent() {
-        // Initialize flag to control the loop
         boolean exit = false;
-
-        // Loop until exit flag is set to true
         do {
-            clearScreen(); // Utility method to clear the screen
-            displayAllEvents(); // ADT: Display of all events (HashMap or similar)
-
+            clearScreen();
+            displayAllEvents();
             System.out.println("Select the event to edit (Id, 0 to exit):");
-            String eventId = eventUI.inputEventId(); // ADT: User Input
+            String eventId = eventUI.inputEventId();
 
-            if (eventId.equals("0")) { // User chooses to exit
-                exit = true; // End the loop
+            if (eventId.equals("0")) {
+                exit = true;
             } else {
-                // Retrieve the event to edit from the event map
-                Event eventToAmend = eventMap.get(eventId); // ADT: HashMap, Event
-
-                if (eventToAmend != null) { // Event exists in the map
+                Event eventToAmend = eventMap.get(eventId);
+                if (eventToAmend != null) {
                     boolean detailsConfirmed = false;
                     while (!detailsConfirmed) {
-                        // Method to allow user to amend the event details
-                        amendEventDetails(eventToAmend); // ADT: Event
-                        clearScreen(); // Utility method to clear the screen
-                        eventUI.displayEventDetails(eventToAmend); // ADT: Display Event Details
-
+                        amendEventDetails(eventToAmend);
+                        clearScreen();
+                        eventUI.displayEventDetails(eventToAmend);
                         System.out.println("Are the details correct?");
-                        int confirm = eventUI.confirmationMessage(); // ADT: User Input
-
+                        int confirm = eventUI.confirmationMessage();
                         switch (confirm) {
-                            case 1: // Confirm changes
-                                // Update the event in the map
-                                eventMap.put(eventToAmend.getEventId(), eventToAmend); // ADT: HashMap, Event
-                                // Save the updated event map to a file
-                                eventDAO.saveToFile(eventMap); // ADT: HashMap, File
-                                clearScreen(); // Utility method to clear the screen
+                            case 1:
+                                eventMap.put(eventToAmend.getEventId(), eventToAmend);
+                                eventDAO.saveToFile(eventMap);
+                                clearScreen();
                                 System.out.println("Event details updated successfully.");
-                                detailsConfirmed = true; // End the loop for editing details
-                                enterToContinue(); // Utility method to wait for user input
+                                detailsConfirmed = true;
+                                enterToContinue();
                                 break;
-
-                            case 2: // Edit details again
+                            case 2:
                                 System.out.println("Let's edit the details again.");
-                                editEvent(); // Recursive call to edit details
+                                editEvent();
                                 break;
-
-                            case 0: // Exit to main menu
+                            case 0:
                                 System.out.println("Exiting to main menu.");
-                                exit = true; // End the main loop
+                                exit = true;
                                 break;
-
-                            default: // Handle invalid user input
+                            default:
                                 System.out.println("Invalid choice. Please try again.");
-                                break;
                         }
                     }
-                } else { // Event not found in the map
+                } else {
                     System.out.println("Event not found. Please try again.");
                 }
             }
-            // Continue looping until exit flag is set to true
         } while (!exit);
     }
 
     public void amendEventDetails(Event event) {
-        boolean doneEditing = false; // Flag to control the loop
-
-        // Loop until the editing is done
+        boolean doneEditing = false;
         while (!doneEditing) {
-            clearScreen(); // Utility method to clear the screen
+            clearScreen();
             System.out.println("Current Event Details:");
-            eventUI.displayEventDetails(event); // ADT: Display Event Details
+            eventUI.displayEventDetails(event);
 
-            int choice = eventUI.getEditMenu(); // ADT: User Input
+            int choice = eventUI.getEditMenu();
 
-            // Switch case to handle different editing options
             switch (choice) {
-                case 0: // Exit editing
+                case 0:
                     doneEditing = true;
                     break;
-                case 1: // Edit Event Name
-                    event.setEventName(eventUI.inputEventName()); // ADT: Event, String
+                case 1:
+                    event.setEventName(eventUI.inputEventName());
                     break;
-                case 2: // Edit Event Address
-                    event.setEventAddress(eventUI.inputEventAddress()); // ADT: Event, String
+                case 2:
+                    event.setEventAddress(eventUI.inputEventAddress());
                     break;
-                case 3: // Edit Event Description
-                    event.setEventDescription(eventUI.inputEventDescription()); // ADT: Event, String
+                case 3:
+                    event.setEventDescription(eventUI.inputEventDescription());
                     break;
-                case 4: // Edit Event Start Date
-                    event.setEventStartDate(eventUI.inputEventStartDate()); // ADT: Event, LocalDate
+                case 4:
+                    event.setEventStartDate(eventUI.inputEventStartDate());
                     break;
-                case 5: // Edit Event End Date
-                    LocalDate startDate = event.getEventStartDate(); // ADT: LocalDate
-                    LocalDate endDate = eventUI.inputEventEndDate(startDate); // ADT: LocalDate
+                case 5:
+                    LocalDate startDate = event.getEventStartDate();
+                    LocalDate endDate = eventUI.inputEventEndDate(startDate);
                     if (endDate.compareTo(startDate) >= 0) {
-                        event.setEventEndDate(endDate); // ADT: Event
+                        event.setEventEndDate(endDate);
                     } else {
                         System.out.println("End date cannot be before start date.");
                     }
                     break;
-                case 6: // Edit Event Start Time
-                    event.setEventStartTime(eventUI.inputEventStartTime()); // ADT: Event, LocalTime
+
+                case 6:
+                    event.setEventStartTime(eventUI.inputEventStartTime());
                     break;
-                case 7: // Edit Event End Time
-                    LocalTime startTime = event.getEventStartTime(); // ADT: LocalTime
-                    LocalTime endTime = eventUI.inputEventEndTime(startTime); // ADT: LocalTime
+                case 7:
+                    LocalTime startTime = event.getEventStartTime();
+                    LocalTime endTime = eventUI.inputEventEndTime(startTime);
                     if (endTime.compareTo(startTime) >= 0) {
-                        event.setEventEndTime(endTime); // ADT: Event
+                        event.setEventEndTime(endTime);
                     } else {
                         System.out.println("End time cannot be before start time.");
                     }
                     break;
-                case 8: // Edit Event Status
-                    event.setEventStatus(eventUI.chooseEventStatus()); // ADT: Event, EventStatus
+
+                case 8:
+                    event.setEventStatus(eventUI.chooseEventStatus());
                     break;
-                case 9: // Edit Event Organizer Name
-                    event.setEventOrganizerName(eventUI.inputEventOrganizerName()); // ADT: Event, String
+                case 9:
+                    event.setEventOrganizerName(eventUI.inputEventOrganizerName());
                     break;
-                case 10: // Edit Event Organizer Email
-                    event.setEventOrganizerEmail(eventUI.inputEventOrganizerEmail()); // ADT: Event, String
+                case 10:
+                    event.setEventOrganizerEmail(eventUI.inputEventOrganizerEmail());
                     break;
-                case 11: // Edit Event Organizer Phone Number
-                    event.setEventOrganizerPhoneNo(eventUI.inputEventOrganizerPhoneNo()); // ADT: Event, String
+                case 11:
+                    event.setEventOrganizerPhoneNo(eventUI.inputEventOrganizerPhoneNo());
                     break;
-                case 12: // Edit Event Type
-                    event.setEventType(eventUI.inputEventType()); // ADT: Event, EventType
+                case 12:
+                    event.setEventType(eventUI.inputEventType());
                     break;
-                case 13: // Edit Volunteer Need
-                    event.setVolunteerNeed(eventUI.inputVolunteerNeedForTheEvent()); // ADT: Event, int
+                case 13:
+                    event.setVolunteerNeed(eventUI.inputVolunteerNeedForTheEvent());
                     break;
-                default: // Handle invalid choice
+                default:
                     System.out.println("Invalid choice. Please try again.");
             }
         }
@@ -609,51 +511,28 @@ public class EventManagement {
         // Check if the HashMap is available and not empty
         if (eventMap == null || eventMap.isEmpty()) {
             System.out.println("No events to display.");
-            enterToContinue(); // Utility method to wait for user input
-            runEventManagement(); // Method to return to the main menu
+            return;
         }
 
         // Display header for events
-        displayEventHeader(); // ADT: Display Header
-
-        // Initialize a LinkedList to hold events
-        LinkedList<Event> eventList = new LinkedList<>(); // ADT: LinkedList
+        displayEventHeader();
 
         // Iterate over the keys of the HashMap
-        Iterator<String> keyIterator = eventMap.keySet().getIterator(); // ADT: Iterator
+        Iterator<String> keyIterator = eventMap.keySet().getIterator();
         while (keyIterator.hasNext()) {
-            String eventId = keyIterator.next(); // ADT: String (Key)
-            Event event = eventMap.get(eventId); // ADT: HashMap, Event
-            if (event != null) { // Check for null events
-                eventList.add(event); // ADT: LinkedList
+            String eventId = keyIterator.next();
+            Event event = eventMap.get(eventId);
+            if (event != null) {  // Check for null events
+                System.out.println(event.toString());
+
+            } else {
+                System.out.println("Encountered null event.");
             }
+
         }
 
-        // Manually sort the LinkedList by event ID using insertion sort
-        int numberOfEntries = eventList.getNumberOfEntries(); // ADT: LinkedList
-        for (int i = 1; i < numberOfEntries; i++) {
-            Event key = eventList.getEntry(i); // ADT: LinkedList, Event
-            int j = i - 1;
-
-            // Move elements of eventList[0..i-1] that are greater than key to one position ahead
-            while (j >= 0 && eventList.getEntry(j) != null
-                    && eventList.getEntry(j).getEventId().compareTo(key.getEventId()) > 0) {
-                eventList.replace(j + 1, eventList.getEntry(j)); // ADT: LinkedList
-                j--;
-            }
-            eventList.replace(j + 1, key); // ADT: LinkedList
-        }
-
-        // Display sorted events
-        for (int i = 1; i <= numberOfEntries; i++) {
-            Event event = eventList.getEntry(i); // ADT: LinkedList, Event
-            if (event != null) { // Check for null events
-                System.out.println(event.toString()); // ADT: Event
-            }
-        }
-
+        line(400);
         // Print a line separator for clarity
-        line(400); // Utility method
     }
 
     public void removeEventFromVolunteer() {
@@ -664,85 +543,76 @@ public class EventManagement {
 
             // 1. List all volunteers
             volunteerUI.listAllVolunteer(volunteerMap);
-            if (volunteerMap != null) {
-                System.out.println("Select Volunteer To Remove Event From (0 to exit):");
+            System.out.println("Select Volunteer To Remove Event From (0 to exit):");
 
-                // 2. Receive User Input
-                String volunteerId = eventUI.inputVolunteerId(); // Method to input an integer ID
+            // 2. Receive User Input
+            String volunteerId = eventUI.inputVolunteerId(); // Method to input an integer ID
 
-                // 3. Validation for exit
-                if (volunteerId.equals("0")) {
-                    System.out.println("Exiting removal process.");
-                    continueRemoving = false;
-                    continue;
-                }
+            // 3. Validation for exit
+            if (volunteerId.equals("0")) {
+                System.out.println("Exiting removal process.");
+                continueRemoving = false;
+                continue;
+            }
 
-                try {
-                    int volId = Integer.parseInt(volunteerId);
-                    Volunteer volunteer = volunteerMap.get(volId);
+            try {
+                int volId = Integer.parseInt(volunteerId);
+                Volunteer volunteer = volunteerMap.get(volId);
 
-                    if (volunteer != null) {
-                        // 4. Display Volunteer Details
-                        LinkedList<String> eventList = volunteer.getEventList();
-                        displayEventList(eventList);
-                        System.out.println("Select Event To Remove (0 to exit):");
+                if (volunteer != null) {
+                    // 4. Display Volunteer Details
+                    LinkedList<String> eventList = volunteer.getEventList();
+                    displayEventList(eventList);
+                    System.out.println("Select Event To Remove (0 to exit):");
 
-                        // 5. Receive Event ID
-                        String eventId = eventUI.inputEventId(); // Method to input an event ID
+                    // 5. Receive Event ID
+                    String eventId = eventUI.inputEventId().toUpperCase(); // Method to input an event ID
 
-                        // 6. Validation for exit
-                        if (eventId.equals("0")) {
-                            System.out.println("Exiting removal process.");
-                            continueRemoving = false;
-                            continue;
-                        }
+                    // 6. Validation for exit
+                    if (eventId.equals("0")) {
+                        System.out.println("Exiting removal process.");
+                        continueRemoving = false;
+                        continue;
+                    }
 
-                        // 7. Check if Event Exists in Volunteer’s List
-                        if (eventList.contains(eventId)) {
+                    // 7. Check if Event Exists in Volunteer’s List
+                    if (eventList.contains(eventId)) {
 
-                            System.out.println("Are you sure you want to remove this event from the volunteer?");
-                            int confirmation = eventUI.getConfirmation(); // Method to get user confirmation
+                        System.out.println("Are you sure you want to remove this event from the volunteer?");
+                        int confirmation = eventUI.getConfirmation(); // Method to get user confirmation
 
-                            switch (confirmation) {
-                                case 1: // Confirm    int position = eventList.findPosition(eventId);
-                                    int position = eventList.findPosition(eventId);
+                        switch (confirmation) {
+                            case 1: // Confirm    int position = eventList.findPosition(eventId);
+                                int position = eventList.findPosition(eventId);
 
-                                    eventList.remove(position); // Remove event from volunteer's event list
-                                    Event event = eventMap.get(eventId); // Retrieve event
-                                    if (event != null) {
-                                        LinkedList<Integer> participantList = event.getParticipantList();
-                                        participantList.remove(volId); // Remove volunteer from event
-                                        eventDAO.saveToFile(eventMap); // Save updated event data
-                                    }
-                                    volunteerDAO.saveToFile(volunteerMap); // Save updated volunteer data
-                                    System.out.println("Event removed from volunteer successfully.");
-                                    enterToContinue(); // Wait for user input to continue
-                                    continueRemoving = false;
-                                    break;
-                                case 2: // Cancel
-                                    System.out.println("Event removal canceled.");
-                                    enterToContinue(); // Wait for user input to continue
-                                    continueRemoving = false;
-                                    break;
-                                case 0: // Exit
-                                    System.out.println("Exiting removal process.");
-                                    continueRemoving = false;
-                                    break;
-                                default:
-                                    System.out.println("Invalid choice. Please try again.");
-                                    break;
-                            }
-                        } else {
-                            System.out.println("Event not found in this volunteer's list.");
-                            int retryChoice = eventUI.getRetryChoice(); // Method to get user choice for retry or exit
+                                eventList.remove(position); // Remove event from volunteer's event list
+                                Event event = eventMap.get(eventId); // Retrieve event
+                                if (event != null) {
+                                    LinkedList<Integer> participantList = event.getParticipantList();
 
-                            if (retryChoice == 0) {
+                                    participantList.remove(volId); // Remove volunteer from event
+                                    eventDAO.saveToFile(eventMap); // Save updated event data
+                                }
+                                volunteerDAO.saveToFile(volunteerMap); // Save updated volunteer data
+                                System.out.println("Event removed from volunteer successfully.");
+                                enterToContinue(); // Wait for user input to continue
+                                continueRemoving = false;
+                                break;
+                            case 2: // Cancel
+                                System.out.println("Event removal canceled.");
+                                enterToContinue(); // Wait for user input to continue
+                                continueRemoving = false;
+                                break;
+                            case 0: // Exit
                                 System.out.println("Exiting removal process.");
                                 continueRemoving = false;
-                            }
+                                break;
+                            default:
+                                System.out.println("Invalid choice. Please try again.");
+                                break;
                         }
                     } else {
-                        System.out.println("Volunteer not found with ID: " + volId);
+                        System.out.println("Event not found in this volunteer's list.");
                         int retryChoice = eventUI.getRetryChoice(); // Method to get user choice for retry or exit
 
                         if (retryChoice == 0) {
@@ -750,97 +620,104 @@ public class EventManagement {
                             continueRemoving = false;
                         }
                     }
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid Volunteer ID format. Please enter a numeric ID.");
+                } else {
+                    System.out.println("Volunteer not found with ID: " + volId);
+                    int retryChoice = eventUI.getRetryChoice(); // Method to get user choice for retry or exit
+
+                    if (retryChoice == 0) {
+                        System.out.println("Exiting removal process.");
+                        continueRemoving = false;
+                    }
                 }
-            } else {
-                System.out.println("No Volunteer exist!");
-                enterToContinue();
-                runEventManagement();
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid Volunteer ID format. Please enter a numeric ID.");
             }
         }
     }
 
     public void listAllEventsForVolunteer() {
-        clearScreen(); // ADT: Utility method to clear the screen
+        clearScreen();
 
-        boolean retry = true; // Flag to control the retry loop
+        boolean retry = true;
 
         while (retry) {
-            displayAllEvents(); // ADT: Display all events
-
+            displayAllEvents(); // Display all events
             System.out.println("Select Event ID to view the participant volunteers (0 to exit):");
-            String eventId = eventUI.inputEventId(); // ADT: User Input, Event ID
+            String eventId = eventUI.inputEventId().trim().toUpperCase(); // Method to input an event ID
 
             if (eventId.equals("0")) {
                 System.out.println("Exiting volunteer listing process.");
                 return; // Exit method
             }
 
-            Event event = eventMap.get(eventId); // ADT: HashMap, Event
+            Event event = eventMap.get(eventId);
 
             if (event == null) {
                 System.out.println("Event not found with ID: " + eventId);
-                retry = eventUI.promptRetry(); // ADT: User Input for retry
+                retry = eventUI.promptRetry(); // Ask the user if they want to retry
                 continue;
             }
 
-            LinkedList<Integer> participantList = event.getParticipantList(); // ADT: LinkedList of participant IDs
+            LinkedList<Integer> participantList = event.getParticipantList(); // Get participant list from event
 
             if (participantList.isEmpty()) {
                 System.out.println("No volunteers have been assigned to this event.");
             } else {
                 System.out.println("Volunteers participating in Event ID: " + eventId);
                 // Use an iterator to traverse through the LinkedList
-                Iterator<Integer> iterator = participantList.iterator(); // ADT: Iterator
-                displayVolunteerHeader(); // ADT: Display Header
+                Iterator<Integer> iterator = participantList.iterator();
+                displayVolunteerHeader();
                 while (iterator.hasNext()) {
-                    int volunteerId = iterator.next(); // ADT: Integer
-                    Volunteer volunteer = volunteerMap.get(volunteerId); // ADT: HashMap, Volunteer
+
+                    int volunteerId = iterator.next();
+                    Volunteer volunteer = volunteerMap.get(volunteerId); // Retrieve volunteer details from the map
                     if (volunteer != null) {
+
                         System.out.println(volunteer); // Assuming Volunteer class has a proper toString() method
+
                     } else {
                         System.out.println("Volunteer ID " + volunteerId + " not found.");
                     }
                 }
             }
-            line(259); // ADT: Utility method to print a line separator
+            line(259);
 
-            retry = eventUI.promptRetry(); // ADT: User Input for retry
+            retry = eventUI.promptRetry(); // Ask the user if they want to retry for another event
         }
     }
 
     public void displayEventList(LinkedList<String> eventList) {
-        clearScreen(); // ADT: Utility method to clear the screen
+        clearScreen();
 
         if (eventList.isEmpty()) {
             System.out.println("\nNo events to display.");
-            enterToContinue(); // ADT: Utility method to wait for user input
+            enterToContinue();
             return;
         }
 
         // Use an iterator to traverse through the LinkedList
-        Iterator<String> iterator = eventList.iterator(); // ADT: Iterator
-        LinkedList<Event> eventsToDisplay = new LinkedList<>(); // ADT: LinkedList of Event objects
+        Iterator<String> iterator = eventList.iterator();
+        LinkedList<Event> eventsToDisplay = new LinkedList<>();
 
         // Retrieve events for each event ID in the eventList
         while (iterator.hasNext()) {
-            String eventId = iterator.next(); // ADT: String (Event ID)
-            Event event = eventMap.get(eventId); // ADT: HashMap, Event
+            String eventId = iterator.next();
+            Event event = eventMap.get(eventId); // Retrieve event from the event map
+
             if (event != null) {
-                eventsToDisplay.add(event); // ADT: LinkedList
+                eventsToDisplay.add(event); // Add event to the list for display
             } else {
-                System.out.println("\nEvent " + eventId + " not found.");
+                System.out.println("\nEvent ");
             }
         }
 
         if (eventsToDisplay.isEmpty()) {
             System.out.println("\nNo valid events to display.");
         } else {
-            displayEvents(eventsToDisplay); // ADT: Display Events using LinkedList
+            displayEvents(eventsToDisplay); // Display events using an iterator
         }
 
-        enterToContinue(); // ADT: Utility method to wait for user input
+        enterToContinue(); // Wait for user input to continue
     }
 
     private void displayEvents(LinkedList<Event> events) {
@@ -856,9 +733,9 @@ public class EventManagement {
         System.out.println("================================================================================================================================");
 
         // Use an iterator to traverse the list of events
-        Iterator<Event> eventIterator = events.iterator(); // ADT: Iterator
+        Iterator<Event> eventIterator = events.iterator();
         while (eventIterator.hasNext()) {
-            Event event = eventIterator.next(); // ADT: LinkedList, Event
+            Event event = eventIterator.next();
             System.out.println(String.format("| %-10s | %-40s | %-30s | %-16s | %-16s |",
                     event.getEventId(),
                     event.getEventName(),
@@ -868,10 +745,10 @@ public class EventManagement {
         }
 
         System.out.println("================================================================================================================================");
+
     }
 
     public Event inputEventDetails() {
-        clearScreen();
         System.out.println("You can type 'EXIT' at any time for the following inputs: Date, Time, or Volunteer Need. Typing 'EXIT' will initiate the exit process.");
 
         String eventName = eventUI.inputEventName();
@@ -954,13 +831,8 @@ public class EventManagement {
             int confirmation = eventUI.getConfirmation();
             if (confirmation == 1) {
                 runEventManagement();
-                return true;
             } else if (confirmation == 0) {
                 runEventManagement();
-                return true;
-            } else if (confirmation == 2) {
-                inputEventDetails();
-                return false;
             }
         }
         return false;
@@ -971,364 +843,349 @@ public class EventManagement {
             int confirmation = eventUI.getConfirmation();
             if (confirmation == 1) {
                 runEventManagement();
-                return true;
+
             } else if (confirmation == 0) {
                 runEventManagement();
-                return true;
-            } else if (confirmation == 2) {
-                inputEventDetails();
-                return false;
             }
         }
         return false;
     }
 
     public void generateReport() {
+        // 0. Report Header:
+        String reportTitle = "Event Summary Report";
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = now.format(formatter);
 
-        if (eventMap != null && volunteerMap != null) {
-            // 0. Report Header:
-            String reportTitle = "Event Summary Report";
-            LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            String formattedDateTime = now.format(formatter);
+        // Print the report
+        line(124);
+        System.out.println("|" + centerText(reportTitle, 122) + "|");
+        line(124);
+        System.out.println("| Generated on : " + formattedDateTime + spacePadding(87) + "|");
+        line(124);
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 2. Categorize Events Data:
 
-            // Print the report
-            line(124);
-            System.out.println("|" + centerText(reportTitle, 122) + "|");
-            line(124);
-            System.out.println("| Generated on : " + formattedDateTime + spacePadding(87) + "|");
-            line(124);
+        // Initialize lists and variables for sorting and reporting
+        // Initialize counters
+        int totalEvents = 0;
+        int fundraiserCount = 0;
+        int awarenessCount = 0;
+        int volunteerDriveCount = 0;
+        int donationDriveCount = 0;
 
-            // 2. Categorize Events Data:
-            // Initialize lists and variables for sorting and reporting
-            // Initialize counters
-            int totalEvents = 0;
-            int fundraiserCount = 0;
-            int awarenessCount = 0;
-            int volunteerDriveCount = 0;
-            int donationDriveCount = 0;
+        int fundraiserVolunteersNeeded = 0;
+        int awarenessVolunteersNeeded = 0;
+        int volunteerDriveVolunteersNeeded = 0;
+        int donationDriveVolunteersNeeded = 0;
 
-            int fundraiserVolunteersNeeded = 0;
-            int awarenessVolunteersNeeded = 0;
-            int volunteerDriveVolunteersNeeded = 0;
-            int donationDriveVolunteersNeeded = 0;
-
-            int fundraiserVolunteersAssigned = 0;
-            int awarenessVolunteersAssigned = 0;
-            int volunteerDriveVolunteersAssigned = 0;
-            int donationDriveVolunteersAssigned = 0;
+        int fundraiserVolunteersAssigned = 0;
+        int awarenessVolunteersAssigned = 0;
+        int volunteerDriveVolunteersAssigned = 0;
+        int donationDriveVolunteersAssigned = 0;
 ////////////////////////////////////////////////////////////////
-            int plannedCount = 0;
-            int completedCount = 0;
+        int plannedCount = 0;
+        int completedCount = 0;
 
-            int plannedVolunteersNeeded = 0;
-            int comVolunteersNeeded = 0;
+        int plannedVolunteersNeeded = 0;
+        int comVolunteersNeeded = 0;
 
-            int plannedVolunteersAssigned = 0;
-            int comVolunteersAssigned = 0;
+        int plannedVolunteersAssigned = 0;
+        int comVolunteersAssigned = 0;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            Iterator<String> eventkeyIt = eventMap.keySet().getIterator();
+        Iterator<String> eventkeyIt = eventMap.keySet().getIterator();
 
-            LinkedList<Event> plannedEvents = new LinkedList<>();
-            LinkedList<Event> completedEvents = new LinkedList<>();
+        LinkedList<Event> plannedEvents = new LinkedList<>();
+        LinkedList<Event> completedEvents = new LinkedList<>();
 
-            // Process events
-            while (eventkeyIt.hasNext()) {
-                String key = eventkeyIt.next();
-                Event event = eventMap.get(key);
+        // Process events
+        while (eventkeyIt.hasNext()) {
+            String key = eventkeyIt.next();
+            Event event = eventMap.get(key);
 
-                totalEvents++;
+            totalEvents++;
 
-                // Count events by type
-                switch (event.getEventType()) {
-                    case FUNDRAISER:
-                        fundraiserCount++;
-                        fundraiserVolunteersNeeded += event.getVolunteerNeed();
-                        fundraiserVolunteersAssigned += event.getParticipantList().getNumberOfEntries();
-                        break;
-
-                    case AWARENESS:
-                        awarenessCount++;
-                        awarenessVolunteersNeeded += event.getVolunteerNeed();
-                        awarenessVolunteersAssigned += event.getParticipantList().getNumberOfEntries();
-                        break;
-
-                    case VOLUNTEER_DRIVE:
-                        volunteerDriveCount++;
-                        volunteerDriveVolunteersNeeded += event.getVolunteerNeed();
-                        volunteerDriveVolunteersAssigned += event.getParticipantList().getNumberOfEntries();
-                        break;
-
-                    case DONATION_DRIVE:
-                        donationDriveCount++;
-                        donationDriveVolunteersNeeded += event.getVolunteerNeed();
-                        donationDriveVolunteersAssigned += event.getParticipantList().getNumberOfEntries();
-                        break;
-
+            // Count events by type
+            switch (event.getEventType()) {
+                case FUNDRAISER -> {
+                    fundraiserCount++;
+                    fundraiserVolunteersNeeded += event.getVolunteerNeed();
+                    fundraiserVolunteersAssigned += event.getParticipantList().getNumberOfEntries();
                 }
-
-                // Count events by status
-                switch (event.getEventStatus()) {
-                    case PLANNED:
-                        plannedCount++;
-                        plannedEvents.add(event);
-                        plannedVolunteersNeeded += event.getVolunteerNeed();
-                        plannedVolunteersAssigned += event.getParticipantList().getNumberOfEntries();
-
-                        break;
-                    case COMPLETED:
-                        completedCount++;
-                        completedEvents.add(event);
-                        comVolunteersNeeded += event.getVolunteerNeed();
-                        comVolunteersAssigned += event.getParticipantList().getNumberOfEntries();
-
-                        break;
+                case AWARENESS -> {
+                    awarenessCount++;
+                    awarenessVolunteersNeeded += event.getVolunteerNeed();
+                    awarenessVolunteersAssigned += event.getParticipantList().getNumberOfEntries();
+                }
+                case VOLUNTEER_DRIVE -> {
+                    volunteerDriveCount++;
+                    volunteerDriveVolunteersNeeded += event.getVolunteerNeed();
+                    volunteerDriveVolunteersAssigned += event.getParticipantList().getNumberOfEntries();
+                }
+                case DONATION_DRIVE -> {
+                    donationDriveCount++;
+                    donationDriveVolunteersNeeded += event.getVolunteerNeed();
+                    donationDriveVolunteersAssigned += event.getParticipantList().getNumberOfEntries();
                 }
             }
-            //////////////////////////////////////////////////////////////////////
-            double totalFundraiserEvents = (double) fundraiserCount / totalEvents * 100;
-            double totalAwarenessEvents = (double) awarenessCount / totalEvents * 100;
-            double totalVolunteerDriveEvents = (double) volunteerDriveCount / totalEvents * 100;
-            double totalDonationDriveEvents = (double) donationDriveCount / totalEvents * 100;
 
-            double percentageFundraiserFilled = (fundraiserVolunteersNeeded > 0) ? (double) fundraiserVolunteersAssigned / fundraiserVolunteersNeeded * 100 : 0;
-            double percentageAwarenessFilled = (awarenessVolunteersNeeded > 0) ? (double) awarenessVolunteersAssigned / awarenessVolunteersNeeded * 100 : 0;
-            double percentageVolunteerDriveFilled = (volunteerDriveVolunteersNeeded > 0) ? (double) volunteerDriveVolunteersAssigned / volunteerDriveVolunteersNeeded * 100 : 0;
-            double percentageDonationDriveFilled = (donationDriveVolunteersNeeded > 0) ? (double) donationDriveVolunteersAssigned / donationDriveVolunteersNeeded * 100 : 0;
+            // Count events by status
+            switch (event.getEventStatus()) {
+                case PLANNED:
+                    plannedCount++;
+                    plannedEvents.add(event);
+                    plannedVolunteersNeeded += event.getVolunteerNeed();
+                    plannedVolunteersAssigned += event.getParticipantList().getNumberOfEntries();
 
-            System.out.println("|" + centerText("Summary By Event Category ", 122) + "|");
-            line(124);
-            System.out.println("| Event Category  | Number Of Events | Percentage (%) | Total Number of Volunteers Needed | Percentage Filled | Completed  |");
-            line(124);
+                    break;
+                case COMPLETED:
+                    completedCount++;
+                    completedEvents.add(event);
+                    comVolunteersNeeded += event.getVolunteerNeed();
+                    comVolunteersAssigned += event.getParticipantList().getNumberOfEntries();
 
-            System.out.printf("| %-16s| %-17d| %-15.2f| %-34d| %-18.2f| %-10s |\n",
-                    "FUNDRAISER", fundraiserCount, totalFundraiserEvents,
-                    fundraiserVolunteersNeeded, percentageFundraiserFilled,
-                    String.format("%d/%d (%.0f%%)", fundraiserVolunteersAssigned, fundraiserVolunteersNeeded, percentageFundraiserFilled));
+                    break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////
+        double totalFundraiserEvents = (double) fundraiserCount / totalEvents * 100;
+        double totalAwarenessEvents = (double) awarenessCount / totalEvents * 100;
+        double totalVolunteerDriveEvents = (double) volunteerDriveCount / totalEvents * 100;
+        double totalDonationDriveEvents = (double) donationDriveCount / totalEvents * 100;
 
-            System.out.printf("| %-16s| %-17d| %-15.2f| %-34d| %-18.2f| %-10s |\n",
-                    "AWARENESS", awarenessCount, totalAwarenessEvents,
-                    awarenessVolunteersNeeded, percentageAwarenessFilled,
-                    String.format("%d/%d (%.0f%%)", awarenessVolunteersAssigned, awarenessVolunteersNeeded, percentageAwarenessFilled));
+        double percentageFundraiserFilled = (fundraiserVolunteersNeeded > 0) ? (double) fundraiserVolunteersAssigned / fundraiserVolunteersNeeded * 100 : 0;
+        double percentageAwarenessFilled = (awarenessVolunteersNeeded > 0) ? (double) awarenessVolunteersAssigned / awarenessVolunteersNeeded * 100 : 0;
+        double percentageVolunteerDriveFilled = (volunteerDriveVolunteersNeeded > 0) ? (double) volunteerDriveVolunteersAssigned / volunteerDriveVolunteersNeeded * 100 : 0;
+        double percentageDonationDriveFilled = (donationDriveVolunteersNeeded > 0) ? (double) donationDriveVolunteersAssigned / donationDriveVolunteersNeeded * 100 : 0;
 
-            System.out.printf("| %-16s| %-17d| %-15.2f| %-34d| %-18.2f| %-10s |\n",
-                    "VOLUNTEER DRIVE", volunteerDriveCount, totalVolunteerDriveEvents,
-                    volunteerDriveVolunteersNeeded, percentageVolunteerDriveFilled,
-                    String.format("%d/%d (%.0f%%)", volunteerDriveVolunteersAssigned, volunteerDriveVolunteersNeeded, percentageVolunteerDriveFilled));
+        System.out.println("|" + centerText("Summary By Event Category ", 122) + "|");
+        line(124);
+        System.out.println("| Event Category  | Number Of Events | Percentage (%) | Total Number of Volunteers Needed | Percentage Filled | Completed  |");
+        line(124);
 
-            System.out.printf("| %-16s| %-17d| %-15.2f| %-34d| %-18.2f| %-10s |\n",
-                    "DONATION DRIVE", donationDriveCount, totalDonationDriveEvents,
-                    donationDriveVolunteersNeeded, percentageDonationDriveFilled,
-                    String.format("%d/%d (%.0f%%)", donationDriveVolunteersAssigned, donationDriveVolunteersNeeded, percentageDonationDriveFilled));
-            line(124);
+        System.out.printf("| %-16s| %-17d| %-15.2f| %-34d| %-18.2f| %-10s |\n",
+                "FUNDRAISER", fundraiserCount, totalFundraiserEvents,
+                fundraiserVolunteersNeeded, percentageFundraiserFilled,
+                String.format("%d/%d (%.0f%%)", fundraiserVolunteersAssigned, fundraiserVolunteersNeeded, percentageFundraiserFilled));
+
+        System.out.printf("| %-16s| %-17d| %-15.2f| %-34d| %-18.2f| %-10s |\n",
+                "AWARENESS", awarenessCount, totalAwarenessEvents,
+                awarenessVolunteersNeeded, percentageAwarenessFilled,
+                String.format("%d/%d (%.0f%%)", awarenessVolunteersAssigned, awarenessVolunteersNeeded, percentageAwarenessFilled));
+
+        System.out.printf("| %-16s| %-17d| %-15.2f| %-34d| %-18.2f| %-10s |\n",
+                "VOLUNTEER DRIVE", volunteerDriveCount, totalVolunteerDriveEvents,
+                volunteerDriveVolunteersNeeded, percentageVolunteerDriveFilled,
+                String.format("%d/%d (%.0f%%)", volunteerDriveVolunteersAssigned, volunteerDriveVolunteersNeeded, percentageVolunteerDriveFilled));
+
+        System.out.printf("| %-16s| %-17d| %-15.2f| %-34d| %-18.2f| %-10s |\n",
+                "DONATION DRIVE", donationDriveCount, totalDonationDriveEvents,
+                donationDriveVolunteersNeeded, percentageDonationDriveFilled,
+                String.format("%d/%d (%.0f%%)", donationDriveVolunteersAssigned, donationDriveVolunteersNeeded, percentageDonationDriveFilled));
+        line(124);
 
 /////////////////////////////////////////////////////////////////////////
-            double plannedPercentage = (totalEvents > 0) ? (double) plannedCount / totalEvents * 100 : 0;
-            double completedPercentage = (totalEvents > 0) ? (double) completedCount / totalEvents * 100 : 0;
+        double plannedPercentage = (totalEvents > 0) ? (double) plannedCount / totalEvents * 100 : 0;
+        double completedPercentage = (totalEvents > 0) ? (double) completedCount / totalEvents * 100 : 0;
 
-            double percentageComVolInvolve = (comVolunteersNeeded > 0) ? (double) comVolunteersAssigned / comVolunteersNeeded * 100 : 0;
-            double percentagePlanVolInvolve = (plannedVolunteersNeeded > 0) ? (double) plannedVolunteersAssigned / plannedVolunteersNeeded * 100 : 0;
+        double percentageComVolInvolve = (comVolunteersNeeded > 0) ? (double) comVolunteersAssigned / comVolunteersNeeded * 100 : 0;
+        double percentagePlanVolInvolve = (plannedVolunteersNeeded > 0) ? (double) plannedVolunteersAssigned / plannedVolunteersNeeded * 100 : 0;
 
-            System.out.println("|" + centerText("Event Status", 122) + "|");
-            line(124);
-            System.out.println("| Event Status | Number Of Events | Percentage (%) | Total Number of Volunteers Needed | Percentage Filled | Completed     |");
-            line(124);
-            System.out.printf("| %-13s| %-17d| %-15.2f| %-34d| %-18.2f| %-13s |\n",
-                    "Planned", plannedEvents.getNumberOfEntries(), plannedPercentage,
-                    plannedVolunteersNeeded, percentagePlanVolInvolve,
-                    String.format("%d/%d (%.0f%%)", plannedVolunteersAssigned, plannedVolunteersNeeded, percentagePlanVolInvolve)); // Update based on actual data
+        System.out.println("|" + centerText("Event Status", 122) + "|");
+        line(124);
+        System.out.println("| Event Status | Number Of Events | Percentage (%) | Total Number of Volunteers Needed | Percentage Filled | Completed     |");
+        line(124);
+        System.out.printf("| %-13s| %-17d| %-15.2f| %-34d| %-18.2f| %-13s |\n",
+                "Planned", plannedEvents.getNumberOfEntries(), plannedPercentage,
+                plannedVolunteersNeeded, percentagePlanVolInvolve,
+                String.format("%d/%d (%.0f%%)", plannedVolunteersAssigned, plannedVolunteersNeeded, percentagePlanVolInvolve)); // Update based on actual data
 
-            System.out.printf("| %-13s| %-17d| %-15.2f| %-34d| %-18.2f| %-13s |\n",
-                    "Completed", completedEvents.getNumberOfEntries(), completedPercentage,
-                    comVolunteersNeeded, percentageComVolInvolve,
-                    String.format("%d/%d (%.0f%%)", comVolunteersAssigned, comVolunteersNeeded, percentageComVolInvolve)); // Update based on actual data
-            line(124);
+        System.out.printf("| %-13s| %-17d| %-15.2f| %-34d| %-18.2f| %-13s |\n",
+                "Completed", completedEvents.getNumberOfEntries(), completedPercentage,
+                comVolunteersNeeded, percentageComVolInvolve,
+                String.format("%d/%d (%.0f%%)", comVolunteersAssigned, comVolunteersNeeded, percentageComVolInvolve)); // Update based on actual data
+        line(124);
 
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            LinkedList<Volunteer> maleVolunteerHaveWorkingExp = new LinkedList<>();
-            LinkedList<Volunteer> maleVolunteerNoWorkingExp = new LinkedList<>();
-            LinkedList<Volunteer> femaleVolunteerHaveWorkingExp = new LinkedList<>();
-            LinkedList<Volunteer> femaleVolunteerNoWorkingExp = new LinkedList<>();
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        LinkedList<Volunteer> maleVolunteerHaveWorkingExp = new LinkedList<>();
+        LinkedList<Volunteer> maleVolunteerNoWorkingExp = new LinkedList<>();
+        LinkedList<Volunteer> femaleVolunteerHaveWorkingExp = new LinkedList<>();
+        LinkedList<Volunteer> femaleVolunteerNoWorkingExp = new LinkedList<>();
 
-            int totalVolunteers = 0;
+        int totalVolunteers = 0;
 
-            int menWithExperience = 0;
-            int menWithoutExperience = 0;
-            int womenWithExperience = 0;
-            int womenWithoutExperience = 0;
+        int menWithExperience = 0;
+        int menWithoutExperience = 0;
+        int womenWithExperience = 0;
+        int womenWithoutExperience = 0;
 
-            int totalEventMenExp = 0;
-            int totalEventMenNoExp = 0;
-            int totalEventWomenExp = 0;
-            int totalEventWomenNoExp = 0;
+        int totalEventMenExp = 0;
+        int totalEventMenNoExp = 0;
+        int totalEventWomenExp = 0;
+        int totalEventWomenNoExp = 0;
 
-            int totalEventsInvolved = 0;
+        int totalEventsInvolved = 0;
 
-            Iterator<Integer> volkeyIt = volunteerMap.keySet().getIterator();
+        Iterator<Integer> volkeyIt = volunteerMap.keySet().getIterator();
 
-            while (volkeyIt.hasNext()) {
-                Integer key = volkeyIt.next();
-                Volunteer volunteer = volunteerMap.get(key);
-                totalVolunteers++;
+        while (volkeyIt.hasNext()) {
+            Integer key = volkeyIt.next();
+            Volunteer volunteer = volunteerMap.get(key);
+            totalVolunteers++;
 
-                // Ensure volunteer data is valid
-                if (volunteer != null && volunteer.getEventList() != null) {
-                    totalEventsInvolved += volunteer.getEventList().getNumberOfEntries();
+            // Ensure volunteer data is valid
+            if (volunteer != null && volunteer.getEventList() != null) {
+                totalEventsInvolved += volunteer.getEventList().getNumberOfEntries();
 
-                    // Update category counts
-                    if (volunteer.getGender() == VolunteerGender.MALE) {
-                        if (volunteer.getCategory() == VolunteerCategory.HAVE_WORKING_EXPERIENCE) {
-                            maleVolunteerHaveWorkingExp.add(volunteer);
-                            totalEventMenExp += volunteer.getEventList().getNumberOfEntries();
+                // Update category counts
+                if (volunteer.getGender() == VolunteerGender.MALE) {
+                    if (volunteer.getCategory() == VolunteerCategory.HAVE_WORKING_EXPERIENCE) {
+                        maleVolunteerHaveWorkingExp.add(volunteer);
+                        totalEventMenExp += volunteer.getEventList().getNumberOfEntries();
 
-                            menWithExperience++;
-                        } else if (volunteer.getCategory() == VolunteerCategory.NO_WORKING_EXPERIENCE) {
-                            maleVolunteerNoWorkingExp.add(volunteer);
-                            totalEventMenNoExp += volunteer.getEventList().getNumberOfEntries();
+                        menWithExperience++;
+                    } else if (volunteer.getCategory() == VolunteerCategory.NO_WORKING_EXPERIENCE) {
+                        maleVolunteerNoWorkingExp.add(volunteer);
+                        totalEventMenNoExp += volunteer.getEventList().getNumberOfEntries();
 
-                            menWithoutExperience++;
-                        }
+                        menWithoutExperience++;
+                    }
 
-                    } else if (volunteer.getGender() == VolunteerGender.FEMALE) {
-                        if (volunteer.getCategory() == VolunteerCategory.HAVE_WORKING_EXPERIENCE) {
-                            femaleVolunteerHaveWorkingExp.add(volunteer);
-                            totalEventWomenExp += volunteer.getEventList().getNumberOfEntries();
+                } else if (volunteer.getGender() == VolunteerGender.FEMALE) {
+                    if (volunteer.getCategory() == VolunteerCategory.HAVE_WORKING_EXPERIENCE) {
+                        femaleVolunteerHaveWorkingExp.add(volunteer);
+                        totalEventWomenExp += volunteer.getEventList().getNumberOfEntries();
 
-                            womenWithExperience++;
-                        } else if (volunteer.getCategory() == VolunteerCategory.NO_WORKING_EXPERIENCE) {
-                            femaleVolunteerNoWorkingExp.add(volunteer);
-                            totalEventWomenNoExp += volunteer.getEventList().getNumberOfEntries();
+                        womenWithExperience++;
+                    } else if (volunteer.getCategory() == VolunteerCategory.NO_WORKING_EXPERIENCE) {
+                        femaleVolunteerNoWorkingExp.add(volunteer);
+                        totalEventWomenNoExp += volunteer.getEventList().getNumberOfEntries();
 
-                            womenWithoutExperience++;
-                        }
+                        womenWithoutExperience++;
                     }
                 }
             }
+        }
 
-            // Calculate average events per volunteer
-            double maleWithExp = (totalVolunteers > 0) ? (double) menWithExperience / totalVolunteers * 100 : 0;
-            double maleWithNoExp = (totalVolunteers > 0) ? (double) menWithoutExperience / totalVolunteers * 100 : 0;
-            double femaleWithExp = (totalVolunteers > 0) ? (double) womenWithExperience / totalVolunteers * 100 : 0;
-            double femaleWithNoExp = (totalVolunteers > 0) ? (double) womenWithoutExperience / totalVolunteers * 100 : 0;
+        // Calculate average events per volunteer
+        double maleWithExp = (totalVolunteers > 0) ? (double) menWithExperience / totalVolunteers * 100 : 0;
+        double maleWithNoExp = (totalVolunteers > 0) ? (double) menWithoutExperience / totalVolunteers * 100 : 0;
+        double femaleWithExp = (totalVolunteers > 0) ? (double) womenWithExperience / totalVolunteers * 100 : 0;
+        double femaleWithNoExp = (totalVolunteers > 0) ? (double) womenWithoutExperience / totalVolunteers * 100 : 0;
 
-            double eMaleWithExp = (totalEventsInvolved > 0) ? (double) totalEventMenExp / totalEventsInvolved * 100 : 0;
-            double eMaleWithNoExp = (totalEventsInvolved > 0) ? (double) totalEventMenNoExp / totalEventsInvolved * 100 : 0;
-            double eFemaleWithExp = (totalEventsInvolved > 0) ? (double) totalEventWomenExp / totalEventsInvolved * 100 : 0;
-            double eFemaleWithNoExp = (totalEventsInvolved > 0) ? (double) totalEventWomenNoExp / totalEventsInvolved * 100 : 0;
+        double eMaleWithExp = (totalEventsInvolved > 0) ? (double) totalEventMenExp / totalEventsInvolved * 100 : 0;
+        double eMaleWithNoExp = (totalEventsInvolved > 0) ? (double) totalEventMenNoExp / totalEventsInvolved * 100 : 0;
+        double eFemaleWithExp = (totalEventsInvolved > 0) ? (double) totalEventWomenExp / totalEventsInvolved * 100 : 0;
+        double eFemaleWithNoExp = (totalEventsInvolved > 0) ? (double) totalEventWomenNoExp / totalEventsInvolved * 100 : 0;
 
-            System.out.println("| Total Number of Volunteers : " + totalVolunteers + " \tTotal Events Involved : " + totalEventsInvolved + "\t\t\t\t\t\t\t   |");
-            line(124);
-            System.out.println("| Volunteer Category and Gender    | Number Of Volunteers | Percentage (%) | Total Number of Events Involved | % of Events |");
-            line(124);
-            System.out.printf("| %-33s| %-21d| %-15.2f| %-32d| %-11.2f |\n",
-                    "Men with working experience",
-                    maleVolunteerHaveWorkingExp.getNumberOfEntries(), maleWithExp, totalEventMenExp, eMaleWithExp);
+        System.out.println("| Total Number of Volunteers : " + totalVolunteers + " \tTotal Events Involved : " + totalEventsInvolved + "\t\t\t\t\t\t\t   |");
+        line(124);
+        System.out.println("| Volunteer Category and Gender    | Number Of Volunteers | Percentage (%) | Total Number of Events Involved | % of Events |");
+        line(124);
+        System.out.printf("| %-33s| %-21d| %-15.2f| %-32d| %-11.2f |\n",
+                "Men with working experience",
+                maleVolunteerHaveWorkingExp.getNumberOfEntries(), maleWithExp, totalEventMenExp, eMaleWithExp);
 
-            System.out.printf("| %-33s| %-21d| %-15.2f| %-32d| %-11.2f |\n",
-                    "Men without working experience",
-                    maleVolunteerNoWorkingExp.getNumberOfEntries(), maleWithNoExp, totalEventMenNoExp, eMaleWithNoExp);
+        System.out.printf("| %-33s| %-21d| %-15.2f| %-32d| %-11.2f |\n",
+                "Men without working experience",
+                maleVolunteerNoWorkingExp.getNumberOfEntries(), maleWithNoExp, totalEventMenNoExp, eMaleWithNoExp);
 
-            System.out.printf("| %-33s| %-21d| %-15.2f| %-32d| %-11.2f |\n",
-                    "Women with working experience",
-                    femaleVolunteerHaveWorkingExp.getNumberOfEntries(), femaleWithExp, totalEventWomenExp, eFemaleWithExp);
+        System.out.printf("| %-33s| %-21d| %-15.2f| %-32d| %-11.2f |\n",
+                "Women with working experience",
+                femaleVolunteerHaveWorkingExp.getNumberOfEntries(), femaleWithExp, totalEventWomenExp, eFemaleWithExp);
 
-            System.out.printf("| %-33s| %-21d| %-15.2f| %-32d| %-11.2f |\n",
-                    "Women without working experience",
-                    femaleVolunteerNoWorkingExp.getNumberOfEntries(), femaleWithNoExp, totalEventWomenNoExp, eFemaleWithNoExp);
-            line(124);
+        System.out.printf("| %-33s| %-21d| %-15.2f| %-32d| %-11.2f |\n",
+                "Women without working experience",
+                femaleVolunteerNoWorkingExp.getNumberOfEntries(), femaleWithNoExp, totalEventWomenNoExp, eFemaleWithNoExp);
+        line(124);
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Bubble sort volunteers by the number of events they are involved in (descending)
-            volkeyIt = volunteerMap.keySet().getIterator();
-            LinkedList<Volunteer> sortedVolunteers = new LinkedList<>();
-            LinkedStack<Volunteer> bottomVolunteers = new LinkedStack<>();
-            CircularLinkedQueue<Volunteer> topVolunteers = new CircularLinkedQueue<>();
+        volkeyIt = volunteerMap.keySet().getIterator();
+        LinkedList<Volunteer> sortedVolunteers = new LinkedList<>();
+        LinkedStack<Volunteer> bottomVolunteers = new LinkedStack<>();
+        CircularLinkedQueue<Volunteer> topVolunteers = new CircularLinkedQueue<>();
 
-            while (volkeyIt.hasNext()) {
-                Integer key = volkeyIt.next();
-                Volunteer volunteer = volunteerMap.get(key);
-                sortedVolunteers.add(volunteer);
-            }
-
-            int n = sortedVolunteers.getNumberOfEntries();
-            for (int i = 0; i < n - 1; i++) {
-                for (int j = 0; j < n - i - 1; j++) {
-                    Volunteer v1 = sortedVolunteers.getEntry(j + 1);
-                    Volunteer v2 = sortedVolunteers.getEntry(j + 2);
-                    if (v1 != null && v2 != null && v1.getEventList() != null && v2.getEventList() != null) {
-                        if (v1.getEventList().getNumberOfEntries() < v2.getEventList().getNumberOfEntries()) {
-                            // Swap v1 and v2
-                            sortedVolunteers.replace(j + 1, v2);
-                            sortedVolunteers.replace(j + 2, v1);
-                        }
-                    }
-                }
-            }
-
-            // Print Top 5 Volunteers
-            System.out.println("|" + centerText("Top 5 Volunteers", 122) + "|");
-            line(124);
-            System.out.println("| Rank | Volunteer ID | Name             | Gender    | Phone No.   | Email                    | Count Of Events | Rate     |");
-
-            line(124);
-
-            for (int i = 1; i < sortedVolunteers.getNumberOfEntries() + 1; i++) {
-                Volunteer volunteer = sortedVolunteers.getEntry(i);
-                if (volunteer != null) {
-                    if (i < 6) {
-                        topVolunteers.enqueue(volunteer);
-                    }
-                    bottomVolunteers.push(volunteer);
-                }
-            }
-            int rank = 1;
-
-            int countTop = 1;
-            while (!topVolunteers.isEmpty() && countTop <= 5) {
-                Volunteer volunteer = topVolunteers.dequeue();
-
-                if (volunteer != null) {
-                    int totalEventCount = volunteer.getEventList().getNumberOfEntries();
-                    double volunteerParticipantRate = (totalEvents > 0) ? (double) totalEventCount / totalEvents : 0;
-                    System.out.printf("| %-5d| %-13d| %-17s| %-10s| %-12s| %-25s| %-15d | %-8.2f |\n",
-                            countTop++, volunteer.getVolunteerId(), volunteer.getName(), volunteer.getGender(),
-                            volunteer.getPhoneNo(), volunteer.getEmail(), totalEventCount, volunteerParticipantRate);
-                }
-            }
-
-            // Print Bottom 5 Volunteers
-            line(124);
-            System.out.println(
-                    "|" + centerText("Bottom 5 Volunteers", 122) + " |");
-            line(124);
-            System.out.println("| Rank | Volunteer ID | Name             | Gender    | Phone No.   | Email                    | Count Of Events | Rate     |");
-            line(124);
-
-            int counting = 1;
-            while (!bottomVolunteers.isEmpty() && counting <= 5) {
-                Volunteer volunteer = bottomVolunteers.pop();
-
-                if (volunteer != null) {
-                    int totalEventCount = volunteer.getEventList().getNumberOfEntries();
-                    double volunteerParticipantRate = (totalEvents > 0) ? (double) totalEventCount / totalEvents : 0;
-                    System.out.printf("| %-5d| %-13d| %-17s| %-10s| %-12s| %-25s| %-15d | %-8.2f |\n",
-                            counting++, volunteer.getVolunteerId(), volunteer.getName(), volunteer.getGender(),
-                            volunteer.getPhoneNo(), volunteer.getEmail(), totalEventCount, volunteerParticipantRate);
-                }
-            }
-
-            line(124);
-            // Report Footer
-            System.out.println("|" + centerText("This report is for staff use only. Please handle the information with care.", 122) + " |");
-            line(124);
-            enterToContinue();
-        } else {
-            System.out.println("No Volunteer or No Event exist!");
-            enterToContinue();
-            runEventManagement();
-
+        while (volkeyIt.hasNext()) {
+            Integer key = volkeyIt.next();
+            Volunteer volunteer = volunteerMap.get(key);
+            sortedVolunteers.add(volunteer);
         }
+
+        int n = sortedVolunteers.getNumberOfEntries();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                Volunteer v1 = sortedVolunteers.getEntry(j + 1);
+                Volunteer v2 = sortedVolunteers.getEntry(j + 2);
+                if (v1 != null && v2 != null && v1.getEventList() != null && v2.getEventList() != null) {
+                    if (v1.getEventList().getNumberOfEntries() < v2.getEventList().getNumberOfEntries()) {
+                        // Swap v1 and v2
+                        sortedVolunteers.replace(j + 1, v2);
+                        sortedVolunteers.replace(j + 2, v1);
+                    }
+                }
+            }
+        }
+
+        // Print Top 5 Volunteers
+        System.out.println("|" + centerText("Top 5 Volunteers", 122) + "|");
+        line(124);
+        System.out.println("| Rank | Volunteer ID | Name             | Gender    | Phone No.   | Email                    | Count Of Events | Rate     |");
+
+        line(124);
+
+        for (int i = 1; i < sortedVolunteers.getNumberOfEntries() + 1; i++) {
+            Volunteer volunteer = sortedVolunteers.getEntry(i);
+            if (volunteer != null) {
+                if (i < 6) {
+                    topVolunteers.enqueue(volunteer);
+                }
+                bottomVolunteers.push(volunteer);
+            }
+        }
+        int rank = 1;
+
+        int countTop = 1;
+        while (!topVolunteers.isEmpty() && countTop <= 5) {
+            Volunteer volunteer = topVolunteers.dequeue();
+
+            if (volunteer != null) {
+                int totalEventCount = volunteer.getEventList().getNumberOfEntries();
+                double volunteerParticipantRate = (totalEvents > 0) ? (double) totalEventCount / totalEvents : 0;
+                System.out.printf("| %-5d| %-13d| %-17s| %-10s| %-12s| %-25s| %-15d | %-8.2f |\n",
+                        countTop++, volunteer.getVolunteerId(), volunteer.getName(), volunteer.getGender(),
+                        volunteer.getPhoneNo(), volunteer.getEmail(), totalEventCount, volunteerParticipantRate);
+            }
+        }
+
+        // Print Bottom 5 Volunteers
+        line(124);
+        System.out.println(
+                "|" + centerText("Bottom 5 Volunteers", 122) + " |");
+        line(124);
+        System.out.println("| Rank | Volunteer ID | Name             | Gender    | Phone No.   | Email                    | Count Of Events | Rate     |");
+        line(124);
+
+        int counting = 1;
+        while (!bottomVolunteers.isEmpty() && counting <= 5) {
+            Volunteer volunteer = bottomVolunteers.pop();
+
+            if (volunteer != null) {
+                int totalEventCount = volunteer.getEventList().getNumberOfEntries();
+                double volunteerParticipantRate = (totalEvents > 0) ? (double) totalEventCount / totalEvents : 0;
+                System.out.printf("| %-5d| %-13d| %-17s| %-10s| %-12s| %-25s| %-15d | %-8.2f |\n",
+                        counting++, volunteer.getVolunteerId(), volunteer.getName(), volunteer.getGender(),
+                        volunteer.getPhoneNo(), volunteer.getEmail(), totalEventCount, volunteerParticipantRate);
+            }
+        }
+
+        line(124);
+        // Report Footer
+        System.out.println("|" + centerText("This report is for staff use only. Please handle the information with care.",122) + " |");
+        line(124);
+        enterToContinue();
     }
 
     private String centerText(String text, int width) {
