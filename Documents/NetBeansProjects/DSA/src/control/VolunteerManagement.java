@@ -147,8 +147,8 @@ public class VolunteerManagement {
 
             while (true) {
                 System.out.print("Enter Volunteer ID to remove: ");
-                volunteerId = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
+                volunteerId = volunteerUI.validateInt();
+                System.out.println("");
 
                 if (volunteerMap.containsKey(volunteerId)) {
                     // Prompt user and read input on the same line
@@ -163,16 +163,18 @@ public class VolunteerManagement {
                         System.out.println("===============================");
                         break; // Exit inner loop after successful removal
                     } else {
-                        System.out.println("Operation cancelled. No volunteer was removed.\n");
+                        System.out.println("\n==============================================");
+                        System.out.println("Operation cancelled. No volunteer was removed.");
+                        System.out.println("==============================================");
                         break; // Exit inner loop if operation is cancelled
                     }
                 } else {
-                    System.out.println("No volunteer found with the given ID. Please try again.\n");
+                    System.out.println("\nNo volunteer found with the given ID. Please try again.\n");
                 }
             }
 
             // Ask if the user wants to remove another volunteer
-            System.out.print("Do you want to remove another volunteer? (Y/N): ");
+            System.out.print("\nDo you want to remove another volunteer? (Y/N): ");
             String removeMore = scanner.nextLine().trim().toLowerCase();
             continueRemoving = removeMore.equals("y");
         }
@@ -301,23 +303,32 @@ public class VolunteerManagement {
         event.displayAllEvents(); // Display all events
 
         // 2. Input Event ID
+        enterToContinue();
         System.out.println("Select Event ID to assign volunteers (0 to exit):");
         String eventId = eventUI.inputEventId().toUpperCase(); // Input an event ID
-
-        // 3. Header Event
-        eventUI.filterHeader("Event ID: " + eventId);
-        eventUI.display(event.filterBy(1, eventId)); // Filter by Event ID
-
-        // 4. Validation if 0 then Exit
+        
+        // 3. Validation if 0 then Exit
         if (eventId.equals("0")) {
+            System.out.println("\n=====================================");
             System.out.println("Exiting volunteer assignment process.");
+            System.out.println("=====================================");
+            clearScreen();
             return; // Exit method
+        }
+        
+        // 4. Header Event
+        else{
+        
+            System.out.println("\n");
+            eventUI.filterHeader("Event ID: " + eventId);
+            eventUI.display(event.filterBy(1, eventId)); // Filter by Event ID
+            enterToContinue();
         }
 
         // 5. Retrieve Event and Validate
         Event event = eventMap.get(eventId);
         if (event == null) {
-            System.out.println("Event not found with ID: " + eventId);
+            System.out.println("");
             return;
         }
 
@@ -337,24 +348,27 @@ public class VolunteerManagement {
 
             // 10. Get Input Volunteer ID
             System.out.println("Select Volunteer ID to assign to event (0 to exit):");
-            String id = eventUI.inputVolunteerId();
+            int id = volunteerUI.enterVolunteerId();
 
             // 11. Validation to Exit
-            if (id.equals("0")) {
+            if (id == 0) {
+                System.out.println("\n=====================================");
                 System.out.println("Exiting volunteer assignment process.");
+                System.out.println("=====================================");
                 return; // Exit method
             }
 
             // 12. To make the id become integer 
             try {
-                int volId = Integer.parseInt(id);
+                int volId = id;
                 Volunteer volunteer = volunteerMap.get(volId);
 
                 if (volunteer == null) {
-                    System.out.println("Volunteer not found with ID: " + volId);
-                    System.out.println("Available IDs in map: " + volunteerMap.keySet());
+                    System.out.println("\n\n\n\n===============================================================================================================================================================================================================================================");
+                    System.out.println("|" + " Volunteer not found with ID: " + volId);
                 } else if (participantList.contains(volId)) {
-                    System.out.println("Volunteer already assigned to this event.");
+                    System.out.println("\n\n\n\n===============================================================================================================================================================================================================================================");
+                    System.out.println("|" +" Volunteer already assigned to this event.");
                 } else {
                     // 13. Assign Volunteer to Event
                     participantList.add(volId);
@@ -366,7 +380,8 @@ public class VolunteerManagement {
                     eventDAO.saveToFile(eventMap); // Save event data
                     volunteerDAO.saveToFile(volunteerMap); // Save volunteer data
 
-                    System.out.println("Volunteer assigned successfully. Volunteers needed: " + neededVolunteers);
+                    System.out.println("\n\n\n\n===============================================================================================================================================================================================================================================");
+                    System.out.println("|" + " Volunteer assigned successfully. Volunteers needed: " + neededVolunteers);
                 }
 
                 if (neededVolunteers == 0) {
@@ -392,18 +407,19 @@ public class VolunteerManagement {
             System.out.println("Select Volunteer To Search (0 to exit):");
 
             // 2. Receive User Input
-            String volunteerId = eventUI.inputVolunteerId(); // Method to input an integer ID
-            volunteerUI.filterHeader(volunteerId);
+            int volunteerId = volunteerUI.enterVolunteerId(); // Method to input an integer ID
+            
+            volunteerUI.filterHeader(String.valueOf(volunteerId));
 
             // 3. Validation for exit
-            if (volunteerId.equals("0")) {
+            if (volunteerId == 0) {
                 System.out.println("Exiting search process.");
                 continueSearch = false;
                 continue;
             }
 
             try {
-                int volId = Integer.parseInt(volunteerId);
+                int volId = volunteerId;
                 Volunteer volunteer = volunteerMap.get(volId);
 
                 if (volunteer != null) {
