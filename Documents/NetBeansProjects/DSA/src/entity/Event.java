@@ -35,6 +35,7 @@ public class Event implements Serializable {
     private LocalDateTime lastEditTime;
     private LinkedList<Integer> participantList; // List to store volunteer IDs
 
+    
     public Event() {
         this.eventId = generateEventId();
         this.lastEditTime = LocalDateTime.now();
@@ -216,7 +217,7 @@ public class Event implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("| %-10s | %-45s | %-45s | %-12s | %-12s | %-12s | %-12s | %-66s | %-30s | %-30s | %-15s | %-10s | %-15s | %-22s | %-18s |",
+        return String.format("| %-10s | %-45s | %-45s | %-12s | %-12s | %-12s | %-12s | %-66s | %-30s | %-30s | %-15s | %-10s | %-15s | %-20s | %-20s |",
                 eventId, eventName, eventAddress, eventStartDate, eventEndDate, eventStartTime,
                 eventEndTime, eventDescription, eventOrganizerName, eventOrganizerEmail, eventOrganizerPhoneNo, eventStatus,
                 eventType, volunteerNeed, availableVolunteerNeeded);
