@@ -184,11 +184,9 @@ public class VolunteerManagement {
             int choice = volunteerUI.getSearchMenu();
             switch (choice) {
                 case 1:
-                    System.out.print("Enter Volunteer ID: ");
-                    int id = scanner.nextInt();
+                    int id = volunteerUI.enterVolunteerId();
 
                     if (volunteerMap.containsKey(id)) {
-                        Volunteer volunteer = volunteerMap.get(id);
                         String idToString = String.valueOf(id);
                         volunteerUI.filterHeader(idToString);
                         volunteerUI.displayOutput(filterBy(choice, idToString));
@@ -532,31 +530,33 @@ public class VolunteerManagement {
         int countHaveExperience = 0, countNoExperience = 0;
         int ageUnder16 = 0, age17to30 = 0, age31to45 = 0, ageAbove45 = 0;
 
-        LinkedList<Volunteer> volunteers = new LinkedList<>();
 
-        Iterator<Volunteer> iterator = volunteers.iterator();
+        Iterator<Integer> iterator = volunteerMap.keySet().getIterator();
+        
         while (iterator.hasNext()) {
-            Volunteer volunteer = iterator.next();
-            
-            // Gender categorization
+            Integer key = iterator.next();
+            Volunteer volunteer = volunteerMap.get(key);
+            //
             if (volunteer.getGender() == VolunteerGender.MALE) {
                 maleVolunteer.add(volunteer);
                 countMale++;
-            } else if (volunteer.getGender() == VolunteerGender.FEMALE) {
+            }
+            
+            else if (volunteer.getGender() == VolunteerGender.FEMALE) {
                 femaleVolunteer.add(volunteer);
                 countFemale++;
             }
-
-            // Work experience categorization
+            
+            //
             if (volunteer.getCategory() == VolunteerCategory.HAVE_WORKING_EXPERIENCE) {
                 haveWorkingExp.add(volunteer);
                 countHaveExperience++;
-            } else if (volunteer.getCategory() == VolunteerCategory.NO_WORKING_EXPERIENCE) {
+            } 
+            else if (volunteer.getCategory() == VolunteerCategory.NO_WORKING_EXPERIENCE) {
                 noWorkingExp.add(volunteer);
                 countNoExperience++;
             }
 
-            // Age categorization
             int age = calculateAge(volunteer.getDateOfBirth());
             if (age <= 16) {
                 ageUnder16++;
@@ -568,6 +568,8 @@ public class VolunteerManagement {
                 ageAbove45++;
             }
         }
+            
+        
 
         // Calculate percentages
         double malePercentage = (totalVolunteers > 0) ? (countMale * 100.0) / totalVolunteers : 0;
@@ -591,7 +593,7 @@ public class VolunteerManagement {
         System.out.println("| Volunteer Gender         | Number Of Volunteer                | Percentage (%)                        |");
         System.out.println("---------------------------------------------------------------------------------------------------------");
         System.out.printf("| MALE                     | %-34d | %-36.2f%% |\n", maleVolunteer.getNumberOfEntries(), malePercentage);
-        System.out.printf("| FEMALE                   | %-34d | %-36.2f%% |\n", countFemale, femalePercentage);
+        System.out.printf("| FEMALE                   | %-34d | %-36.2f%% |\n", femaleVolunteer.getNumberOfEntries(), femalePercentage);
         System.out.println("---------------------------------------------------------------------------------------------------------");
         System.out.printf("| Total                    | %-34d | 100%%                                  |\n", totalVolunteers);
         System.out.println("---------------------------------------------------------------------------------------------------------");
@@ -600,8 +602,8 @@ public class VolunteerManagement {
         System.out.println("---------------------------------------------------------------------------------------------------------");
         System.out.println("| Volunteer Category       | Number Of Volunteer                | Percentage (%)                        |");
         System.out.println("---------------------------------------------------------------------------------------------------------");
-        System.out.printf("| HAVE_WORKING_EXPERIENCE  | %-34d | %-36.2f%% |\n", countHaveExperience, haveExperiencePercentage);
-        System.out.printf("| NO_WORKING_EXPERIENCE    | %-34d | %-36.2f%% |\n", countNoExperience, noExperiencePercentage);
+        System.out.printf("| HAVE_WORKING_EXPERIENCE  | %-34d | %-36.2f%% |\n", haveWorkingExp.getNumberOfEntries(), haveExperiencePercentage);
+        System.out.printf("| NO_WORKING_EXPERIENCE    | %-34d | %-36.2f%% |\n", noWorkingExp.getNumberOfEntries(), noExperiencePercentage);
         System.out.println("---------------------------------------------------------------------------------------------------------");
         System.out.printf("| Total                    | %-34d | 100%%                                  |\n", totalVolunteers);
         System.out.println("---------------------------------------------------------------------------------------------------------");
