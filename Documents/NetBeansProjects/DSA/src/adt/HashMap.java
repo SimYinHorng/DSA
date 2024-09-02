@@ -34,6 +34,9 @@ public class HashMap<K, V> implements MapInterface<K, V>, Serializable {
 
     @Override
     public V put(K key, V value) {
+        if(key == null){
+            return null;
+        }
         int index = hash(key);
         Node<K, V> node = buckets[index];
 

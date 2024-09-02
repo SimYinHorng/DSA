@@ -6,7 +6,6 @@ package boundary;
 
 import adt.HashMap;
 import adt.LinkedList;
-import entity.Event;
 import entity.Volunteer;
 import java.util.InputMismatchException;
 import java.util.Iterator;
@@ -20,7 +19,7 @@ import static utility.MessageUI.line;
 
 /**
  *
- * @author Eason
+ * @author Goh Wei Xian
  */
 public class VolunteerManagementUI {
     
@@ -197,7 +196,6 @@ public class VolunteerManagementUI {
             } else {
                 displayInvalidChoiceMessage();
             }
-
         } while (!correctInput);
         return choice;
     }
@@ -253,7 +251,7 @@ public class VolunteerManagementUI {
         String phoneNo;
         String regex = "^(0\\d-\\d{7,8}|01\\d-\\d{7,8})$";
         do {
-            System.out.print("Enter Volunteer Phone No: ");
+            System.out.print("Enter Volunteer Phone No (xxx-xxxxxxx): ");
             phoneNo = scanner.nextLine();
             if (!phoneNo.matches(regex)) {
                 System.out.println("Invalid Phone Number format!!!");
@@ -363,13 +361,13 @@ public class VolunteerManagementUI {
         boolean validInput = false;
         int id = -1;
         do {
-            System.out.print("Volunteer Id: ");
+            System.out.print("Enter Volunteer Id: ");
 
             id = validateInt();
             if (id != -1) {
                 validInput = true;
             } else {
-                System.out.println("Please Enter Integer");
+                System.out.println("\nInvalid input. Please Enter Integer!!");
             }
 
         } while (!validInput);

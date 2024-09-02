@@ -152,7 +152,7 @@ public class Volunteer implements Serializable {
     
     @Override
     public String toString() {
-        return String.format("| %-14d | %-25s | %-30s | %-15s | %-80s | %-16s | %-11s | %-25s | %15d |", volunteerId, name, email, phoneNo, address, dateOfBirth, gender, category, (!eventList.isEmpty() ? eventList.getNumberOfEntries() : 0));
+        return String.format("| %-14d | %-25s | %-30s | %-15s | %-60s | %-16s | %-11s | %-25s | %15d |", volunteerId, name, email, phoneNo, address, dateOfBirth, gender, category, (!eventList.isEmpty() ? eventList.getNumberOfEntries() : 0));
     }
 
     @Override
