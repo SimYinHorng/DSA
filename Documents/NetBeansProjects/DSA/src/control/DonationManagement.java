@@ -8,7 +8,7 @@ import entity.DonationItem;
 import dao.DonationDAO;
 import adt.ArrayList;
 import java.time.LocalDate;
-import java.util.Iterator; // Import the Iterator class
+import java.util.Scanner; // Import Scanner for user input
 
 public class DonationManagement {
 
@@ -85,14 +85,50 @@ public class DonationManagement {
     }
 
     public boolean removeDonation(int donationId) {
-        for (int i = 1; i <= donations.getNumberOfEntries(); i++) {
-            if (donations.getEntry(i).getDonationId() == donationId) {
-                donations.remove(i);
-                return true;
+    Donation donationToRemove = searchDonation(donationId);
+
+        if (donationToRemove != null) {
+            // Display detailed information of the donation to be removed
+            System.out.println("Are you sure you want to remove the following donation?");
+            System.out.println("Donor: " + donationToRemove.getDonor().getName());
+            System.out.println("Date: " + donationToRemove.getDonationDate());
+            System.out.println("Total Value: $" + String.format("%.2f", donationToRemove.getTotalValue()));
+            System.out.println("Donated Items:");
+
+            // Inside your removeDonation method
+// Display each item's details
+            for (int j = 1; j <= donationToRemove.getItems().getNumberOfEntries(); j++) {
+                DonationItem item = donationToRemove.getItems().getEntry(j);
+                System.out.println("  - Item: " + item.getName()
+                        + // Corrected method call here
+                        ", Category: " + item.getCategory()
+                        + ", Value: $" + String.format("%.2f", item.getValue()));
             }
+
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Enter 'yes' to confirm, or 'no' to cancel: ");
+        String confirmation = scanner.nextLine().trim().toLowerCase();
+
+        if (confirmation.equals("yes")) {
+            // Proceed with the removal
+            for (int i = 1; i <= donations.getNumberOfEntries(); i++) {
+                if (donations.getEntry(i).getDonationId() == donationId) {
+                    donations.remove(i);
+                    System.out.println("Donation successfully removed.");
+                    return true;
+                }
+            }
+        } else {
+            // User canceled the removal
+            System.out.println("Donation removal canceled.");
         }
-        return false;
+    } else {
+        System.out.println("Donation with ID " + donationId + " not found.");
     }
+
+    return false;
+}
+
 
     public Donation searchDonation(int donationId) {
         for (int i = 1; i <= donations.getNumberOfEntries(); i++) {
@@ -131,16 +167,15 @@ public class DonationManagement {
     }
 
     public ArrayList<Donation> listDonationsByDonor(String donorName) {
-    ArrayList<Donation> donorDonations = new ArrayList<>();
-    for (int i = 1; i <= donations.getNumberOfEntries(); i++) {
-        Donation donation = donations.getEntry(i);
-        if (donation.getDonor() != null && donation.getDonor().getName().equalsIgnoreCase(donorName)) {
-            donorDonations.add(donation);
+        ArrayList<Donation> donorDonations = new ArrayList<>();
+        for (int i = 1; i <= donations.getNumberOfEntries(); i++) {
+            Donation donation = donations.getEntry(i);
+            if (donation.getDonor() != null && donation.getDonor().getName().equalsIgnoreCase(donorName)) {
+                donorDonations.add(donation);
+            }
         }
+        return donorDonations;
     }
-    return donorDonations;
-}
-
 
     public ArrayList<Donation> listDonationsByDonee(Donee donee) {
         ArrayList<Donation> doneeDonations = new ArrayList<>();

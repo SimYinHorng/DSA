@@ -218,13 +218,44 @@ public class DonationManagementUI {
         System.out.println(report);
     }
 
+    // Modified inputDonor method with validation
     private Donor inputDonor() {
         System.out.println("Enter donor details:");
         String name = getStringInput("Name: ");
-        String email = getStringInput("Email: ");
-        String phoneNo = getStringInput("Phone number: ");
+
+        String email;
+        while (true) {
+            email = getStringInput("Email: ");
+            if (isValidEmail(email)) {
+                break;
+            } else {
+                System.out.println("Invalid email format. Please try again.");
+            }
+        }
+
+        String phoneNo;
+        while (true) {
+            phoneNo = getStringInput("Phone number: ");
+            if (isValidPhoneNumber(phoneNo)) {
+                break;
+            } else {
+                System.out.println("Invalid phone number. Please enter a valid 10-digit phone number.");
+            }
+        }
+
         String address = getStringInput("Address: ");
         return new Donor(name, email, phoneNo, address, null, null);
+    }
+
+    // Helper method to validate email
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        return email.matches(emailRegex);
+    }
+
+    // Helper method to validate phone number
+    private boolean isValidPhoneNumber(String phoneNo) {
+        return phoneNo.matches("\\d{10}");
     }
 
     private ArrayList<DonationItem> inputDonationItems() {
