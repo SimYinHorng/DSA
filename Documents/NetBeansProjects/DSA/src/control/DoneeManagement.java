@@ -1,23 +1,25 @@
 package control;
 
-import adt.ArrayList;
 import adt.HashMap;
 import adt.LinkedList;
 import boundary.DoneeManagementUI;
 import boundary.DonorManagementUI;
 import dao.DoneeDAO;
-import dao.DonorDAO;
-import entity.Donation;
 import entity.Donee;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Iterator;
 import java.util.Scanner;
-import utility.DoneeCategory;
 import utility.MessageUI;
 import static utility.MessageUI.displayInvalidChoiceMessage;
 import static utility.MessageUI.enterToContinue;
+
+
+/**
+ *
+ * @author Chew Wei Seng
+ */
 
 public class DoneeManagement {
 
@@ -198,6 +200,10 @@ public class DoneeManagement {
                     System.out.println("Minimum age cannot be greater than maximum age.");
                     break;
                 }
+                if (maxAge >= 130) {
+                    System.out.println("Maximum age must be reasonable");
+                    break;
+                }
 
                 filteredDonees = filterByAgeGroup(minAge, maxAge);
                 MessageUI.displayDoneeHeader();
@@ -359,7 +365,7 @@ public class DoneeManagement {
 
         int selection = -1;
         do {
-            System.out.print("Enter the number corresponding to the donee: ");
+            System.out.println("Enter the number corresponding to the donee: ");
             if (scanner.hasNextInt()) {
                 selection = scanner.nextInt();
                 scanner.nextLine();

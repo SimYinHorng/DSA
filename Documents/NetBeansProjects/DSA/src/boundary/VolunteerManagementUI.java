@@ -10,6 +10,7 @@ import entity.Volunteer;
 import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Scanner;
+import static utility.MessageUI.clearScreen;
 import utility.VolunteerCategory;
 import utility.VolunteerGender;
 import static utility.MessageUI.displayVolunteerHeader;
@@ -26,6 +27,10 @@ public class VolunteerManagementUI {
     Scanner scanner = new Scanner(System.in);
     
     public int getMenuChoice(){
+        boolean correctInput = false;
+        int choice;
+        do{
+        clearScreen();
         System.out.println("\n===================");
         System.out.println("VOLUNTEER MAIN MENU");
         System.out.println("===================");
@@ -39,11 +44,16 @@ public class VolunteerManagementUI {
         System.out.println("8. Generate Summary Report");
         System.out.println("0. Quit");
         System.out.print("Enter choice: ");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
+        choice = validateInt();
         System.out.println();
-        return choice;
+        if (choice >= 0 && choice <= 8) {
+                correctInput = true;
+            } else {
+                displayInvalidChoiceMessage();
+            }
         
+        }while(!correctInput);
+        return choice;        
     }
     
     public int getEditMenu() {
@@ -294,7 +304,8 @@ public class VolunteerManagementUI {
             System.out.println("1. Male");
             System.out.println("2. Female");
             System.out.print("Enter Volunteer Gender: ");
-            input = scanner.nextInt();
+            input = validateInt();
+            System.out.println("");
 
             switch (input) {
                 case 1:
@@ -326,7 +337,8 @@ public class VolunteerManagementUI {
             System.out.println("1. Have working experience ");
             System.out.println("2. No working experience ");
             System.out.print("Enter Volunteer Category: ");
-            input = scanner.nextInt();
+            input = validateInt();
+            System.out.println("");
 
             switch (input) {
                 case 1:
@@ -361,7 +373,7 @@ public class VolunteerManagementUI {
         boolean validInput = false;
         int id = -1;
         do {
-            System.out.print("Enter Volunteer Id: ");
+            System.out.print("Enter Volunteer ID: ");
 
             id = validateInt();
             if (id != -1) {
@@ -388,7 +400,7 @@ public class VolunteerManagementUI {
             System.out.println("==================");
             System.out.println("1-Yes 2-No 0-Back");
             System.out.println("=================");
-            System.out.print("Enter No:");
+            System.out.print("Enter No: ");
             input = scanner.nextInt();
             if (input >= 0 && input <= 2) {
                 correctInput = true;

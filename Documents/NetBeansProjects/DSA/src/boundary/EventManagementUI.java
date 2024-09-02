@@ -57,128 +57,264 @@ public class EventManagementUI {
 
     }
 
-    public String inputEventName() {
-        System.out.print("Enter Event Name: ");
-        String eventName = scanner.nextLine();
-        System.out.print("\n ");
-      
-        while (eventName.isEmpty()) {
-            System.out.print("\nEvent Name cannot be empty. \nEnter Event Name: ");
-            eventName = scanner.nextLine();
+    public String inputVolunteerId() {
+        Scanner scan = new Scanner(System.in);
+        System.out.print("Enter Volunteer ID: ");
+        while (!scan.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a numeric Volunteer ID.");
+            scan.next(); // clear invalid input
         }
+        return scan.next();
+    }
+
+    public String inputEventId() {
+        Scanner scan = new Scanner(System.in);
+        System.out.print("{Event ID (e.g., E0001) or '0' to exit} ");
+        String eventId = scan.nextLine().toUpperCase().trim();
+        if (eventId.equals("0")) {
+            return eventId; // Return null or some sentinel value to indicate exit
+        }
+        if (eventId.matches("^E\\d{4}$")) {
+            return eventId; // Return if format is valid
+        }
+        while (!scan.hasNext()) {
+
+            System.out.println("Invalid Event ID format. Please enter an ID in the format E0001.");
+            scan.next();
+        }
+
+        return eventId;
+    }
+
+    public String inputEventName() {
+        System.out.print("Enter Event name: ");
+
+        Scanner scan = new Scanner(System.in);
+        String eventName = scan.nextLine();
+
+        if (eventName.equalsIgnoreCase("EXIT")) {
+            return eventName; // Return null or some sentinel value to indicate exit
+        }
+        if (eventName.matches("^[a-zA-Z\\s]+$|^[a-zA-Z0-9\\s&.,'-]+$")) {
+            return eventName; // Return if format is valid
+        }
+        while (!scan.hasNext()) {
+
+            System.out.println("Invalid Event ID format. Please enter an ID in the format E0001.");
+            scan.next();
+        }
+
         return eventName;
     }
 
     public String inputEventAddress() {
-        System.out.print("\nEnter Event Address: ");
-        String eventAddress = scanner.nextLine();
-        while (eventAddress.isEmpty()) {
-            System.out.print("\nEvent Address cannot be empty. \nEnter Event Address: ");
-            eventAddress = scanner.nextLine();
+        System.out.print("Enter Event Address: ");
+
+        Scanner scan = new Scanner(System.in);
+        String eventAddress = scan.nextLine();
+
+        if (eventAddress.equalsIgnoreCase("EXIT")) {
+            return "eventAddress"; // Return null or some sentinel value to indicate exit
         }
+        if (eventAddress.matches("^[a-zA-Z\\s]+$|^[a-zA-Z0-9\\s&.,'-]+$")) {
+            return eventAddress; // Return if format is valid
+        }
+        while (!scan.hasNext()) {
+
+            System.out.println("Invalid Event ID format. Please enter an ID in the format E0001.");
+            scan.next();
+        }
+
         return eventAddress;
     }
 
     public String inputEventDescription() {
-        System.out.print("\nEnter Event Description: ");
-        String eventDescription = scanner.nextLine();
-        while (eventDescription.isEmpty()) {
-            System.out.print("\nEvent Description cannot be empty. \nEnter Event Description: ");
-            eventDescription = scanner.nextLine();
+        System.out.print("Enter Event Description: ");
+
+        Scanner scan = new Scanner(System.in);
+        String eventDescription = scan.nextLine();
+
+        if (eventDescription.equalsIgnoreCase("EXIT")) {
+            return eventDescription; // Return null or some sentinel value to indicate exit
         }
+        if (eventDescription.matches("^[a-zA-Z\\s]+$|^[a-zA-Z0-9\\s&.,'-]+$")) {
+            return eventDescription; // Return if format is valid
+        }
+        while (!scan.hasNext()) {
+
+            System.out.println("Invalid Event ID format. Please enter an ID in the format E0001.");
+            scan.next();
+        }
+
         return eventDescription;
     }
 
     public LocalDate inputEventStartDate() {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        Scanner scan = new Scanner(System.in);
+
         while (true) {
-            System.out.print("\nEnter Event Start Date (yyyy-MM-dd): ");
-            String input = scanner.nextLine().trim();
+            System.out.print("\nEnter Event Start Date (yyyy-MM-dd) or 'EXIT' to cancel: ");
+            String eventStartDate = scan.nextLine();
+
+            // Check if the user wants to exit
+            if (eventStartDate.equalsIgnoreCase("EXIT")) {
+                return null; // Indicate that the user wants to exit
+            }
+
             try {
-                LocalDate date = LocalDate.parse(input, DATE_FORMATTER);
+                // Try to parse the input date
+                LocalDate date = LocalDate.parse(eventStartDate, dateFormatter);
+
+                // Ensure the date is not in the past
                 if (date.isBefore(LocalDate.now())) {
-                    System.out.println("\nStart date cannot be in the past.");
+                    System.out.println("The event start date cannot be in the past. Please enter a valid date.");
                 } else {
-                    return date;
+                    return date; // Return the valid date
                 }
             } catch (DateTimeParseException e) {
-                System.out.println("\nInvalid date format. Please use yyyy-MM-dd.");
+                // Handle invalid date format
+                System.out.println("Invalid date format. Please enter the date in the format yyyy-MM-dd.");
             }
         }
     }
 
     public LocalDate inputEventEndDate(LocalDate startDate) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        Scanner scan = new Scanner(System.in);
+
         while (true) {
-            System.out.print("\nEnter Event End Date (yyyy-MM-dd): ");
-            String input = scanner.nextLine().trim();
+            System.out.print("\nEnter Event End Date (yyyy-MM-dd) or 'EXIT' to cancel: ");
+            String eventEndDate = scan.nextLine();
+
+            // Check if the user wants to exit
+            if (eventEndDate.equalsIgnoreCase("EXIT")) {
+                return null; // Indicate that the user wants to exit
+            }
+
             try {
-                LocalDate date = LocalDate.parse(input, DATE_FORMATTER);
-                if (date.isEqual(startDate) || date.isAfter(startDate)) {
-                    return date;
+                // Try to parse the input date
+                LocalDate endDate = LocalDate.parse(eventEndDate, dateFormatter);
+
+                // Ensure the end date is not before the start date
+                if (endDate.isBefore(startDate)) {
+                    System.out.println("The event end date cannot be before the start date. Please enter a valid date.");
                 } else {
-                    System.out.println("\nEnd date must be the same as or after the start date.");
+                    return endDate; // Return the valid end date
                 }
-            } catch (Exception e) {
-                System.out.println("\nInvalid date format. Please use yyyy-MM-dd.");
+            } catch (DateTimeParseException e) {
+                // Handle invalid date format
+                System.out.println("Invalid date format. Please enter the date in the format yyyy-MM-dd.");
             }
         }
     }
 
     public LocalTime inputEventStartTime() {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        Scanner scan = new Scanner(System.in);
+
         while (true) {
-            System.out.print("\nEnter Event Start Time (24hours format HH:mm): ");
-            String input = scanner.nextLine().trim();
+            System.out.print("Enter Event Start Time (HH:mm) or 'EXIT' to cancel: ");
+            String eventStartTime = scan.nextLine();
+
+            // Check if the user wants to exit
+            if (eventStartTime.equalsIgnoreCase("EXIT")) {
+                return null; // Indicate that the user wants to exit
+            }
+
             try {
-                return LocalTime.parse(input, TIME_FORMATTER);
-            } catch (Exception e) {
-                System.out.println("\nInvalid time format. Please use 24hours format HH:mm.");
+                // Try to parse the input time
+                LocalTime startTime = LocalTime.parse(eventStartTime, timeFormatter);
+                return startTime; // Return the valid start time
+            } catch (DateTimeParseException e) {
+                // Handle invalid time format
+                System.out.println("Invalid time format. Please enter the time in the format HH:mm.");
             }
         }
     }
 
     public LocalTime inputEventEndTime(LocalTime startTime) {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        Scanner scan = new Scanner(System.in);
+
         while (true) {
-            System.out.print("\nEnter Event End Time (24hours format HH:mm): ");
-            String input = scanner.nextLine().trim();
+            System.out.print("Enter Event End Time (HH:mm) or 'EXIT' to cancel: ");
+            String eventEndTime = scan.nextLine();
+
+            // Check if the user wants to exit
+            if (eventEndTime.equalsIgnoreCase("EXIT")) {
+                return null; // Indicate that the user wants to exit
+            }
+
             try {
-                LocalTime endTime = LocalTime.parse(input, TIME_FORMATTER);
-                if (endTime.isAfter(startTime)) {
-                    return endTime;
+                // Try to parse the input time
+                LocalTime endTime = LocalTime.parse(eventEndTime, timeFormatter);
+
+                // Ensure the end time is not before the start time
+                if (endTime.isBefore(startTime)) {
+                    System.out.println("The event end time cannot be before the start time. Please enter a valid time.");
                 } else {
-                    System.out.println("\nEnd time must be after the start time and cannot be the same.");
+                    return endTime; // Return the valid end time
                 }
-            } catch (Exception e) {
-                System.out.println("\nInvalid time format. Please use 24hours format HH:mm.");
+            } catch (DateTimeParseException e) {
+                // Handle invalid time format
+                System.out.println("Invalid time format. Please enter the time in the format HH:mm.");
             }
         }
     }
 
     public String inputEventOrganizerName() {
-        System.out.print("\nEnter Organizer Name: ");
-        String eventOrganizerName = scanner.nextLine();
-        while (eventOrganizerName.isEmpty()) {
-            System.out.print("\nOrganizer Name cannot be empty. \nEnter Organizer Name: ");
-            eventOrganizerName = scanner.nextLine();
+        System.out.print("Enter Organizer Event name: ");
+
+        Scanner scan = new Scanner(System.in);
+        String orgName = scan.nextLine();
+
+        if (orgName.equalsIgnoreCase("EXIT")) {
+            return orgName; // Return null or some sentinel value to indicate exit
         }
-        return eventOrganizerName;
+        if (orgName.matches("^[a-zA-Z\\s]+$|^[a-zA-Z0-9\\s&.,'-]+$")) {
+            return orgName; // Return if format is valid
+        }
+        while (!scan.hasNext()) {
+
+            System.out.println("Invalid Event ID format. Please enter an ID in the format E0001.");
+            scan.next();
+        }
+
+        return orgName;
     }
 
     public String inputEventOrganizerEmail() {
         System.out.print("\nEnter Organizer Email: ");
         String eventOrganizerEmail = scanner.nextLine();
-        while (!isValidEmail(eventOrganizerEmail)) {
-            System.out.print("\nInvalid email format. \nEnter Organizer Email: ");
+
+        while (!eventOrganizerEmail.equalsIgnoreCase("EXIT") && !isValidEmail(eventOrganizerEmail)) {
+            System.out.print("\nInvalid email format. Enter Organizer Email (or type 'EXIT' to cancel): ");
             eventOrganizerEmail = scanner.nextLine();
         }
+
+        // Handle EXIT condition
+        if (eventOrganizerEmail.equalsIgnoreCase("EXIT")) {
+            return eventOrganizerEmail; // Indicate the process was exited
+        }
+
         return eventOrganizerEmail;
     }
 
     public String inputEventOrganizerPhoneNo() {
         System.out.print("\nEnter Organizer Phone No: ");
         String eventOrganizerPhoneNo = scanner.nextLine();
-        while (!isValidPhoneNumber(eventOrganizerPhoneNo)) {
-            System.out.print("\nInvalid phone number format. Enter Organizer Phone No: ");
+
+        while (!eventOrganizerPhoneNo.equalsIgnoreCase("EXIT") && !isValidPhoneNumber(eventOrganizerPhoneNo)) {
+            System.out.print("\nInvalid phone number format. Enter Organizer Phone No (or type 'EXIT' to cancel): ");
             eventOrganizerPhoneNo = scanner.nextLine();
         }
+
+        // Handle EXIT condition
+        if (eventOrganizerPhoneNo.equalsIgnoreCase("EXIT")) {
+            return eventOrganizerPhoneNo; // Indicate the process was exited
+        }
+
         return eventOrganizerPhoneNo;
     }
 
@@ -217,22 +353,31 @@ public class EventManagementUI {
     }
 
     public int inputVolunteerNeedForTheEvent() {
-        int volunteerNeed;
-        do {
-            System.out.print("Enter number of volunteers needed: ");
-            while (!scanner.hasNextInt()) {
-                System.out.println("Invalid input. Please enter a number.");
-                scanner.next(); // Clear the invalid input
-                System.out.print("Enter number of volunteers needed: ");
+        Scanner scan = new Scanner(System.in);
+
+        while (true) {
+            System.out.print("Enter the number of volunteers needed for the event or '0' to exit: ");
+            String input = scan.nextLine().trim();
+
+            // Check if the user wants to exit
+            if (input.equalsIgnoreCase("EXIT")) {
+                return -1; // Indicate that the user wants to exit
             }
-            volunteerNeed = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-            if (volunteerNeed < 0) {
-                System.out.println("Number of volunteers cannot be negative.");
+
+            try {
+                int volunteersNeeded = Integer.parseInt(input);
+
+                // Ensure the number is positive
+                if (volunteersNeeded > 0) {
+                    return volunteersNeeded; // Return the valid number of volunteers needed
+                } else {
+                    System.out.println("The number of volunteers must be a positive integer. Please try again.");
+                }
+            } catch (NumberFormatException e) {
+                // Handle invalid integer format
+                System.out.println("Invalid input. Please enter a valid positive integer.");
             }
-        } while (volunteerNeed < 0);
-        inputAvailableVolunteerNeeded(volunteerNeed);
-        return volunteerNeed;
+        }
     }
 
     public int inputAvailableVolunteerNeeded(int volunteerNeed) {
@@ -419,11 +564,6 @@ public class EventManagementUI {
         return input;
     }
 
-    public String inputEventId() {
-        System.out.print("Input Event ID: ");
-        return scanner.nextLine().toUpperCase();
-    }
-
     public int displaySearchMenu() {
         int choice = -1; // Initialize to an invalid choice
         boolean correctInput = false;
@@ -510,18 +650,7 @@ public class EventManagementUI {
         line(400);
     }
 
-    public String inputVolunteerId() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter Volunteer ID: ");
-        while (!scanner.hasNextInt()) {
-            System.out.println("Invalid input. Please enter a numeric Volunteer ID.");
-            scanner.next(); // clear invalid input
-        }
-        return scanner.next();
-    }
-
     public int getConfirmation() {
-        Scanner scanner = new Scanner(System.in);
         System.out.println("1. Yes");
         System.out.println("2. No");
         System.out.println("0. Exit");
@@ -534,7 +663,6 @@ public class EventManagementUI {
     }
 
     public int getRetryChoice() {
-        Scanner scanner = new Scanner(System.in);
         System.out.println("0. Exit");
         System.out.println("1. Retry");
         System.out.print("Enter choice: ");

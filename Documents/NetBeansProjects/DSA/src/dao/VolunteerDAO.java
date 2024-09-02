@@ -16,7 +16,7 @@ import java.io.ObjectOutputStream;
 
 /**
  *
- * @author user
+ * @author Goh Wei Xian
  */
 public class VolunteerDAO {
     private static String fileName = "src/data/volunteer.dat";

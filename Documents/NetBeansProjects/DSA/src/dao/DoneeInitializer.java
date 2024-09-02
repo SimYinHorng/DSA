@@ -12,6 +12,12 @@ import java.util.Random;
 import utility.DoneeCategory;
 import utility.DoneeStatus;
 
+/**
+ *
+ * @author Chew Wei Seng
+ */
+
+
 public class DoneeInitializer {
 
     public HashMap<Integer, Donee> initializeDonee() {
