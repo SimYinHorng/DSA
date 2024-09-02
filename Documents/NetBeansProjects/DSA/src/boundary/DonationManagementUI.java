@@ -79,7 +79,7 @@ public class DonationManagementUI {
         System.out.println("0. Exit");
     }
 
-   private void addNewDonation() {
+    private void addNewDonation() {
         System.out.println("\nAdding a new donation");
         Donor donor = inputDonor();
         LocalDate date = inputDate("Enter donation date (YYYY-MM-DD): ");
@@ -126,7 +126,41 @@ public class DonationManagementUI {
     }
 
     private void trackDonatedItems() {
-        String category = getStringInput("Enter category to track: ");
+        System.out.println("\nTrack Donated Items by Category");
+        System.out.println("1. Food");
+        System.out.println("2. Clothing");
+        System.out.println("3. Education");
+        System.out.println("4. Electronics");
+        System.out.println("5. Cash");
+        System.out.println("6. Others");
+
+        int choice = getIntInput("Select a category: ");
+        String category = "";
+
+        switch (choice) {
+            case 1:
+                category = "Food";
+                break;
+            case 2:
+                category = "Clothing";
+                break;
+            case 3:
+                category = "Education";
+                break;
+            case 4:
+                category = "Electronics";
+                break;
+            case 5:
+                category = "Cash";
+                break;
+            case 6:
+                category = "Others";
+                break;
+            default:
+                System.out.println("Invalid choice. Returning to the main menu.");
+                return;
+        }
+
         ArrayList<DonationItem> items = donationManager.trackDonatedItemsByCategory(category);
         if (!items.isEmpty()) {
             System.out.println("Donated items in category '" + category + "':");
@@ -139,10 +173,10 @@ public class DonationManagementUI {
     }
 
     private void listDonationsByDonor() {
-        Donor donor = inputDonor();
-        ArrayList<Donation> donations = donationManager.listDonationsByDonor(donor);
+        String donorName = getStringInput("Enter donor name: ");
+        ArrayList<Donation> donations = donationManager.listDonationsByDonor(donorName);
         if (!donations.isEmpty()) {
-            System.out.println("Donations by " + donor.getName() + ":");
+            System.out.println("Donations by " + donorName + ":");
             for (int i = 1; i <= donations.getNumberOfEntries(); i++) {
                 System.out.println(donations.getEntry(i));
             }
@@ -199,12 +233,41 @@ public class DonationManagementUI {
         while (addMore) {
             String name = getStringInput("Item name: ");
             double value = getDoubleInput("Item value: ");
-            String category = getStringInput("Item category: ");
+            String category = selectCategory(); // Use the new method to select a category
             boolean isCash = getBooleanInput("Is this a cash donation? (true/false): ");
             items.add(new DonationItem(name, value, category, isCash));
             addMore = getBooleanInput("Add another item? (true/false): ");
         }
         return items;
+    }
+
+    private String selectCategory() {
+        System.out.println("Select item category:");
+        System.out.println("1. Food");
+        System.out.println("2. Clothing");
+        System.out.println("3. Education");
+        System.out.println("4. Electronics");
+        System.out.println("5. Cash");
+        System.out.println("6. Others");
+
+        int choice = getIntInput("Enter your choice: ");
+        switch (choice) {
+            case 1:
+                return "Food";
+            case 2:
+                return "Clothing";
+            case 3:
+                return "Education";
+            case 4:
+                return "Electronics";
+            case 5:
+                return "Cash";
+            case 6:
+                return "Others";
+            default:
+                System.out.println("Invalid choice. Defaulting to 'Others'.");
+                return "Others";
+        }
     }
 
     private LocalDate inputDate(String prompt) {
@@ -248,10 +311,10 @@ public class DonationManagementUI {
 
     private boolean getBooleanInput(String prompt) {
         while (true) {
-            String input = getStringInput(prompt).toLowerCase();
-            if (input.equals("true") || input.equals("yes") || input.equals("y")) {
+            String input = getStringInput(prompt);
+            if (input.equalsIgnoreCase("true")) {
                 return true;
-            } else if (input.equals("false") || input.equals("no") || input.equals("n")) {
+            } else if (input.equalsIgnoreCase("false")) {
                 return false;
             } else {
                 System.out.println("Invalid input. Please enter true or false.");
@@ -263,5 +326,4 @@ public class DonationManagementUI {
         donationManager.saveDonations();
         System.out.println("Donations saved successfully.");
     }
-
 }
